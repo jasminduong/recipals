@@ -20,7 +20,7 @@ export default function ReciPalNavigation() {
     { label: "Saved", path: "/ReciPals/Saved", icon: MdOutlineBookmarkBorder },
     {
       label: "Profile",
-      path: "/ReciPals/Account/Profile",
+      path: "/ReciPals/Account/Login",
       icon: MdAccountCircle,
     },
   ];

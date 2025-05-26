@@ -1,54 +1,60 @@
-import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Row, Col, Image } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import * as db from "../Database";
 
 export default function Profile() {
+  const { cid } = useParams<{ cid: string }>();
+  const { users } = db;
+
+  // Find the user by id
+  const user = users.find((u) => u._id === cid);
+
+  if (!user) {
+    return <div>User not found</div>;
+  }
+
   return (
-    <div id="wd-profile-screen">
-      <h4 id="wd-profile-title">Profile</h4>
-      <Form.Control
-        id="wd-username"
-        placeholder="alice"
-        className="mb-2 text-input-field"
-      />
+    <div id="profile-screen" className="p-4">
+      <Row className="align-items-center profile-pic">
+        <Col xs={3}>
+          <Image
+            src={user.profile}
+            roundedCircle
+            fluid
+            alt={`${user.username} profile`}
+            style={{ width: 250 }}
+          />
+        </Col>
 
-      <Form.Control
-        id="wd-password"
-        placeholder="123"
-        className="mb-2 text-input-field"
-      />
+        <Col xs={12} sm={8} md={9} className="text-sm-start text-center ps-5">
+          <div className="profile-username">{user.username}</div>
 
-      <Form.Control
-        id="wd-firstname"
-        placeholder="Alice"
-        className="mb-2 text-input-field"
-      />
+          <div className="d-flex justify-content-sm-start justify-content-center profile-user-info">
+            <div>
+              <strong>{user.posts}</strong> posts
+            </div>
+            <div>
+              <strong>{user.followers}</strong> followers
+            </div>
+            <div>
+              <strong>{user.following}</strong> following
+            </div>
+          </div>
 
-      <Form.Control
-        id="wd-lastname"
-        placeholder="Wonderland"
-        className="mb-2 text-input-field"
-      />
-
-      <Form.Control type="date" defaultValue="MM/DD/YYYY" />
-
-      <Form.Control
-        id="wd-email"
-        placeholder="alice@wonderland.com"
-        className="mb-2 text-input-field"
-      />
-
-      <Form.Select id="wd-user-type" defaultValue="Student" className="mb-3">
-        <option value="Student">Student</option>
-        <option value="Instructor">Instructor</option>
-      </Form.Select>
-
-      <Link
-        id="wd-signout-btn"
-        to="/ReciPals/Account/Login"
-        className="btn btn-danger w-100 mb-2"
+          <div className="profile-name">{user.name}</div>
+        </Col>
+      </Row>
+      <div className="profile-bio">{user.bio}</div>
+      <div
+        className="d-flex flex-wrap gap-2 mt-3"
+        style={{ paddingLeft: "100px" }}
       >
-        Signout
-      </Link>
+        {user.tags.map((tag, index) => (
+          <div key={index} className="btn profile-tags">
+            {tag}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

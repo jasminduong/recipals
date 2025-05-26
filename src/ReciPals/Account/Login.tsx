@@ -19,7 +19,7 @@ export default function Login() {
         />
         <Link
           id="signin-btn"
-          to="/ReciPals/Account/Profile"
+          to="/ReciPals/Account/Profile/:cid"
           className="btn w-100 mb-2"
         >
           Login{" "}
