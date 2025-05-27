@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  font-family: Avenir, Trebuchet MS, Verdana, Tahoma;
+}
+
+@media (min-width: 768px) {
+  #wd-recipals .wd-main-content-offset {
+    padding-left: 50px !important;
+  }
+}
+
+#wd-recipals {
+  display: flex;
+  text-align: left;
+}
+
+/* SIDEBAR STYLING */
+.recipals-navbar {
+  width: 200px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-right: 40px;
+  border-right: 1px solid #e0e0e0;
+}
+
+.recipals-appname {
+  font-size: 35px;
+  font-weight: bold;
+  color: #cd9f08 !important;
+  margin-bottom: 30px;
+}
+
+.recipals-nav-link {
+  display: flex;
+  text-decoration: none;
+  font-size: 18px;
+  width: 100%;
+  color: black;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.recipals-nav-link svg {
+  margin-right: 16px;
+}
+
+.recipals-nav-link:hover {
+  color: gray;
+}
+
+.list-group-item {
+  border: none !important;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+/* ACCOUNT */
+#signin-screen {
+  width: 100vh;
+  display: flex;
+}
+#signup-screen {
+    width: 100vh;
+    display: flex;
+  }
+.text-input-field {
+  font-size: 14px !important;
+  width: 400px !important;
+}
+#user-type {
+  font-size: 14px;
+}
+#signin-title {
+  margin-bottom: 14px;
+}
+#signup-title {
+    margin-bottom: 14px;
+  }
+#signout-btn {
+  font-size: 14px;
+}
+#signin-btn {
+  font-size: 14px;
+  color: white;
+  background-color: #cd9f08;
+  margin-top: 12px;
+}
+#signup-link {
+  font-size: 14px;
+}
+#signup-btn {
+  font-size: 14px;
+  color: white;
+  background-color: #cd9f08;
+  margin-top: 12px;
+}
+#signin-link {
+  font-size: 14px;
+}
+.card {
+  background-color: #f7f7f7 !important;
+  border: none !important;
+}
