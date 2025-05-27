@@ -1,0 +1,14 @@
+[
+  {
+    "_id": "123",
+    "username": "recipe_bot",
+    "password": "ReciPals",
+    "name": "Recipe Bot",
+    "bio": "Love to cook and bake all things <3 ",
+    "tags": ["Baker", "Fusion Explorer", "Sustainable"],
+    "profile": "/images/profile.png",
+    "posts": 0,
+    "followers": 0,
+    "following": 0
+  }
+]

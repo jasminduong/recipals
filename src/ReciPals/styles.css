@@ -62,15 +62,11 @@ body * {
   font-weight: bold;
 }
 
-/* ACCOUNT */
+/* SIGNIN SCREEN */
 #signin-screen {
   width: 100vh;
   display: flex;
 }
-#signup-screen {
-    width: 100vh;
-    display: flex;
-  }
 .text-input-field {
   font-size: 14px !important;
   width: 400px !important;
@@ -81,9 +77,6 @@ body * {
 #signin-title {
   margin-bottom: 14px;
 }
-#signup-title {
-    margin-bottom: 14px;
-  }
 #signout-btn {
   font-size: 14px;
 }
@@ -92,6 +85,7 @@ body * {
   color: white;
   background-color: #cd9f08;
   margin-top: 12px;
+  border-color: transparent !important;
 }
 #signup-link {
   font-size: 14px;
@@ -109,3 +103,96 @@ body * {
   background-color: #f7f7f7 !important;
   border: none !important;
 }
+
+/* SIGNUP SCREEN */
+#signup-screen {
+  width: 450px;
+  display: flex;
+}
+#signup-title {
+  margin-bottom: 14px;
+}
+#signup-caption {
+  font-style: italic;
+  margin-bottom: 32px;
+}
+.profile-tag {
+  border-radius: 20px !important;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+}
+.profile-tag.not-selected {
+  background: #fff;
+  border: 1px solid #bababa;
+  color: #000;
+}
+.profile-tag.selected {
+  background: #bedbff;
+  border: none;
+  color: #000;
+}
+.profile-tag.not-selected:hover {
+  background: #bedbff;
+  border: none;
+  outline: #bedbff;
+  color: #000;
+}
+.profile-tag.selected:hover {
+  background: #fff;
+  border: 1px solid #bababa;
+  color: #000;
+}
+
+/* PROFLE */
+.profile-pic {
+  padding-left: 80px;
+  padding-top: 0px;
+}
+.profile-username {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.profile-user-info {
+  font-size: 20px;
+  gap: 50px;
+}
+.profile-name {
+  font-size: 20px;
+  margin-top: 16px;
+  font-weight: bold;
+}
+.profile-bio {
+  font-size: 16px;
+  padding-left: 100px;
+  padding-top: 30px;
+}
+.profile-tags {
+  border-radius: 20px !important;
+  background: #bedbff !important;
+  border: none;
+  color: #000;
+  margin-top: 12px;
+  margin-right: 16px;
+  margin-bottom: 32px;
+  padding: 6px 12px;
+  font-size: 14px !important;
+}
+.edit-button {
+  margin-bottom: 20px;
+  border-radius: 8px !important;
+  background: #ededed !important;
+  border-color: transparent !important;
+}
+.profile-recipes {
+  border-bottom: 1px solid #e0e0e0;
+  margin-left: 100px;
+  gap: 110px;
+}
+.tab-btn {
+  border-color: transparent !important;
+  background-color: transparent;
+}
+.tab-btn.active {
+    border-bottom: 1px solid black !important;
+  }

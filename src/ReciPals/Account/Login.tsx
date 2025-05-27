@@ -1,7 +1,32 @@
-import { Card, Form } from "react-bootstrap";
+import { Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as db from "../Database";
+import { setCurrentUser } from "./reducer";
 
 export default function Login() {
+  // initializes state variable credentials with mutator function setCredentials
+  const [credentials, setCredentials] = useState<any>({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // signin function that searches for a user with the credentials
+  // if there's a user that matches, store it in the reducer by dispatching it to the Account reducer using the setCurrentUser reducer function
+  // ignore the sign in attempt if there's no match
+  // after signing in, navigate to the Home
+  const signin = () => {
+    const user = db.users.find(
+      (u: any) =>
+        u.username === credentials.username &&
+        u.password === credentials.password
+    );
+    if (!user) return;
+    dispatch(setCurrentUser(user));
+    navigate("/ReciPals/Home");
+  };
+
   return (
     <div id="signin-screen">
       <Card className="card">
@@ -9,21 +34,29 @@ export default function Login() {
         <Form.Control
           id="username"
           placeholder="Username"
+          defaultValue={credentials.username}
+          onChange={(e) =>
+            setCredentials({ ...credentials, username: e.target.value })
+          }
           className="mb-2 text-input-field"
         />
         <Form.Control
           id="password"
           placeholder="Password"
           type="password"
+          defaultValue={credentials.password}
+          onChange={(e) =>
+            setCredentials({ ...credentials, password: e.target.value })
+          }
           className="mb-2 text-input-field"
         />
-        <Link
+        <Button
           id="signin-btn"
-          to="/ReciPals/Account/Profile"
+          onClick={signin}
           className="btn w-100 mb-2"
         >
           Login{" "}
-        </Link>
+        </Button>
         <Link
           id="wd-signup-link"
           to="/ReciPals/Account/Signup"

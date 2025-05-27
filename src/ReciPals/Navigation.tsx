@@ -5,13 +5,12 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { MdAccountCircle } from "react-icons/md";
+import { useSelector } from "react-redux";
 import "./styles.css";
 
 /* ReciPal Sidebar navigation with links to main sections (home, search, create, saved, profile) */
 export default function ReciPalNavigation() {
-  {
-    /* gets the location object that represents the current URL path */
-  }
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { pathname } = useLocation();
   const links = [
     { label: "Home", path: "/ReciPals/Home", icon: GoHomeFill },
@@ -20,7 +19,9 @@ export default function ReciPalNavigation() {
     { label: "Saved", path: "/ReciPals/Saved", icon: MdOutlineBookmarkBorder },
     {
       label: "Profile",
-      path: "/ReciPals/Account/Profile",
+      path: currentUser
+      ? `/ReciPals/Account/Profile/${currentUser._id}`
+      : "/ReciPals/Account/Login",
       icon: MdAccountCircle,
     },
   ];
