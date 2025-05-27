@@ -13,11 +13,11 @@ export default function ReciPals() {
       <div className="wd-main-content-offset p-3">
         <Routes>
           <Route path="/" element={<Navigate to="/ReciPals/Home" />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/Search" element={<Search />} />
-          <Route path="/Create" element={<CreatePost />} />
-          <Route path="/Saved" element={<SavedRecipes />} />
-          <Route path="/Account/*" element={<Account />} />
+          <Route path="Home" element={<Home />} />
+          <Route path="Search" element={<Search />} />
+          <Route path="Create" element={<CreatePost />} />
+          <Route path="Saved" element={<SavedRecipes />} />
+          <Route path="Account/*" element={<Account />} />
         </Routes>
       </div>
     </div>
