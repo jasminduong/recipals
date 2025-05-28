@@ -5,6 +5,7 @@ import Search from "./Search";
 import CreatePost from "./Create";
 import SavedRecipes from "./Saved";
 import Account from "./Account";
+import RecipeEditor from "./Recipes/Editor";
 
 export default function ReciPals() {
   return (
@@ -16,6 +17,7 @@ export default function ReciPals() {
           <Route path="Home" element={<Home />} />
           <Route path="Search" element={<Search />} />
           <Route path="Create" element={<CreatePost />} />
+          <Route path="Recipes/Editor/:rid" element={<RecipeEditor />} />
           <Route path="Saved" element={<SavedRecipes />} />
           <Route path="Account/*" element={<Account />} />
         </Routes>

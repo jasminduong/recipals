@@ -9,7 +9,7 @@ body * {
 
 @media (min-width: 768px) {
   #wd-recipals .wd-main-content-offset {
-    padding-left: 50px !important;
+    padding-left: 260px !important;
   }
 }
 
@@ -180,7 +180,6 @@ body * {
 }
 .edit-button {
   margin-bottom: 20px;
-  border-radius: 8px !important;
   background: #ededed !important;
   border-color: transparent !important;
 }
@@ -194,5 +193,46 @@ body * {
   background-color: transparent;
 }
 .tab-btn.active {
-    border-bottom: 1px solid black !important;
-  }
+  border-bottom: 1px solid black !important;
+}
+
+/* RECIPE EDITOR STYLE */
+.recipe-editor {
+  width: 100% !important;
+  margin-right: 0 !important;
+}
+.recipe-editor-btn {
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+#cancel-btn {
+  background: #ededed !important;
+  border-color: transparent !important;
+  color: black;
+}
+#save-btn {
+  font-size: 14px;
+  color: white;
+  background-color: #cd9f08;
+  border-color: transparent !important;
+}
+
+/* RECIPE POST STYLE */
+#recipe-post {
+  width: 400px;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.post-image {
+  width: 400px;
+  height: 400px;
+}
+.post-caption {
+  font-size: 14px;
+}
+
+/* HOME PAGE STYLE */
+#recipals-home {
+  margin-left: 80px;
+}

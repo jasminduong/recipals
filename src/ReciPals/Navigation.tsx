@@ -28,7 +28,7 @@ export default function ReciPalNavigation() {
   return (
     <ListGroup
       variant="flush"
-      className="recipals-navbar bottom-0 top-0"
+      className="recipals-navbar bottom-0 top-0 position-fixed d-none d-md-block"
     >
       <ListGroup.Item className="recipals-appname">ReciPals</ListGroup.Item>
       {links.map((link) => (
