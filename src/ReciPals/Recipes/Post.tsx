@@ -1,9 +1,11 @@
 import { FaRegHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
 import * as db from "../Database";
+import { Link } from "react-router-dom";
 
 interface Post {
   post_id: string;
+  recipe_id: string
   created_by: string;
   title: string;
   description: string;
@@ -21,7 +23,7 @@ export default function RecipePost({ post }: { post: Post }) {
   const profilePic = user ? user.profile : "/images/profile.png";
 
   return (
-    <>
+    <Link to={`/ReciPals/Home/${post.recipe_id}`} className="text-decoration-none" >
       <div key={post.post_id} id="recipe-post">
         <div className="d-flex align-items-center mb-3">
           <img
@@ -59,6 +61,6 @@ export default function RecipePost({ post }: { post: Post }) {
           <span>{post.description}</span>
         </div>
       </div>
-    </>
+    </Link>
   );
 }

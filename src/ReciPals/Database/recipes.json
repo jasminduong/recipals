@@ -4,16 +4,16 @@
     "user_created": "recipe_bot",
     "name": "Beef Rice Noodles Stir Fry",
     "bio": "Love to cook and bake all things <3 ",
-    "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "description": "Savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
     "ingredients_sec": [
       {
         "_id": "recipe_bot-R1I1",
-        "title": "Noodle",
+        "title": "Noodles",
         "ingredients:": [
           "Rice Noodles",
           "Spinach",
           "Beef (1 lb.)",
-          "Eggs (3)",
+          "Eggs (3)", 
           "Bell Pepper (1)",
           "Mushrooms"
         ]

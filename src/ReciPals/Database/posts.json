@@ -8,7 +8,7 @@
     "photo": "/images/noodleDish.png",
     "likes": 96,
     "comments": [
-      {
+      { 
         "comment_id": "c1",
         "user": "commenter1",
         "text": "Love this recipe!",

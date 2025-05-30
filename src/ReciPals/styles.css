@@ -144,7 +144,7 @@ body * {
   color: #000;
 }
 
-/* PROFLE */
+/* PROFILE */
 .profile-pic {
   padding-left: 80px;
   padding-top: 0px;
@@ -230,9 +230,29 @@ body * {
 }
 .post-caption {
   font-size: 14px;
+
 }
 
 /* HOME PAGE STYLE */
 #recipals-home {
   margin-left: 80px;
+
+}
+
+/* DETAILS PAGE STYLE */
+#recipe-title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#recipe-sub-title {
+  font-size: 20px;
+}
+
+#recipe-body {
+  font-size: 18px;
+}
+
+#ingredients-instructions-sec {
+  margin-bottom: 80px;
 }
