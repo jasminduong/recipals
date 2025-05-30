@@ -253,6 +253,26 @@ body * {
   font-size: 18px;
 }
 
+.recipe-sub-body {
+  font-size: 12px;
+}
+
 #ingredients-instructions-sec {
   margin-bottom: 80px;
 }
+
+.custom-partial-border::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 8%;  /* Start at 12.5% from top */
+  height: 100%; /* 75% height */
+  width: 1px;
+  background-color: #dee2e6;
+}
+
+.custom-partial-border {
+  position: relative;
+}
+
+
