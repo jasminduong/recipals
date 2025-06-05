@@ -272,6 +272,19 @@ body * {
   font-size: 18px;
 }
 
+.recipe-title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.recipe-sub-title {
+  font-size: 20px;
+}
+
+.recipe-body {
+  font-size: 18px;
+}
+
 .recipe-sub-body {
   font-size: 12px;
 }
