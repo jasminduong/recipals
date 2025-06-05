@@ -46,11 +46,11 @@ export default function RecipePost({ post }: { post: Post }) {
         </div>
 
         <div className="d-flex gap-4 mb-2">
-          <div className="d-flex align-items-center gap-1">
+          <div className="d-flex align-items-center gap-1 post-icons">
             <FaRegHeart size={18} />
             <span>{post.likes}</span>
           </div>
-          <div className="d-flex align-items-center gap-1">
+          <div className="d-flex align-items-center gap-1 post-icons">
             <GoComment size={18} />
             <span>{commentCount}</span>
           </div>

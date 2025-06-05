@@ -64,7 +64,7 @@ export default function SignupTags() {
         {/* for each section in section array, displays section title */}
         {sections.map((section, index) => (
           <div key={index} className="mb-4">
-            <h6>{section.title}</h6>
+            <h6 className="mb-3 mt-2">{section.title}</h6>
             <div className="d-flex flex-wrap gap-2">
               {/* for each tag in each section, if selected, displays blue tag, otherwise displays white */}
               {/* on click, calls toggleTag function */}
