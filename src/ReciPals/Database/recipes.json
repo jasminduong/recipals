@@ -13,10 +13,136 @@
           "Rice Noodles",
           "Spinach",
           "Beef (1 lb.)",
-          "Eggs (3)", 
+          "Eggs (3)",
           "Bell Pepper (1)",
           "Mushrooms"
-        ] 
+        ]
+      },
+      {
+        "_id": "recipe_bot-R1I2",
+        "title": "Sauce",
+        "ingredients:": ["Soy sauce", "Sugar", "Sesame oil", "Starch", "Garlic"]
+      }
+    ],
+    "instructions": [
+      "Scramble and cook 3 eggs (like a pancake), then set aside.",
+      "Slice beef, marinate with sauce of your choice, and cook until well done.",
+      "While beef cooks, rinse and sauté spinach.",
+      "Slice bell peppers into strips, then sauté until slightly soft.",
+      "Slice mushrooms and cook until golden.",
+      "While mushrooms cooks, cut cooked eggs into strips.",
+      "Boil water and cook rice noodles according to package.",
+      "While noodles cook, mix up the sauce.",
+      "Once everything is cooked, combine noodles, veggies, beef, and eggs in a pan.",
+      "Pour in the sauce and stir on low heat until everything’s coated and heated through."
+    ],
+    "total_time": "80min",
+    "serves": 4,
+    "tags": ["Savory", "High Protein", "Asian Fusion"],
+    "photo": "/images/noodleDish.png"
+  },
+  {
+    "_id": "recipe_bot-R2",
+    "user_created": "recipe_bot",
+    "name": "Beef Rice Noodles Stir Fry",
+    "bio": "Love to cook and bake all things <3 ",
+    "description": "Savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "ingredients_sec": [
+      {
+        "_id": "recipe_bot-R1I1",
+        "title": "Noodles",
+        "ingredients:": [
+          "Rice Noodles",
+          "Spinach",
+          "Beef (1 lb.)",
+          "Eggs (3)",
+          "Bell Pepper (1)",
+          "Mushrooms"
+        ]
+      },
+      {
+        "_id": "recipe_bot-R1I2",
+        "title": "Sauce",
+        "ingredients:": ["Soy sauce", "Sugar", "Sesame oil", "Starch", "Garlic"]
+      }
+    ],
+    "instructions": [
+      "Scramble and cook 3 eggs (like a pancake), then set aside.",
+      "Slice beef, marinate with sauce of your choice, and cook until well done.",
+      "While beef cooks, rinse and sauté spinach.",
+      "Slice bell peppers into strips, then sauté until slightly soft.",
+      "Slice mushrooms and cook until golden.",
+      "While mushrooms cooks, cut cooked eggs into strips.",
+      "Boil water and cook rice noodles according to package.",
+      "While noodles cook, mix up the sauce.",
+      "Once everything is cooked, combine noodles, veggies, beef, and eggs in a pan.",
+      "Pour in the sauce and stir on low heat until everything’s coated and heated through."
+    ],
+    "total_time": "80min",
+    "serves": 4,
+    "tags": ["Savory", "High Protein", "Asian Fusion"],
+    "photo": "/images/noodleDish.png"
+  },
+  {
+    "_id": "recipe_bot-R3",
+    "user_created": "recipe_bot",
+    "name": "Beef Rice Noodles Stir Fry",
+    "bio": "Love to cook and bake all things <3 ",
+    "description": "Savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "ingredients_sec": [
+      {
+        "_id": "recipe_bot-R1I1",
+        "title": "Noodles",
+        "ingredients:": [
+          "Rice Noodles",
+          "Spinach",
+          "Beef (1 lb.)",
+          "Eggs (3)",
+          "Bell Pepper (1)",
+          "Mushrooms"
+        ]
+      },
+      {
+        "_id": "recipe_bot-R1I2",
+        "title": "Sauce",
+        "ingredients:": ["Soy sauce", "Sugar", "Sesame oil", "Starch", "Garlic"]
+      }
+    ],
+    "instructions": [
+      "Scramble and cook 3 eggs (like a pancake), then set aside.",
+      "Slice beef, marinate with sauce of your choice, and cook until well done.",
+      "While beef cooks, rinse and sauté spinach.",
+      "Slice bell peppers into strips, then sauté until slightly soft.",
+      "Slice mushrooms and cook until golden.",
+      "While mushrooms cooks, cut cooked eggs into strips.",
+      "Boil water and cook rice noodles according to package.",
+      "While noodles cook, mix up the sauce.",
+      "Once everything is cooked, combine noodles, veggies, beef, and eggs in a pan.",
+      "Pour in the sauce and stir on low heat until everything’s coated and heated through."
+    ],
+    "total_time": "80min",
+    "serves": 4,
+    "tags": ["Savory", "High Protein", "Asian Fusion"],
+    "photo": "/images/noodleDish.png"
+  },
+  {
+    "_id": "recipe_bot-R4",
+    "user_created": "recipe_bot",
+    "name": "Beef Rice Noodles Stir Fry",
+    "bio": "Love to cook and bake all things <3 ",
+    "description": "Savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "ingredients_sec": [
+      {
+        "_id": "recipe_bot-R1I1",
+        "title": "Noodles",
+        "ingredients:": [
+          "Rice Noodles",
+          "Spinach",
+          "Beef (1 lb.)",
+          "Eggs (3)",
+          "Bell Pepper (1)",
+          "Mushrooms"
+        ]
       },
       {
         "_id": "recipe_bot-R1I2",

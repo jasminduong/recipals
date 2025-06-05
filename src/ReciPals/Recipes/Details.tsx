@@ -21,9 +21,8 @@ export default function RecipeDetails() {
                 src={currRecipe.photo}
                 className="img-fluid"
                 style={{ 
-                  width: "100%", 
-                  maxWidth: "400px",
-                  height: "250px",
+                  width: "260px", 
+                  height: "260px",
                   objectFit: "cover" 
                 }}
                 alt={currRecipe.name}
@@ -39,8 +38,8 @@ export default function RecipeDetails() {
                 </h2>
                 <BiBookmark 
                   style={{ 
-                    width: "45px",    
-                    height: "45px", 
+                    width: "40px",    
+                    height: "40px", 
                     minWidth: "30px",  
                     minHeight: "30px" 
                   }}

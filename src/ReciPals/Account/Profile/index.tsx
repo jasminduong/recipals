@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function Profile() {
   const { cid } = useParams<{ cid: string }>();
-  const { users } = db;
+  const { users, posts } = db;
   const navigate = useNavigate();
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -29,8 +29,12 @@ export default function Profile() {
     "myRecipes"
   );
 
+  // gets all of the user's posts
+  const userPosts = posts.filter((post) => post.created_by === user._id);
+
   return (
     <div id="profile-screen" className="p-4">
+      {/* profile picture */}
       <Row className="align-items-center profile-pic">
         <Col xs={3}>
           <Image
@@ -42,6 +46,7 @@ export default function Profile() {
           />
         </Col>
 
+        {/* username, posts, followers, following, user's name */}
         <Col xs={12} sm={8} md={9} className="text-sm-start text-center ps-5">
           <Row className="align-items-center justify-content-between">
             <Col xs="auto">
@@ -50,12 +55,15 @@ export default function Profile() {
             <Col xs="auto">
               <Button
                 className="edit-button text-dark"
-                onClick={() => navigate(`/ReciPals/Profile/${user._id}/Edit`)}
+                onClick={() =>
+                  navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
+                }
               >
                 Edit Profile
               </Button>
             </Col>
           </Row>
+
           <div className="d-flex justify-content-sm-start justify-content-center profile-user-info">
             <div>
               <strong>{user.posts}</strong> posts
@@ -67,10 +75,11 @@ export default function Profile() {
               <strong>{user.following}</strong> following
             </div>
           </div>
-
           <div className="profile-name">{user.name}</div>
         </Col>
       </Row>
+
+      {/* bio and tags*/}
       <div className="profile-bio">{user.bio}</div>
       <div
         className="d-flex flex-wrap gap-2 mt-3"
@@ -83,6 +92,7 @@ export default function Profile() {
         ))}
       </div>
 
+      {/* tabs */}
       <div className="profile-recipes d-flex justify-content-center mt-4">
         <button
           className={`tab-btn ${activeTab === "myRecipes" ? "active" : ""}`}
@@ -96,6 +106,30 @@ export default function Profile() {
         >
           Saved
         </button>
+      </div>
+
+      {/* posts */}
+      <div className="mt-4">
+        {activeTab === "myRecipes" && (
+          <Row className="gx-1 gy-1" style={{ marginLeft: "100px" }}>
+            {userPosts.map((post) => (
+              <Col key={post.post_id} xs={12} sm={6} md={4} className="p-1">
+                <div className="my-recipes text-center">
+                  <Image
+                    className="profile-post"
+                    src={post.photo}
+                    fluid
+                    style={{
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </div>
+              </Col>
+            ))}
+          </Row>
+        )}
       </div>
     </div>
   );

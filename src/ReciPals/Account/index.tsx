@@ -24,8 +24,8 @@ export default function Account() {
         }
       />
       <Route path="Login" element={<Login />} />
-      <Route path="Profile/:cid" element={<Profile />} />
-      <Route path="/ReciPals/Profile/:cid/Edit" element={<ProfileEditor />} />
+      <Route path="Profile/:uid" element={<Profile />} />
+      <Route path="Profile/:uid/Edit" element={<ProfileEditor />} />
       <Route path="Signup" element={<Signup />} />
       <Route path="SignupTags" element={<SignupTags />} />
     </Routes>
