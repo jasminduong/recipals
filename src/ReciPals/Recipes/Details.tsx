@@ -11,7 +11,7 @@ export default function RecipeDetails() {
   const currPost = posts.find((post) => post.created_by === currRecipe?.user_created);
 
   return (
-    <Container fluid className="mt-4 px-2 px-md-4" id="recipe-editor">
+    <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
       {currRecipe ? (
         <div>
           <Row className="mb-4">
