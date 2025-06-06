@@ -7,7 +7,7 @@
     "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
     "photo": "/images/noodleDish.png",
     "likes": 96,
-    "comments": [
+    "comments": [ 
       { 
         "comment_id": "c1",
         "user": "commenter1",
