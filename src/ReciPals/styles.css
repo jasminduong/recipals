@@ -241,6 +241,11 @@ body * {
   margin-bottom: 30px;
   border-bottom: 1px solid #e0e0e0;
 }
+.recipe-post {
+  width: 400px;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
 .post-image {
   width: 400px;
   height: 400px;

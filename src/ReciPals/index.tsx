@@ -7,6 +7,7 @@ import SavedRecipes from "./Saved";
 import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
 import Details from "./Recipes/Details";
+import MyRecipe from "./Recipes/myRecipes";
 
 export default function ReciPals() {
   return (
@@ -20,6 +21,7 @@ export default function ReciPals() {
           <Route path="Home/:rid" element={<Details />} />
           <Route path="Create" element={<CreatePost />} />
           <Route path="Recipes/Editor/:rid" element={<RecipeEditor />} />
+          <Route path="Profile/:id/:pid" element={<MyRecipe /> } />
           <Route path="Saved" element={<SavedRecipes />} />
           <Route path="Account/*" element={<Account />} />
         </Routes>
