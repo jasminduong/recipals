@@ -7,7 +7,7 @@ import SavedRecipes from "./Saved";
 import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
 import Details from "./Recipes/Details";
-import MyRecipe from "./Recipes/myRecipes";
+import MyRecipe from "./Recipes/myRecipe";
 
 export default function ReciPals() {
   return (

@@ -302,8 +302,8 @@ body * {
   content: "";
   position: absolute;
   right: 0;
-  top: 8%;  /* Start at 12.5% from top */
-  height: 100%; /* 75% height */
+  top: 8%;  
+  height: 100%; 
   width: 1px;
   background-color: #dee2e6;
 }
@@ -311,5 +311,35 @@ body * {
 .custom-partial-border {
   position: relative;
 }
+
+.left-chevron {
+  position: absolute;
+  left: -60px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  z-index: 1001;
+}
+
+.right-chevron {
+  position: absolute;
+  right: -60px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .left-chevron {
+    left: -50px !important;
+  }
+  .right-chevron {
+    right: -43px !important;
+  }
+}
+
 
 

@@ -1,9 +1,9 @@
 import { FaRegHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi"; // Add this import
 import * as db from "../Database";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import { BiChevronLeft } from "react-icons/bi";
 
 export default function MyRecipe() {
   const { id } = useParams();  
@@ -26,10 +26,20 @@ export default function MyRecipe() {
         paddingLeft: 'inherit'
       }}
     >
+
       {currUser && currPost ? (
         <div className="d-flex justify-content-between align-items-center">
         <Link to={`/ReciPals/Profile/${id}/${pid}/${currPost.recipe_id}`} className="text-decoration-none">
-          <div className="recipe-post">
+          <div className="recipe-post" style={{ position: 'relative'}}>
+<BiChevronLeft 
+          size={48}
+          className="left-chevron"
+        />
+        
+        <BiChevronRight 
+          size={48}
+          className="right-chevron"
+        />
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <img
