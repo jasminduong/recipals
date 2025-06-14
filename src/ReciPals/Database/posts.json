@@ -6,7 +6,7 @@
     "title": "Beef Rice Noodles Stir Fry",
     "caption": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
     "photo": "/images/noodleDish.png",
-    "likes": 0,
+    "likes": [],
     "comments": [ 
       { 
         "comment_id": "c1",
@@ -24,7 +24,7 @@
     "title": "Beef Rice Noodles Stir Fry",
     "caption": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
     "photo": "/images/noodleDish.png",
-    "likes": 0,
+    "likes": [],
     "comments": [ 
       { 
         "comment_id": "c1",

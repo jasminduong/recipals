@@ -1,7 +1,8 @@
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
-import * as db from "../Database";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { likePost, unlikePost } from "./postReducer";
 
 interface Post {
   post_id: string;
@@ -10,15 +11,39 @@ interface Post {
   title: string;
   caption: string;
   photo: string;
-  likes: number;
+  likes: string[];
   comments?: any;
   created_at: string;
 }
 
 export default function RecipePost({ post }: { post: Post }) {
-  const commentCount = post.comments.length;
-  const user = db.users.find((u: any) => u._id === post.created_by);
+  const dispatch = useDispatch();
+  const { currentUser: loggedInUser } = useSelector(
+    (state: any) => state.accountReducer
+  );
+  const { users } = useSelector((state: any) => state.userReducer);
+  
+  const posts = useSelector((state: any) => state.postReducer.posts);
+  // gets updated post from redux
+  const updatedPost = posts.find((p: any) => p.post_id === post.post_id) || post;
+
+  const commentCount = updatedPost.comments?.length || 0;
+  const user = users.find((u: any) => u._id === updatedPost.created_by);
   const profilePic = user ? user.profile : "/images/profile.png";
+
+  // checks if current user has liked this post
+  const isLiked = updatedPost.likes?.includes(loggedInUser?._id) || false;
+
+  // event handler for liking and unliking a post
+  const handleLikeToggle = () => {
+    if (!loggedInUser) return;
+
+    if (isLiked) {
+      dispatch(unlikePost({ postId: post.post_id, userId: loggedInUser._id }));
+    } else {
+      dispatch(likePost({ postId: post.post_id, userId: loggedInUser._id }));
+    }
+  };
 
   return (
     <div key={post.post_id} id="recipe-post">
@@ -53,9 +78,17 @@ export default function RecipePost({ post }: { post: Post }) {
       </div>
 
       <div className="d-flex gap-4 mb-2">
-        <div className="d-flex align-items-center gap-1 post-icons">
-          <FaRegHeart size={18} />
-          <span>{post.likes}</span>
+        <div
+          className="d-flex align-items-center gap-1 post-icons"
+          onClick={handleLikeToggle}
+          style={{ cursor: loggedInUser ? "pointer" : "default" }}
+        >
+          {isLiked ? (
+            <FaHeart size={18} style={{ color: "#e91e63" }} />
+          ) : (
+            <FaRegHeart size={18} />
+          )}
+          <span>{post.likes.length}</span>
         </div>
         <div className="d-flex align-items-center gap-1 post-icons">
           <GoComment size={18} />
