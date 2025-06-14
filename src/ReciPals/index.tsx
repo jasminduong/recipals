@@ -20,7 +20,7 @@ export default function ReciPals() {
           <Route path="Search" element={<Search />} />
           <Route path="Home/:rid" element={<Details />} />
           <Route path="Create" element={<CreatePost />} />
-          <Route path="Recipes/Editor/:rid" element={<RecipeEditor />} />
+          <Route path="Editor/:rid" element={<RecipeEditor />} />
           <Route path="Profile/:id/:pid" element={<UserPosts /> } />
           <Route path="Saved" element={<SavedRecipes />} />
           <Route path="Account/*" element={<Account />} />

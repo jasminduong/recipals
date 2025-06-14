@@ -3,16 +3,19 @@ import { useParams } from "react-router-dom";
 import * as db from "../Database";
 import { BiBookmark } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function RecipeDetails() {
   const { rid } = useParams();
   const navigate = useNavigate();
-  const recipes = db.recipes;
-  const currRecipe = recipes.find((recipe) => recipe._id === rid);
+  const recipes = useSelector((state: any) => state.recipeReducer.recipes)
+  const currRecipe = recipes.find((recipe: any) => recipe._id === rid);
   const posts = db.posts;
   const currPost = posts.find(
     (post) => post.created_by === currRecipe?.user_created
   );
+
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
     <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
@@ -25,8 +28,8 @@ export default function RecipeDetails() {
                 src={currRecipe.photo}
                 className="img-fluid"
                 style={{
-                  width: "260px",
-                  height: "260px",
+                  width: "230px",
+                  height: "230px",
                   objectFit: "cover",
                 }}
                 alt={currRecipe.name}
@@ -68,15 +71,17 @@ export default function RecipeDetails() {
                     <strong>Serves:</strong> {currRecipe.serves}
                   </div>
                 </div>
-                <Button
-                  className="edit-button text-dark"
-                  size="sm"
-                  onClick={() =>
-                    navigate(`/ReciPals/Editor/${currRecipe._id}`)
-                  }
-                >
-                  Edit Recipe
-                </Button>
+                {currRecipe?.user_created === currentUser?._id && (
+                  <Button
+                    className="edit-button text-dark"
+                    size="sm"
+                    onClick={() =>
+                      navigate(`/ReciPals/Editor/${currRecipe._id}`)
+                    }
+                  >
+                    Edit Recipe
+                  </Button>
+                )}
               </div>
 
               {/* recipe tags */}
@@ -92,15 +97,15 @@ export default function RecipeDetails() {
 
           {/* Ingredients and Instructions */}
           <Row className="border-top pt-4">
-            <Col xs={12} lg={4} className="mb-4 mb-lg-0">
+            <Col xs={12} lg={4} className="mb-4 mb-lg-0 recipe-ingredients-col">
               <div className="border-end-lg pe-lg-4">
                 <h4 className="mb-4">Ingredients</h4>
-                {currRecipe.ingredients_sec.map((section) => (
-                  <div key={section._id} className="mb-4">
+                {currRecipe.ingredients_sec.map((section: any) => (
+                  <div key={section._id} className="mb-4 recipe-section">
                     <h6 className="fw-bold mb-2">For the {section.title}</h6>
                     <ul className="list-unstyled ps-3">
-                      {section["ingredients:"].map((ingredient, idx) => (
-                        <li key={idx} className="mb-1">
+                      {section["ingredients:"].map((ingredient: string, idx: number) => (
+                        <li key={idx} className="mb-1 recipe-ingredient-item">
                           <span className="me-2">•</span>
                           {ingredient}
                         </li>
@@ -111,12 +116,12 @@ export default function RecipeDetails() {
               </div>
             </Col>
 
-            <Col xs={12} lg={8}>
+            <Col xs={12} lg={8} className="recipe-instructions-col">
               <h4 className="mb-3">Instructions</h4>
               <ol className="ps-3">
-                {currRecipe.steps.map((steps, index) => (
-                  <li key={index} className="mb-1 lh-lg">
-                    {steps}
+                {currRecipe.steps.map((step: string, index: number) => (
+                  <li key={index} className="mb-1 lh-lg recipe-step-item">
+                    {step}
                   </li>
                 ))}
               </ol>
