@@ -5,6 +5,7 @@ import Signup from "./Signup";
 import SignupTags from "./SignupTags";
 import { useSelector } from "react-redux";
 import ProfileEditor from "./Profile/Editor";
+import UserPosts from "../Recipes/UserPosts";
 
 export default function Account() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -26,6 +27,7 @@ export default function Account() {
       <Route path="Login" element={<Login />} />
       <Route path="Profile/:uid" element={<Profile />} />
       <Route path="Profile/:uid/Edit" element={<ProfileEditor />} />
+      <Route path="Profile/:uid/Posts/:pid" element={<UserPosts />} />
       <Route path="Signup" element={<Signup />} />
       <Route path="SignupTags" element={<SignupTags />} />
     </Routes>
