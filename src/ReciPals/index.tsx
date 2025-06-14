@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ReciPalNavigation from "./Navigation";
 import Home from "./Home";
 import Search from "./Search";
-import CreatePost from "./Create";
 import SavedRecipes from "./Saved";
 import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
@@ -18,7 +17,6 @@ export default function ReciPals() {
           <Route path="Home" element={<Home />} />
           <Route path="Search" element={<Search />} />
           <Route path="Home/:rid" element={<Details />} />
-          <Route path="Create" element={<CreatePost />} />
           <Route path="Editor/:rid" element={<RecipeEditor />} />
           <Route path="Saved" element={<SavedRecipes />} />
           <Route path="Account/*" element={<Account />} />
