@@ -209,6 +209,12 @@ body * {
   display: block;        
   line-height: 0;        
 }
+#signout-btn {
+  font-size: 14px;
+  color: white;
+  background-color: #e13626;
+  border-color: transparent !important;
+}
 
 /* RECIPE EDITOR STYLE */
 #recipe-editor {

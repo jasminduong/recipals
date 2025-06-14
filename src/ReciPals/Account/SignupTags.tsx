@@ -1,6 +1,10 @@
 import { Button, Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch} from "react-redux";
+import { setCurrentUser, clearSignupData } from "./reducer";
+import * as db from "../Database";
+import { v4 as uuidv4 } from "uuid";
 
 // defines each section of tags
 const sections = [
@@ -44,6 +48,24 @@ const sections = [
 export default function SignupTags() {
   // initializes a state variable selectedTags as an array of strings, to store the tags the user selects
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // gets new user name, username, password
+  //const signupData = useSelector((state: any) => state.account?.newUser);
+
+  // get data from localStorage temporary use
+  const signupData = JSON.parse(localStorage.getItem('signupData') || 'null');
+
+  useEffect(() => {
+    if (!signupData) {
+      navigate("/ReciPals/Account/Signup");
+    }
+  }, [signupData, navigate]);
+
+  if (!signupData) {
+    return <div>Loading...</div>;
+  }
 
   const toggleTag = (tag: string) => {
     // toggleTag(tag) is called when a tag is clicked
@@ -54,6 +76,42 @@ export default function SignupTags() {
       // if the tag is not selected and fewer than 3 are selected, add it
       setSelectedTags((prev) => [...prev, tag]);
     }
+  };
+
+  // event handler to create new user after setting tags
+  const handleSignup = () => {
+    if (!signupData || !signupData.name) {
+      console.error("No signup data available");
+      alert("Signup data is missing. Please go back and fill out the form again.");
+      navigate("/ReciPals/Account/Signup");
+      return;
+    }
+
+    console.log("Creating user with data:", signupData);
+
+    const newUser = {
+      _id: uuidv4(),
+      name: signupData.name,
+      username: signupData.username,
+      password: signupData.password,
+      bio: "",
+      tags: selectedTags,
+      profile: "/images/profile.png",
+      posts: [],
+      saved_recipes: [],
+      followers: [],
+      following: [],
+    };
+
+    console.log("New user object:", newUser);
+
+    db.users.push(newUser);
+
+    dispatch(setCurrentUser(newUser));
+
+    dispatch(clearSignupData());
+
+    navigate(`/ReciPals/Account/Profile/${newUser._id}`);
   };
 
   return (
@@ -83,13 +141,13 @@ export default function SignupTags() {
             </div>
           </div>
         ))}
-        <Link
+        <Button
           id="signup-btn"
-          to="/ReciPals/Account/Profile/123"
+          onClick={handleSignup}
           className="btn w-100 mb-2"
         >
           Signup{" "}
-        </Link>
+        </Button>
         <Link
           id="signin-link"
           to="/ReciPals/Account/Login"

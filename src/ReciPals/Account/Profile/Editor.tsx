@@ -1,7 +1,9 @@
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Button, Col, Container, Form, Row, Image } from "react-bootstrap";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import * as db from "../../Database";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "../reducer";
 
 // defines each section of tags
 const sections = [
@@ -45,18 +47,14 @@ const sections = [
 export default function ProfileEditor() {
   const { uid } = useParams();
   const users = db.users;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const userToEdit = users.find((user) => user._id === uid);
+  // initializes a state variable userToEdit and mutator method to update user
+  const [userToEdit, setUserToEdit] = useState<any>(null);
 
   // initializes a state variable selectedTags as an array of strings, to store the tags the user selects
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
-  useEffect(() => {
-    if (userToEdit && userToEdit.tags) {
-      setSelectedTags(userToEdit.tags);
-    }
-  }, [userToEdit]);
 
   const toggleTag = (tag: string) => {
     // toggleTag(tag) is called when a tag is clicked
@@ -69,6 +67,58 @@ export default function ProfileEditor() {
     }
   };
 
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
+  useEffect(() => {
+    const originalUser = users.find((user) => user._id === uid);
+    if (originalUser) {
+      setUserToEdit({ ...originalUser }); // Create a copy
+      setSelectedTags(originalUser.tags || []);
+    }
+  }, [uid]);
+
+  // event handler to update profile photo
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setUserToEdit({ ...userToEdit, profile: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // event handler to save changes
+  const handleSave = () => {
+    if (!userToEdit) return;
+
+    const updatedUserPayload = {
+      ...userToEdit,
+      tags: selectedTags,
+    };
+
+    // find and update the original user in database
+    const userIndex = users.findIndex((user) => user._id === uid);
+    if (userIndex !== -1) {
+      users[userIndex] = { ...userToEdit, tags: selectedTags };
+
+      if (currentUser && currentUser._id === uid) {
+        dispatch(setCurrentUser(updatedUserPayload));
+      }
+    }
+
+    navigate(`/ReciPals/Account/Profile/${uid}`);
+  };
+
+  // signout event handler clears the current user from the redux store and then redirects user to signin page
+  const signout = () => {
+    dispatch(setCurrentUser(null));
+    navigate("/ReciPals/Account/Login");
+  };
+
   return (
     <Container fluid className="mt-4" id="profile-editor">
       {userToEdit ? (
@@ -76,30 +126,77 @@ export default function ProfileEditor() {
           {/* Name */}
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
-            <Form.Control defaultValue={userToEdit.name} />
+            <Form.Control
+              defaultValue={userToEdit.name}
+              onChange={(e) =>
+                setUserToEdit({ ...userToEdit, name: e.target.value })
+              }
+            />
           </Form.Group>
 
           {/* Username */}
           <Form.Group className="mb-4">
             <Form.Label>Username</Form.Label>
-            <Form.Control defaultValue={userToEdit.username} />
+            <Form.Control
+              defaultValue={userToEdit.username}
+              onChange={(e) =>
+                setUserToEdit({ ...userToEdit, username: e.target.value })
+              }
+            />
           </Form.Group>
 
           {/* Password */}
           <Form.Group className="mb-4">
             <Form.Label>Password</Form.Label>
-            <Form.Control defaultValue={userToEdit.password} />
+            <Form.Control
+              defaultValue={userToEdit.password}
+              onChange={(e) =>
+                setUserToEdit({ ...userToEdit, password: e.target.value })
+              }
+            />
           </Form.Group>
 
           {/* Bio */}
           <Form.Group className="mb-4">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Bio</Form.Label>
             <Form.Control
               as="textarea"
               rows={2}
               defaultValue={userToEdit.bio}
+              onChange={(e) =>
+                setUserToEdit({ ...userToEdit, bio: e.target.value })
+              }
             />
           </Form.Group>
+
+          {/* Profile Photo Section */}
+          <Row className="mb-4">
+            <Col md={3}>
+              <Form.Label>Profile Photo</Form.Label>
+            </Col>
+            <Col>
+              <div className="d-flex align-items-center gap-3">
+                {/* Current Photo Preview */}
+                <Image
+                  src={userToEdit.profile || "/images/profile.png"}
+                  alt="Profile"
+                  roundedCircle
+                  width={80}
+                  height={80}
+                  style={{ objectFit: "cover" }}
+                />
+                <div>
+                  {/* File Input for Upload */}
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
 
           {/* Tags */}
           <Row className="mb-4">
@@ -136,15 +233,25 @@ export default function ProfileEditor() {
           </Row>
 
           {/* Buttons */}
-          <div className="d-flex justify-content-end mt-4">
-            <Link to="/recipes">
-              <Button id="cancel-btn" size="sm" className="me-2">
-                Cancel
-              </Button>
-            </Link>
-            <Button id="save-btn" size="sm" type="submit">
-              Save
+          <div className="d-flex justify-content-between mt-4">
+            <Button id="signout-btn" size="sm" onClick={signout}>
+              Signout
             </Button>
+            <div className="d-flex justify-content-end">
+              <Link to={`/ReciPals/Account/Profile/${uid}`}>
+                <Button id="cancel-btn" size="sm" className="me-2">
+                  Cancel
+                </Button>
+              </Link>
+              <Button
+                id="save-btn"
+                size="sm"
+                type="submit"
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </Form>
       ) : (
