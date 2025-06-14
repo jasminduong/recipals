@@ -9,7 +9,7 @@ export default function RecipeDetails() {
   const { rid } = useParams();
   const navigate = useNavigate();
   const recipes = useSelector((state: any) => state.recipeReducer.recipes)
-  const currRecipe = recipes.find((recipe: any) => recipe._id === rid);
+  const currRecipe = recipes.find((recipe: any) => recipe.recipe_id === rid);
   const posts = db.posts;
   const currPost = posts.find(
     (post) => post.created_by === currRecipe?.user_created
@@ -76,7 +76,7 @@ export default function RecipeDetails() {
                     className="edit-button text-dark"
                     size="sm"
                     onClick={() =>
-                      navigate(`/ReciPals/Editor/${currRecipe._id}`)
+                      navigate(`/ReciPals/Editor/${currRecipe.recipe_id}`)
                     }
                   >
                     Edit Recipe

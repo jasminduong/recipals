@@ -16,5 +16,23 @@
       }
     ],
     "created_at": "2025-05-28"
+  },
+  {
+    "post_id": "recipe_bot-P2",
+    "recipe_id": "recipe_bot-R2",
+    "created_by": "123",
+    "title": "Beef Rice Noodles Stir Fry",
+    "caption": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "photo": "/images/noodleDish.png",
+    "likes": 0,
+    "comments": [ 
+      { 
+        "comment_id": "c1",
+        "user_id": "234",
+        "text": "Love this recipe!",
+        "created_at": "2025-05-28"
+      }
+    ],
+    "created_at": "2025-05-28"
   }
 ]

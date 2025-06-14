@@ -7,17 +7,13 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 export default function Profile() {
-  const { cid } = useParams<{ cid: string }>();
-  const { users, posts } = db;
+  const { uid } = useParams<{ uid: string }>();
+  const { users } = db;
+  const posts = useSelector((state: any) => state.postReducer.posts);
   const navigate = useNavigate();
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-
-  // finds the user by id
-  const user = users.find((u) => u._id === cid) ?? currentUser;
-  if (!user) {
-    return <div>User not found</div>;
-  }
+  const user = users.find((u) => u._id === uid) ?? currentUser;
 
   // useEffect redirects user to login page if not signed in
   useEffect(() => {
@@ -30,7 +26,19 @@ export default function Profile() {
   );
 
   // gets all of the user's posts
-  const userPosts = posts.filter((post) => post.created_by === user._id);
+  const userPosts = posts.filter((post: any) => post.created_by === user._id);
+
+  // check if current user is following this profile user
+  const isFollowing = currentUser?.following?.includes(user._id);
+
+  // check if this is the current user's own profile
+  const isOwnProfile = currentUser && user._id === currentUser._id;
+
+  // handle follow/unfollow action
+  const handleFollowToggle = () => {
+    // Add your follow/unfollow logic here
+    console.log(isFollowing ? "Unfollowing" : "Following", user.username);
+  };
 
   return (
     <div id="profile-screen" className="p-1">
@@ -53,20 +61,33 @@ export default function Profile() {
               <div className="profile-username">{user.username}</div>
             </Col>
             <Col xs="auto">
-              <Button
-                className="edit-button text-dark"
-                onClick={() =>
-                  navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
-                }
-              >
-                Edit Profile
-              </Button>
+              {!isOwnProfile && currentUser && (
+                <Button
+                  id={isFollowing ? "cancel-btn" : "save-btn"}
+                  onClick={handleFollowToggle}
+                  className="mb-4"
+                >
+                  {isFollowing ? "Unfollow" : "Follow"}
+                </Button>
+              )}
+            </Col>
+            <Col xs="auto">
+              {currentUser && user._id === currentUser._id && (
+                <Button
+                  className="edit-button text-dark"
+                  onClick={() =>
+                    navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
+                  }
+                >
+                  Edit Profile
+                </Button>
+              )}
             </Col>
           </Row>
 
           <div className="d-flex justify-content-sm-start justify-content-center profile-user-info">
             <div>
-              <strong>{user.posts.length}</strong> posts
+              <strong>{userPosts.length}</strong> posts
             </div>
             <div>
               <strong>{user.followers.length}</strong> followers
@@ -112,7 +133,7 @@ export default function Profile() {
       <div className="mt-4">
         {activeTab === "myRecipes" && (
           <Row className="gx-1 gy-1" style={{ marginLeft: "95px" }}>
-            {userPosts.map((post) => (
+            {userPosts.map((post: any) => (
               <Col key={post.post_id} xs={12} sm={6} md={4} className="p-1">
                 <div className="my-recipes text-center">
                   <Image
@@ -123,11 +144,60 @@ export default function Profile() {
                       objectFit: "cover",
                       width: "100%",
                       height: "100%",
+                      cursor: "pointer",
                     }}
+                    onClick={() =>
+                      navigate(
+                        `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
+                      )
+                    }
                   />
                 </div>
               </Col>
             ))}
+          </Row>
+        )}
+        {activeTab === "saved" && (
+          <Row className="gx-1 gy-1" style={{ marginLeft: "95px" }}>
+            {user.saved?.length > 0 ? (
+              user.saved.map((savedPostId: string) => {
+                const savedPost = posts.find(
+                  (post: any) => post.post_id === savedPostId
+                );
+                return savedPost ? (
+                  <Col
+                    key={savedPost.post_id}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    className="p-1"
+                  >
+                    <div className="my-recipes text-center">
+                      <Image
+                        className="profile-post"
+                        src={savedPost.photo}
+                        fluid
+                        style={{
+                          objectFit: "cover",
+                          width: "100%",
+                          height: "100%",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          navigate(
+                            `/ReciPals/Account/Profile/${user._id}/Posts/${savedPost.post_id}`
+                          )
+                        }
+                      />
+                    </div>
+                  </Col>
+                ) : null;
+              })
+            ) : (
+              <div className="text-center py-5">
+                <p className="text-muted">No saved recipes yet</p>
+              </div>
+            )}
           </Row>
         )}
       </div>

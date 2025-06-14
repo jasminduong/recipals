@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { addRecipe, deleteRecipe, updateRecipe } from "./recipeReducer";
+import { addPost, deletePost, updatePost } from "./postReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
 
 export default function RecipeEditor() {
@@ -11,12 +12,14 @@ export default function RecipeEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
+  const posts = useSelector((state: any) => state.postReducer.posts);
   const currentUser = useSelector(
     (state: any) => state.accountReducer.currentUser
   );
 
   type Recipe = {
-    _id: string;
+    recipe_id: string;
+    post_id?: string;
     user_created: string;
     name: string;
     description: string;
@@ -28,9 +31,11 @@ export default function RecipeEditor() {
     photo: string;
   };
 
-  const recipeToEdit = recipes.find((recipe: Recipe) => recipe._id === rid);
+  const recipeToEdit = recipes.find(
+    (recipe: Recipe) => recipe.recipe_id === rid
+  );
 
-  // state variables for each field
+  // state variables for each recipe field
   const [name, setName] = useState(recipeToEdit?.name || "");
   const [description, setDescription] = useState(
     recipeToEdit?.description || ""
@@ -51,8 +56,14 @@ export default function RecipeEditor() {
   const [photo, setPhoto] = useState(
     recipeToEdit?.photo || "/images/recipe.jpg"
   );
-
   const isNew = !recipeToEdit;
+
+  // variables for each post field
+  const recipeId = isNew ? uuidv4() : rid;
+  const postId = isNew ? uuidv4() : recipeToEdit?.post_id;
+  const existingPost = !isNew
+    ? posts.find((p: any) => p.recipe_id === rid)
+    : null;
 
   // event handler to update profile photo
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,7 +217,7 @@ export default function RecipeEditor() {
     }
 
     const recipePayload = {
-      _id: isNew ? uuidv4() : rid,
+      recipe_id: isNew ? uuidv4() : rid,
       user_created: currentUser?._id || recipeToEdit?.user_created,
       name,
       description,
@@ -220,12 +231,43 @@ export default function RecipeEditor() {
       steps,
       photo,
     };
+
+    const postPayload = {
+      post_id: postId,
+      recipe_id: recipeId,
+      created_by: currentUser?._id || recipeToEdit?.user_created,
+      title: name,
+      caption: description,
+      photo: photo,
+      likes: isNew ? 0 : existingPost?.likes || 0,
+      comments: isNew ? [] : existingPost?.comments || [],
+      created_at: isNew
+        ? new Date().toISOString().split("T")[0]
+        : existingPost?.created_at || new Date().toISOString().split("T")[0],
+    };
+
     if (isNew) {
       dispatch(addRecipe(recipePayload));
-      navigate(`/ReciPals/Home/${recipePayload._id}`);
+      dispatch(addPost(postPayload));
+      navigate(`/ReciPals/Home/${recipePayload.recipe_id}`);
     } else {
       dispatch(updateRecipe(recipePayload));
+      dispatch(updatePost(postPayload));
       navigate(`/ReciPals/Home/${rid}`);
+    }
+  };
+
+  // event handler to delete recipe and associated post
+  const handleDeleteRecipe = () => {
+    if (window.confirm("Are you sure you want to delete this recipe?")) {
+      dispatch(deleteRecipe(rid));
+
+      const associatedPost = posts.find((p: any) => p.recipe_id === rid);
+      if (associatedPost) {
+        dispatch(deletePost(associatedPost.post_id));
+      }
+
+      navigate("/ReciPals/Home");
     }
   };
 
@@ -460,20 +502,7 @@ export default function RecipeEditor() {
           {/* Buttons */}
           <div className="d-flex justify-content-between mt-4">
             {!isNew && (
-              <Button
-                id="delete-btn"
-                size="sm"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this recipe?"
-                    )
-                  ) {
-                    dispatch(deleteRecipe(rid));
-                    navigate("/ReciPals/Home");
-                  }
-                }}
-              >
+              <Button id="delete-btn" size="sm" onClick={handleDeleteRecipe}>
                 Delete Recipe
               </Button>
             )}
