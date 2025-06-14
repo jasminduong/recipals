@@ -7,11 +7,11 @@ import SavedRecipes from "./Saved";
 import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
 import Details from "./Recipes/Details";
-import MyRecipe from "./Recipes/myRecipe";
+import UserPosts from "./Recipes/UserPosts";
 
 export default function ReciPals() {
   return (
-    <div id="wd-recipals">
+    <div id="wd-recipals">R
       <ReciPalNavigation />
       <div className="wd-main-content-offset p-3">
         <Routes>
@@ -21,7 +21,7 @@ export default function ReciPals() {
           <Route path="Home/:rid" element={<Details />} />
           <Route path="Create" element={<CreatePost />} />
           <Route path="Recipes/Editor/:rid" element={<RecipeEditor />} />
-          <Route path="Profile/:id/:pid" element={<MyRecipe /> } />
+          <Route path="Profile/:id/:pid" element={<UserPosts /> } />
           <Route path="Saved" element={<SavedRecipes />} />
           <Route path="Account/*" element={<Account />} />
         </Routes>

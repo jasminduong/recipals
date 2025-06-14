@@ -7,8 +7,9 @@
     "bio": "Love to cook and bake all things <3 ",
     "tags": ["Baker", "Fusion Explorer", "Sustainable"],
     "profile": "/images/profile.png",
-    "posts": 0,
-    "followers": 0,
-    "following": 0
+    "posts": ["recipe_bot-P1"],     
+    "saved_recipes": ["recipe_bot-R2", "recipe_bot-R5"], 
+    "followers": ["user456", "user789"],   
+    "following": ["user234", "user567"]
   } 
 ]

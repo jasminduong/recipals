@@ -61,7 +61,7 @@ export default function RecipeEditor() {
             </Col>
             <Col>
               <div className="border p-3 rounded">
-                {recipeToEdit.instructions.map((step, idx) => (
+                {recipeToEdit.steps.map((step, idx) => (
                   <Form.Control
                     key={idx}
                     as="textarea"
