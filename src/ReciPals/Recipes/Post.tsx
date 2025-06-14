@@ -5,37 +5,43 @@ import { Link } from "react-router-dom";
 
 interface Post {
   post_id: string;
-  recipe_id: string
+  recipe_id: string;
   created_by: string;
   title: string;
-  description: string;
+  caption: string;
   photo: string;
   likes: number;
   comments?: any;
+  created_at: string;
 }
 
 export default function RecipePost({ post }: { post: Post }) {
-  // returns number of comments in this post
   const commentCount = post.comments.length;
-
-  // finds the username matching the post created by user and finds the profile picture
-  const user = db.users.find((u: any) => u.username === post.created_by);
+  const user = db.users.find((u: any) => u._id === post.created_by);
   const profilePic = user ? user.profile : "/images/profile.png";
 
   return (
-    <Link to={`/ReciPals/Home/${post.recipe_id}`} className="text-decoration-none" >
-      <div key={post.post_id} id="recipe-post">
-        <div className="d-flex align-items-center mb-3">
-          <img
-            src={profilePic}
-            alt="Profile picture"
-            className="rounded-circle"
-            style={{ width: "50px", height: "50px", objectFit: "cover" }}
-          />
-          <span className="ms-3 text-dark">{post.created_by}</span>
-        </div>
+    <div key={post.post_id} id="recipe-post">
+      <div className="d-flex align-items-center mb-3">
+        <img
+          src={profilePic}
+          alt="Profile picture"
+          className="rounded-circle"
+          style={{ width: "50px", height: "50px", objectFit: "cover" }}
+        />
+        <Link
+          className="text-decoration-none"
+          to={`/ReciPals/Profile/${user?._id}`}
+        >
+          <span className="ms-3 text-dark fw-semibold">{user?.username}</span>
+        </Link>
+      </div>
 
-        <div className="d-flex justify-content-center align-items-center mb-3">
+      <div className="d-flex justify-content-center align-items-center mb-3">
+        <Link
+          to={`/ReciPals/Home/${post.recipe_id}`}
+          className="text-decoration-none"
+        >
           <div className="post-image overflow-hidden">
             <img
               src={post.photo}
@@ -43,24 +49,24 @@ export default function RecipePost({ post }: { post: Post }) {
               style={{ objectFit: "cover", width: "100%", height: "100%" }}
             />
           </div>
-        </div>
+        </Link>
+      </div>
 
-        <div className="d-flex gap-4 mb-2">
-          <div className="d-flex align-items-center gap-1 post-icons">
-            <FaRegHeart size={18} />
-            <span>{post.likes}</span>
-          </div>
-          <div className="d-flex align-items-center gap-1 post-icons">
-            <GoComment size={18} />
-            <span>{commentCount}</span>
-          </div>
+      <div className="d-flex gap-4 mb-2">
+        <div className="d-flex align-items-center gap-1 post-icons">
+          <FaRegHeart size={18} />
+          <span>{post.likes}</span>
         </div>
-
-        <div className="post-caption text-dark">
-          <span className="fw-semibold">recipe_bot</span>{" "}
-          <span>{post.description}</span>
+        <div className="d-flex align-items-center gap-1 post-icons">
+          <GoComment size={18} />
+          <span>{commentCount}</span>
         </div>
       </div>
-    </Link>
+
+      <div className="post-caption text-dark">
+        <span className="fw-semibold">{user?.username}</span>{" "}
+        <span>{post.caption}</span>
+      </div>
+    </div>
   );
 }

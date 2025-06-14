@@ -66,13 +66,13 @@ export default function Profile() {
 
           <div className="d-flex justify-content-sm-start justify-content-center profile-user-info">
             <div>
-              <strong>{user.posts}</strong> posts
+              <strong>{user.posts.length}</strong> posts
             </div>
             <div>
-              <strong>{user.followers}</strong> followers
+              <strong>{user.followers.length}</strong> followers
             </div>
             <div>
-              <strong>{user.following}</strong> following
+              <strong>{user.following.length}</strong> following
             </div>
           </div>
           <div className="profile-name">{user.name}</div>

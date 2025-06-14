@@ -4,67 +4,13 @@
     "recipe_id": "recipe_bot-R1",
     "created_by": "123",
     "title": "Beef Rice Noodles Stir Fry",
-    "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
+    "caption": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
     "photo": "/images/noodleDish.png",
     "likes": 96,
     "comments": [ 
       { 
         "comment_id": "c1",
-        "user": "commenter1",
-        "text": "Love this recipe!",
-        "created_at": "2025-05-28"
-      }
-    ],
-    "created_at": "2025-05-28"
-  },
-  {
-    "post_id": "recipe_bot-P2",
-    "recipe_id": "recipe_bot-R2",
-    "created_by": "123",
-    "title": "Beef Rice Noodles Stir Fry",
-    "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
-    "photo": "/images/noodleDish.png",
-    "likes": 96,
-    "comments": [
-      {
-        "comment_id": "c1",
-        "user": "commenter1",
-        "text": "Love this recipe!",
-        "created_at": "2025-05-28"
-      }
-    ],
-    "created_at": "2025-05-28"
-  },
-  {
-    "post_id": "recipe_bot-P3",
-    "recipe_id": "recipe_bot-R3",
-    "created_by": "123",
-    "title": "Beef Rice Noodles Stir Fry",
-    "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
-    "photo": "/images/noodleDish.png",
-    "likes": 96,
-    "comments": [
-      {
-        "comment_id": "c1",
-        "user": "commenter1",
-        "text": "Love this recipe!",
-        "created_at": "2025-05-28"
-      }
-    ],
-    "created_at": "2025-05-28"
-  },
-  {
-    "post_id": "recipe_bot-P4",
-    "recipe_id": "recipe_bot-R4",
-    "created_by": "123",
-    "title": "Beef Rice Noodles Stir Fry",
-    "description": "savory beef rice noodles topped with sautéed spinach, soft egg ribbons, sweet bell peppers, and mushrooms.",
-    "photo": "/images/noodleDish.png",
-    "likes": 96,
-    "comments": [
-      {
-        "comment_id": "c1",
-        "user": "commenter1",
+        "user_id": "234",
         "text": "Love this recipe!",
         "created_at": "2025-05-28"
       }
