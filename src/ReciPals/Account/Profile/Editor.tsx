@@ -1,9 +1,9 @@
 import { Button, Col, Container, Form, Row, Image } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import * as db from "../../Database";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer";
+import { setUsers } from "../userReducer";
 
 // defines each section of tags
 const sections = [
@@ -46,7 +46,7 @@ const sections = [
 
 export default function ProfileEditor() {
   const { uid } = useParams();
-  const users = db.users;
+  const { users } = useSelector((state: any) => state.userReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -71,7 +71,7 @@ export default function ProfileEditor() {
 
   // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
   useEffect(() => {
-    const originalUser = users.find((user) => user._id === uid);
+    const originalUser = users.find((user: any) => user._id === uid);
     if (originalUser) {
       setUserToEdit({ ...originalUser }); // Create a copy
       setSelectedTags(originalUser.tags || []);
@@ -101,9 +101,12 @@ export default function ProfileEditor() {
     };
 
     // find and update the original user in database
-    const userIndex = users.findIndex((user) => user._id === uid);
+    const userIndex = users.findIndex((user: any) => user._id === uid);
     if (userIndex !== -1) {
-      users[userIndex] = { ...userToEdit, tags: selectedTags };
+      const updatedUsers = users.map((user: any) =>
+        user._id === uid ? updatedUserPayload : user
+      );
+      dispatch(setUsers(updatedUsers));
 
       if (currentUser && currentUser._id === uid) {
         dispatch(setCurrentUser(updatedUserPayload));

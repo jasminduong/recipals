@@ -1,24 +1,25 @@
 import { Row, Col, Image, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import * as db from "../../Database";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
+import { followUser, unfollowUser } from "../userReducer";
 
 export default function Profile() {
   const { uid } = useParams<{ uid: string }>();
-  const { users } = db;
+  const dispatch = useDispatch();
+  const { users } = useSelector((state: any) => state.userReducer);
   const posts = useSelector((state: any) => state.postReducer.posts);
   const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const user = users.find((u) => u._id === uid) ?? currentUser;
+  const { currentUser: loggedInUser } = useSelector((state: any) => state.accountReducer);
+  const user = users.find((u: any) => u._id === uid) ?? loggedInUser;
 
   // useEffect redirects user to login page if not signed in
   useEffect(() => {
-    if (!currentUser) navigate("/ReciPals/Account/Login");
-  }, [currentUser]);
+    if (!loggedInUser) navigate("/ReciPals/Account/Login");
+  }, [loggedInUser]);
 
   // initializes state variable activeTab to my recipes and mutator function setActiveTab
   const [activeTab, setActiveTab] = useState<"myRecipes" | "saved">(
@@ -29,15 +30,29 @@ export default function Profile() {
   const userPosts = posts.filter((post: any) => post.created_by === user._id);
 
   // check if current user is following this profile user
-  const isFollowing = currentUser?.following?.includes(user._id);
+  const currentUserProfile = users.find((u: any) => u._id === loggedInUser?._id);
+  const isFollowing = currentUserProfile?.following?.includes(user?._id);
 
   // check if this is the current user's own profile
-  const isOwnProfile = currentUser && user._id === currentUser._id;
+  const isOwnProfile = loggedInUser && user._id === loggedInUser._id;
 
   // handle follow/unfollow action
   const handleFollowToggle = () => {
-    // Add your follow/unfollow logic here
-    console.log(isFollowing ? "Unfollowing" : "Following", user.username);
+    if (isFollowing) {
+      dispatch(
+        unfollowUser({
+          currentUserId: loggedInUser._id,
+          targetUserId: user._id,
+        })
+      );
+    } else {
+      dispatch(
+        followUser({
+          currentUserId: loggedInUser._id,
+          targetUserId: user._id,
+        })
+      );
+    }
   };
 
   return (
@@ -61,7 +76,7 @@ export default function Profile() {
               <div className="profile-username">{user.username}</div>
             </Col>
             <Col xs="auto">
-              {!isOwnProfile && currentUser && (
+              {!isOwnProfile && loggedInUser && (
                 <Button
                   id={isFollowing ? "cancel-btn" : "save-btn"}
                   onClick={handleFollowToggle}
@@ -72,7 +87,7 @@ export default function Profile() {
               )}
             </Col>
             <Col xs="auto">
-              {currentUser && user._id === currentUser._id && (
+              {loggedInUser && user._id === loggedInUser._id && (
                 <Button
                   className="edit-button text-dark"
                   onClick={() =>

@@ -1,10 +1,11 @@
 import { Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import { setCurrentUser, clearSignupData } from "./reducer";
 import * as db from "../Database";
 import { v4 as uuidv4 } from "uuid";
+import { setUsers } from "./userReducer";
 
 // defines each section of tags
 const sections = [
@@ -51,6 +52,14 @@ export default function SignupTags() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { users } = useSelector((state: any) => state.userReducer);
+  
+  useEffect(() => {
+    if (users.length === 0) {
+      dispatch(setUsers(db.users));
+    }
+  }, [dispatch, users.length]);
+
   // gets new user name, username, password
   //const signupData = useSelector((state: any) => state.account?.newUser);
 
@@ -86,9 +95,6 @@ export default function SignupTags() {
       navigate("/ReciPals/Account/Signup");
       return;
     }
-
-    console.log("Creating user with data:", signupData);
-
     const newUser = {
       _id: uuidv4(),
       name: signupData.name,
@@ -98,14 +104,12 @@ export default function SignupTags() {
       tags: selectedTags,
       profile: "/images/profile.png",
       posts: [],
-      saved_recipes: [],
+      saved: [],
       followers: [],
       following: [],
     };
 
-    console.log("New user object:", newUser);
-
-    db.users.push(newUser);
+    dispatch(setUsers([...users, newUser]));
 
     dispatch(setCurrentUser(newUser));
 
