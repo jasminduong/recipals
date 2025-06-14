@@ -33,7 +33,7 @@ export default function RecipePost({ post }: { post: Post }) {
           className="text-decoration-none"
           to={`/ReciPals/Profile/${user?._id}`}
         >
-          <span className="ms-3 text-dark fw-semibold">{user?.username}</span>
+          <span className="ms-3 text-dark">{user?.username}</span>
         </Link>
       </div>
 
