@@ -8,8 +8,8 @@
     "tags": ["Baker", "Fusion Explorer", "Sustainable"],
     "profile": "/images/profile.png",
     "posts": ["recipe_bot-P1"],     
-    "saved_recipes": ["recipe_bot-R2", "recipe_bot-R5"], 
-    "followers": ["user456", "user789"],   
+    "saved_recipes": ["recipe_bot-R2", "recipe_bot-R3"], 
+    "followers": ["user789"],   
     "following": ["user234", "user567"]
   } 
 ]

@@ -33,7 +33,7 @@ export default function Profile() {
   const userPosts = posts.filter((post) => post.created_by === user._id);
 
   return (
-    <div id="profile-screen" className="p-4">
+    <div id="profile-screen" className="p-1">
       {/* profile picture */}
       <Row className="align-items-center profile-pic">
         <Col xs={3}>
@@ -42,7 +42,7 @@ export default function Profile() {
             roundedCircle
             fluid
             alt={`${user.username} profile`}
-            style={{ width: 250 }}
+            style={{ width: 160, objectFit: "cover" }}
           />
         </Col>
 
@@ -83,7 +83,7 @@ export default function Profile() {
       <div className="profile-bio">{user.bio}</div>
       <div
         className="d-flex flex-wrap gap-2 mt-3"
-        style={{ paddingLeft: "100px" }}
+        style={{ paddingLeft: "95px" }}
       >
         {user.tags.map((tag: string, index: number) => (
           <div key={index} className="btn profile-tags">
@@ -111,7 +111,7 @@ export default function Profile() {
       {/* posts */}
       <div className="mt-4">
         {activeTab === "myRecipes" && (
-          <Row className="gx-1 gy-1" style={{ marginLeft: "100px" }}>
+          <Row className="gx-1 gy-1" style={{ marginLeft: "95px" }}>
             {userPosts.map((post) => (
               <Col key={post.post_id} xs={12} sm={6} md={4} className="p-1">
                 <div className="my-recipes text-center">
