@@ -1,11 +1,23 @@
 import { Button, Col, Container, Form, Row, Image } from "react-bootstrap";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { addRecipe, deleteRecipe, updateRecipe } from "./recipeReducer";
+import {
+  addRecipe,
+  deleteRecipe,
+  setRecipes,
+  updateRecipe,
+} from "./recipeReducer";
 import { addPost, deletePost, updatePost } from "./postReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
+import * as recipeClient from "./recipeClient";
+import * as postClient from "./postClient";
+import axios from "axios";
+import { setCurrentUser } from "../Account/reducer";
+const axiosWithCredentials = axios.create({ 
+  withCredentials: true 
+});
 
 export default function RecipeEditor() {
   const { rid } = useParams();
@@ -31,6 +43,45 @@ export default function RecipeEditor() {
     photo: string;
   };
 
+  // gets user
+  const fetchProfile = async () => {
+    const response = await axiosWithCredentials.post("/api/users/profile");
+    return response.data;
+  };
+  useEffect(() => {
+    const loadProfile = async () => {
+      const user = await fetchProfile();
+      if (user) {
+        dispatch(setCurrentUser(user));
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  // gets all recipes
+  const fetchRecipes = async () => {
+    const recipes = await recipeClient.getAllRecipes();
+    return recipes;
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      // load user profile
+      const user = await fetchProfile();
+      if (user) {
+        dispatch(setCurrentUser(user));
+      }
+      // load recipes
+      const recipes = await fetchRecipes();
+      if (recipes) {
+        dispatch(setRecipes(recipes));
+      }
+    };
+
+    loadData();
+  }, [dispatch, navigate]);
+
   const recipeToEdit = recipes.find(
     (recipe: Recipe) => recipe.recipe_id === rid
   );
@@ -54,7 +105,7 @@ export default function RecipeEditor() {
   );
   const [steps, setSteps] = useState(recipeToEdit?.steps || [""]);
   const [photo, setPhoto] = useState(
-    recipeToEdit?.photo || "/images/recipe.jpg"
+    recipeToEdit?.photo || "/images/default.jpg"
   );
   const isNew = !recipeToEdit;
 
@@ -189,7 +240,7 @@ export default function RecipeEditor() {
   };
 
   // event handler that saves recipe
-  const handleSave = () => {
+  const handleSave = async () => {
     // validation checks
     if (!name.trim()) {
       alert("Please enter a recipe name.");
@@ -217,7 +268,7 @@ export default function RecipeEditor() {
     }
 
     const recipePayload = {
-      recipe_id: isNew ? uuidv4() : rid,
+      recipe_id: recipeId,
       user_created: currentUser?._id || recipeToEdit?.user_created,
       name,
       description,
@@ -239,7 +290,7 @@ export default function RecipeEditor() {
       title: name,
       caption: description,
       photo: photo,
-      likes: isNew ? 0 : existingPost?.likes || 0,
+      likes: isNew ? [] : existingPost?.likes || [],
       comments: isNew ? [] : existingPost?.comments || [],
       created_at: isNew
         ? new Date().toISOString().split("T")[0]
@@ -247,27 +298,35 @@ export default function RecipeEditor() {
     };
 
     if (isNew) {
-      dispatch(addRecipe(recipePayload));
-      dispatch(addPost(postPayload));
-      navigate(`/ReciPals/Home/${recipePayload.recipe_id}`);
+      const newRecipe = await recipeClient.createRecipe(recipePayload);
+      const newPost = await postClient.createPost(postPayload);
+
+      dispatch(addRecipe(newRecipe));
+      dispatch(addPost(newPost));
+      navigate(`/ReciPals/Home/${recipeId}`);
     } else {
-      dispatch(updateRecipe(recipePayload));
-      dispatch(updatePost(postPayload));
+      const updatedRecipe = await recipeClient.updateRecipe(recipePayload);
+      const updatedPost = await postClient.updatePost(postPayload);
+
+      dispatch(updateRecipe(updatedRecipe));
+      dispatch(updatePost(updatedPost));
       navigate(`/ReciPals/Home/${rid}`);
     }
   };
 
   // event handler to delete recipe and associated post
-  const handleDeleteRecipe = () => {
+  const handleDeleteRecipe = async () => {
     if (window.confirm("Are you sure you want to delete this recipe?")) {
+      await recipeClient.deleteRecipe(rid!);
       dispatch(deleteRecipe(rid));
 
       const associatedPost = posts.find((p: any) => p.recipe_id === rid);
       if (associatedPost) {
+        await postClient.deletePost(associatedPost.post_id);
         dispatch(deletePost(associatedPost.post_id));
       }
 
-      navigate("/ReciPals/Home");
+      navigate("/ReciPals/Profile");
     }
   };
 
@@ -480,7 +539,7 @@ export default function RecipeEditor() {
               <div className="d-flex align-items-center gap-3">
                 {/* Current Photo Preview */}
                 <Image
-                  src={photo || "/images/recipe.jpg"}
+                  src={photo || "/images/default.jpg"}
                   alt="Recipe"
                   width={80}
                   height={80}
@@ -507,7 +566,7 @@ export default function RecipeEditor() {
               </Button>
             )}
             <div className="d-flex justify-content-end">
-              <Link to={`/ReciPals/Home/${rid}`}>
+              <Link to={isNew ? "/ReciPals/Profile" : `/ReciPals/Home/${rid}`}>
                 <Button id="cancel-btn" size="sm" className="me-2">
                   Cancel
                 </Button>

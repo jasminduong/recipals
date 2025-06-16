@@ -1,6 +1,8 @@
 import { Button, Card, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNewUser } from "./reducer";
 //import { setNewUser } from "./reducer";
 
 export default function Signup() {
@@ -12,29 +14,29 @@ export default function Signup() {
     verifyPassword: "",
   });
 
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // event handler to handle user input and navigate to next page if no errors
   const handleNext = () => {
+
     if (!formData.name || !formData.username || !formData.password) {
       alert("Please fill in all fields");
       return;
     }
-  
+
     if (formData.password !== formData.verifyPassword) {
       alert("Passwords don't match");
       return;
     }
-  
+
     const userData = {
       name: formData.name,
       username: formData.username,
       password: formData.password,
     };
-  
-    // localStorage storage for temporary use
-    localStorage.setItem('signupData', JSON.stringify(userData));
+
+    dispatch(setNewUser(userData));
     navigate("/ReciPals/Account/SignupTags");
   };
 

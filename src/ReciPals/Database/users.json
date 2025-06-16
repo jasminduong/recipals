@@ -1,15 +1,28 @@
 [
   {
-    "_id": "123",
+    "_id": "recipeBot",
     "username": "recipe_bot",
     "password": "ReciPals",
     "name": "Recipe Bot",
-    "bio": "Love to cook and bake all things <3 ",
-    "tags": ["Baker", "Fusion Explorer", "Sustainable"],
+    "bio": "Love to cook and bake all things :]",
+    "tags": [],
+    "profile": "/images/recipeBot.png",
+    "posts": ["recipeBot-P1", "recipeBot-P2"],
+    "saved_recipes": [],
+    "followers": [],
+    "following": []
+  },
+  {
+    "_id": "123",
+    "username": "jasminduong09",
+    "password": "ReciPals",
+    "name": "Jasmin",
+    "bio": "Cooking with efficiency, exploring with diversity <3",
+    "tags": ["Student Chef", "Fusion Explorer", "Sustainable"],
     "profile": "/images/profile.png",
-    "posts": ["recipe_bot-P1"],     
-    "saved_recipes": ["recipe_bot-R2", "recipe_bot-R3"], 
-    "followers": ["user789"],   
-    "following": ["user234", "user567"]
-  } 
+    "posts": [],
+    "saved_recipes": [],
+    "followers": [],
+    "following": []
+  }
 ]

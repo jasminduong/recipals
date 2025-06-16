@@ -4,16 +4,55 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import { followUser, unfollowUser } from "../userReducer";
+import { followUser, setUsers, unfollowUser } from "../userReducer";
+import { setPosts } from "../../Recipes/postReducer";
+import * as client from "../client";
+import * as postClient from "../../Recipes/postClient";
+
 
 export default function Profile() {
   const { uid } = useParams<{ uid: string }>();
   const dispatch = useDispatch();
-  const { users } = useSelector((state: any) => state.userReducer);
-  const posts = useSelector((state: any) => state.postReducer.posts);
   const navigate = useNavigate();
+  const users = useSelector((state: any) => state.userReducer.users);
+  const posts = useSelector((state: any) => state.postReducer.posts);
 
-  const { currentUser: loggedInUser } = useSelector((state: any) => state.accountReducer);
+  // loads users
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const allUsers = await client.getAllUsers();
+        dispatch(setUsers(allUsers));
+      } catch (error) {
+        console.error("Error loading users:", error);
+      }
+    };
+
+    if (users.length === 0) {
+      loadUsers();
+    }
+  }, [users.length, dispatch]);
+
+  // loads posts
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const allPosts = await postClient.getAllPosts(); 
+        dispatch(setPosts(allPosts)); 
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
+    };
+
+    if (posts.length === 0) {
+      loadPosts();
+    }
+  }, [posts.length, dispatch]);
+
+  // finds current logged in user
+  const { currentUser: loggedInUser } = useSelector(
+    (state: any) => state.accountReducer
+  );
   const user = users.find((u: any) => u._id === uid) ?? loggedInUser;
 
   // useEffect redirects user to login page if not signed in
@@ -30,14 +69,16 @@ export default function Profile() {
   const userPosts = posts.filter((post: any) => post.created_by === user._id);
 
   // check if current user is following this profile user
-  const currentUserProfile = users.find((u: any) => u._id === loggedInUser?._id);
+  const currentUserProfile = users.find(
+    (u: any) => u._id === loggedInUser?._id
+  );
   const isFollowing = currentUserProfile?.following?.includes(user?._id);
 
   // check if this is the current user's own profile
   const isOwnProfile = loggedInUser && user._id === loggedInUser._id;
 
-  // handle follow/unfollow action
-  const handleFollowToggle = () => {
+  // handles follow/unfollow action
+  const handleFollowToggle = async () => {
     if (isFollowing) {
       dispatch(
         unfollowUser({

@@ -5,21 +5,50 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { MdAccountCircle } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./styles.css";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { setCurrentUser } from "./Account/reducer";
+import axios from "axios";
+const axiosWithCredentials = axios.create({
+  withCredentials: true,
+});
 
 /* ReciPal Sidebar navigation with links to main sections (home, search, create, saved, profile) */
 export default function ReciPalNavigation() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { pathname } = useLocation();
 
-  // generates new id and navigates to assignment editor to add assignment
+  // gets current user
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axiosWithCredentials.post("/api/users/profile");
+        if (response.data) {
+          dispatch(setCurrentUser(response.data));
+        }
+      } catch (error) {
+        console.error("User not logged in or session expired");
+      }
+    };
+
+    if (!currentUser) {
+      fetchCurrentUser();
+    }
+  }, [currentUser, dispatch]);
+
+  // generates new id and navigates to recipe editor to add recipe
   const handleNewRecipe = () => {
-    const newId = uuidv4();
-    navigate(`/ReciPals/Editor/${newId}`);
+    if (currentUser) {
+      const newId = uuidv4();
+      navigate(`/ReciPals/Editor/${newId}`);
+    } else {
+      navigate("/ReciPals/Account/Login");
+    }
   };
 
   return (
