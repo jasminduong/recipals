@@ -29,7 +29,7 @@ const postsSlice = createSlice({
     setPosts: (state, action) => {
       state.posts = action.payload;
     },
-
+    
     // creates a new post
     addPost: (state, { payload: post }) => {
       state.posts = [...state.posts, post];

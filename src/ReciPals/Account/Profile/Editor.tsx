@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { setUsers } from "../userReducer";
+import * as client from "../client";
 
 // defines each section of tags
 const sections = [
@@ -50,6 +51,22 @@ export default function ProfileEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // loads users 
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const allUsers = await client.getAllUsers(); 
+        dispatch(setUsers(allUsers));
+      } catch (error) {
+        console.error("Error loading users:", error);
+      }
+    };
+
+    if (users.length === 0) {
+      loadUsers();
+    }
+  }, [users.length, dispatch]);
+
   // initializes a state variable userToEdit and mutator method to update user
   const [userToEdit, setUserToEdit] = useState<any>(null);
 
@@ -57,12 +74,9 @@ export default function ProfileEditor() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const toggleTag = (tag: string) => {
-    // toggleTag(tag) is called when a tag is clicked
     if (selectedTags.includes(tag)) {
-      // if the tag is already selected, remove it
       setSelectedTags((prev) => prev.filter((t) => t !== tag));
     } else if (selectedTags.length < 3) {
-      // if the tag is not selected and fewer than 3 are selected, add it
       setSelectedTags((prev) => [...prev, tag]);
     }
   };
@@ -71,12 +85,14 @@ export default function ProfileEditor() {
 
   // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
   useEffect(() => {
-    const originalUser = users.find((user: any) => user._id === uid);
-    if (originalUser) {
-      setUserToEdit({ ...originalUser }); // Create a copy
-      setSelectedTags(originalUser.tags || []);
+    if (users.length > 0) { 
+      const originalUser = users.find((user: any) => user._id === uid);
+      if (originalUser) {
+        setUserToEdit({ ...originalUser }); 
+        setSelectedTags(originalUser.tags || []);
+      }
     }
-  }, [uid]);
+  }, [uid, users]); 
 
   // event handler to update profile photo
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +108,7 @@ export default function ProfileEditor() {
   };
 
   // event handler to save changes
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!userToEdit) return;
 
     const updatedUserPayload = {
@@ -100,24 +116,25 @@ export default function ProfileEditor() {
       tags: selectedTags,
     };
 
-    // find and update the original user in database
-    const userIndex = users.findIndex((user: any) => user._id === uid);
-    if (userIndex !== -1) {
-      const updatedUsers = users.map((user: any) =>
-        user._id === uid ? updatedUserPayload : user
-      );
-      dispatch(setUsers(updatedUsers));
+    const updatedUser = await client.updateUser(updatedUserPayload);
 
-      if (currentUser && currentUser._id === uid) {
-        dispatch(setCurrentUser(updatedUserPayload));
-      }
+    // update local redux state
+    const updatedUsers = users.map((user: any) =>
+      user._id === uid ? updatedUserPayload : user
+    );
+    dispatch(setUsers(updatedUsers));
+
+    // update current user if editing own profile
+    if (currentUser && currentUser._id === uid) {
+      dispatch(setCurrentUser(updatedUser));
     }
 
     navigate(`/ReciPals/Account/Profile/${uid}`);
   };
 
   // signout event handler clears the current user from the redux store and then redirects user to signin page
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/ReciPals/Account/Login");
   };

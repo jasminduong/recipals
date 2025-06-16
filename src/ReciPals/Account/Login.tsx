@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import * as db from "../Database";
 import { setCurrentUser } from "./reducer";
+import * as client from "./client";
 
 export default function Login() {
   // initializes state variable credentials with mutator function setCredentials
@@ -16,12 +16,8 @@ export default function Login() {
   // if there's a user that matches, store it in the reducer by dispatching it to the Account reducer using the setCurrentUser reducer function
   // ignore the sign in attempt if there's no match
   // after signing in, navigate to the Home
-  const signin = () => {
-    const user = db.users.find(
-      (u: any) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
+  const signin = async () => {
+    const user = await client.signin(credentials); // fetches signin credentials from client
     if (!user) return;
     dispatch(setCurrentUser(user));
     navigate("/ReciPals/Home");

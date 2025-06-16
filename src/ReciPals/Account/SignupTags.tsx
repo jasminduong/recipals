@@ -1,11 +1,9 @@
 import { Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector} from "react-redux";
-import { setCurrentUser, clearSignupData } from "./reducer";
-import * as db from "../Database";
-import { v4 as uuidv4 } from "uuid";
-import { setUsers } from "./userReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser} from "./reducer";
+import * as client from "./client";
 
 // defines each section of tags
 const sections = [
@@ -52,22 +50,17 @@ export default function SignupTags() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { users } = useSelector((state: any) => state.userReducer);
-  
-  useEffect(() => {
-    if (users.length === 0) {
-      dispatch(setUsers(db.users));
-    }
-  }, [dispatch, users.length]);
-
   // gets new user name, username, password
-  //const signupData = useSelector((state: any) => state.account?.newUser);
-
-  // get data from localStorage temporary use
-  const signupData = JSON.parse(localStorage.getItem('signupData') || 'null');
+  const signupData = useSelector((state: any) => state.accountReducer.newUser);
 
   useEffect(() => {
-    if (!signupData) {
+    if (
+      !signupData ||
+      !signupData.name ||
+      !signupData.username ||
+      !signupData.password
+    ) {
+      console.log("Missing signup data:", signupData);
       navigate("/ReciPals/Account/Signup");
     }
   }, [signupData, navigate]);
@@ -77,26 +70,16 @@ export default function SignupTags() {
   }
 
   const toggleTag = (tag: string) => {
-    // toggleTag(tag) is called when a tag is clicked
     if (selectedTags.includes(tag)) {
-      // if the tag is already selected, remove it
       setSelectedTags((prev) => prev.filter((t) => t !== tag));
     } else if (selectedTags.length < 3) {
-      // if the tag is not selected and fewer than 3 are selected, add it
       setSelectedTags((prev) => [...prev, tag]);
     }
   };
 
   // event handler to create new user after setting tags
-  const handleSignup = () => {
-    if (!signupData || !signupData.name) {
-      console.error("No signup data available");
-      alert("Signup data is missing. Please go back and fill out the form again.");
-      navigate("/ReciPals/Account/Signup");
-      return;
-    }
+  const handleSignup = async () => {
     const newUser = {
-      _id: uuidv4(),
       name: signupData.name,
       username: signupData.username,
       password: signupData.password,
@@ -109,13 +92,11 @@ export default function SignupTags() {
       following: [],
     };
 
-    dispatch(setUsers([...users, newUser]));
+    const createdUser = await client.signup(newUser);
 
-    dispatch(setCurrentUser(newUser));
+    dispatch(setCurrentUser(createdUser));
 
-    dispatch(clearSignupData());
-
-    navigate(`/ReciPals/Account/Profile/${newUser._id}`);
+    navigate(`/ReciPals/Account/Profile/${createdUser._id}`);
   };
 
   return (

@@ -1,11 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { users } from "../Database";
 
 // userReducer manages all users and user interactions
 
-// initializes the state that will hold all users data
-const initialState = {
-  users: users,
+interface User {
+  _id: string;
+  following: string[];
+  followers: string[];
+}
+
+interface UserState {
+  users: User[];
+}
+
+// create reducer's initial state with default posts copied from database
+const initialState: UserState = {
+  users: [],
 };
 
 const userSlice = createSlice({
