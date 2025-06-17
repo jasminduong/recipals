@@ -6,6 +6,8 @@ import SignupTags from "./SignupTags";
 import { useSelector } from "react-redux";
 import ProfileEditor from "./Profile/Editor";
 import UserPosts from "../Recipes/UserPosts";
+import Admin from "./Admin";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function Account() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -30,6 +32,14 @@ export default function Account() {
       <Route path="Profile/:uid/Posts/:pid" element={<UserPosts />} />
       <Route path="Signup" element={<Signup />} />
       <Route path="SignupTags" element={<SignupTags />} />
+      <Route
+        path="Admin/*"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

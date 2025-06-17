@@ -44,7 +44,7 @@ body * {
   width: 100%;
   color: black;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .recipals-nav-link svg {
@@ -96,6 +96,7 @@ body * {
   color: white;
   background-color: #cd9f08;
   margin-top: 12px;
+  border-color: transparent !important;
 }
 #signin-link {
   font-size: 14px;
@@ -206,8 +207,8 @@ body * {
   height: 300px;
   padding: 0;
   margin: 0;
-  display: block;        
-  line-height: 0;        
+  display: block;
+  line-height: 0;
 }
 #signout-btn {
   background: #ffffff !important;
@@ -365,8 +366,8 @@ body * {
   content: "";
   position: absolute;
   right: 0;
-  top: 8%;  
-  height: 100%; 
+  top: 8%;
+  height: 100%;
   width: 1px;
   background-color: #dee2e6;
 }
@@ -377,7 +378,7 @@ body * {
 
 .left-chevron {
   position: absolute;
-  left: -60px; 
+  left: -60px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -387,7 +388,7 @@ body * {
 
 .right-chevron {
   position: absolute;
-  right: -60px; 
+  right: -60px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -404,5 +405,22 @@ body * {
   }
 }
 
-
-
+/* ADMIN STYLING */
+#admin-navigation .admin-active-tab {
+  border-left: 2px solid #000 !important;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+.admin-inactive-tab {
+  color: #cd9f08 !important;
+}
+.admin-filter-by-name {
+  width: 50% !important;
+  height: 30px !important;
+  font-size: 14px !important;
+}
+#users-table th,
+#users-table td {
+  padding: 8px 24px !important;
+}

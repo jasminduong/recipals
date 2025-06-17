@@ -84,6 +84,7 @@ export default function SignupTags() {
       username: signupData.username,
       password: signupData.password,
       bio: "",
+      role: "USER",
       tags: selectedTags,
       profile: "/images/profile.png",
       posts: [],
