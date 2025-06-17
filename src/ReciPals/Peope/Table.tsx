@@ -1,11 +1,9 @@
 import { Table, Image } from "react-bootstrap";
-import PeopleDetails from "./Details";
 import { Link } from "react-router-dom";
 
 export default function PeopleTable({ users = [] }: { users?: any[] }) {
   return (
     <div id="users-table">
-      <PeopleDetails />
       <Table striped style={{ fontSize: "12px" }}>
         <thead>
           <tr>
@@ -31,7 +29,11 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
                     roundedCircle
                     fluid
                     alt={`${user.username} profile`}
-                    style={{ width: 30, objectFit: "cover", marginRight: "10px" }}
+                    style={{
+                      width: 30,
+                      objectFit: "cover",
+                      marginRight: "10px",
+                    }}
                   />
                   <span>{user.name}</span>{" "}
                 </Link>
@@ -39,12 +41,14 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
               <td className="user-info align-middle">{user._id}</td>
               <td className="user-info align-middle">{user.username}</td>
               <td className="user-info align-middle">{user.role}</td>
-              <td className="user-info align-middle">{user.posts.length}</td>
               <td className="user-info align-middle">
-                {user.followers.length}
+                {user.posts?.length || 0}
               </td>
               <td className="user-info align-middle">
-                {user.following.length}
+                {user.followers?.length || 0}
+              </td>
+              <td className="user-info align-middle">
+                {user.following?.length || 0}
               </td>
             </tr>
           ))}

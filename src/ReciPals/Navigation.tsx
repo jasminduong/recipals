@@ -130,17 +130,19 @@ export default function ReciPalNavigation() {
       </ListGroup.Item>
 
       {/* Admin link */}
-      <ListGroup.Item
-        key="Admin"
-        as={Link}
-        to="/ReciPals/Account/Admin"
-        className={`recipals-nav-link ${
-          pathname.includes("Admin") ? "text-bold" : ""
-        }`}
-      >
-        <MdAdminPanelSettings size="35" className="fs-1 text-dark" />
-        Admin
-      </ListGroup.Item>
+      {currentUser?.role === "ADMIN" && (
+        <ListGroup.Item
+          key="Admin"
+          as={Link}
+          to="/ReciPals/Account/Admin"
+          className={`recipals-nav-link ${
+            pathname.includes("Admin") ? "text-bold" : ""
+          }`}
+        >
+          <MdAdminPanelSettings size="35" className="fs-1 text-dark" />
+          Admin
+        </ListGroup.Item>
+      )}
     </ListGroup>
   );
 }

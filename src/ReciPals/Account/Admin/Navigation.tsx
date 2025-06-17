@@ -3,7 +3,8 @@ import { useLocation, Link } from "react-router-dom";
 
 export default function AdminNavigation() {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (pathPrefix: string) =>
+    location.pathname.startsWith(pathPrefix);
 
   const links = ["Users", "Recipes"];
 
