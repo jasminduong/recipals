@@ -214,6 +214,20 @@ body * {
   border-color: #e13626 !important;
   color: #e13626;
 }
+.profile-follow {
+  color: black !important;
+  font-size: 20px !important;
+  border: none !important;
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+  padding-left: 8px !important;
+  background: #ffffff !important;
+}
+
+/* FOLLOWERS MODAL */
+.modal-header {
+  text-align: center !important;
+}
 
 /* RECIPE EDITOR STYLE */
 #recipe-editor {
@@ -270,7 +284,6 @@ body * {
 /* HOME PAGE STYLE */
 #recipals-home {
   margin-left: 80px;
-
 }
 
 /* DETAILS PAGE STYLE */

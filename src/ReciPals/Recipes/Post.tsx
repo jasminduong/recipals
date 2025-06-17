@@ -3,6 +3,7 @@ import { GoComment } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { likePost, unlikePost } from "./postReducer";
+import * as postClient from "./postClient";
 
 interface Post {
   post_id: string;
@@ -22,12 +23,12 @@ export default function RecipePost({ post }: { post: Post }) {
     (state: any) => state.accountReducer
   );
   const { users } = useSelector((state: any) => state.userReducer);
-  
+
   const posts = useSelector((state: any) => state.postReducer.posts);
   // gets updated post from redux
-  const updatedPost = posts.find((p: any) => p.post_id === post.post_id) || post;
+  const updatedPost =
+    posts.find((p: any) => p.post_id === post.post_id) || post;
 
-  const commentCount = updatedPost.comments?.length || 0;
   const user = users.find((u: any) => u._id === updatedPost.created_by);
   const profilePic = user ? user.profile : "/images/profile.png";
 
@@ -35,14 +36,24 @@ export default function RecipePost({ post }: { post: Post }) {
   const isLiked = updatedPost.likes?.includes(loggedInUser?._id) || false;
 
   // event handler for liking and unliking a post
-  const handleLikeToggle = () => {
+  const handleLikeToggle = async () => {
     if (!loggedInUser) return;
 
+    let updatedLikes;
     if (isLiked) {
       dispatch(unlikePost({ postId: post.post_id, userId: loggedInUser._id }));
+      updatedLikes = updatedPost.likes.filter(
+        (userId: string) => userId !== loggedInUser._id
+      );
     } else {
       dispatch(likePost({ postId: post.post_id, userId: loggedInUser._id }));
+      updatedLikes = [...updatedPost.likes, loggedInUser._id];
     }
+
+    await postClient.updatePost({
+      ...updatedPost,
+      likes: updatedLikes,
+    });
   };
 
   return (
@@ -64,7 +75,7 @@ export default function RecipePost({ post }: { post: Post }) {
 
       <div className="d-flex justify-content-center align-items-center mb-3">
         <Link
-          to={`/ReciPals/Home/${post.recipe_id}`}
+          to={`/ReciPals/Recipes/${post.recipe_id}`}
           className="text-decoration-none"
         >
           <div className="post-image overflow-hidden">
@@ -88,11 +99,16 @@ export default function RecipePost({ post }: { post: Post }) {
           ) : (
             <FaRegHeart size={18} />
           )}
-          <span>{post.likes.length}</span>
+          <span>{updatedPost.likes.length}</span>
         </div>
         <div className="d-flex align-items-center gap-1 post-icons">
-          <GoComment size={18} />
-          <span>{commentCount}</span>
+          <Link
+            to={`/ReciPals/Recipes/${post.recipe_id}`}
+            className="text-dark"
+          >
+            <GoComment size={18} />
+          </Link>
+          <span>{updatedPost.comments.length}</span>
         </div>
       </div>
 

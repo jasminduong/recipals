@@ -1,21 +1,41 @@
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import * as db from "../Database";
 import { BiBookmark } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { setRecipes } from "./recipeReducer";
+import * as recipeClient from "./recipeClient";
+import * as postClient from "./postClient";
+import { setPosts } from "./postReducer";
 
 export default function RecipeDetails() {
   const { rid } = useParams();
   const navigate = useNavigate();
-  const recipes = useSelector((state: any) => state.recipeReducer.recipes)
+  const dispatch = useDispatch();
+  const recipes = useSelector((state: any) => state.recipeReducer.recipes);
   const currRecipe = recipes.find((recipe: any) => recipe.recipe_id === rid);
-  const posts = db.posts;
-  const currPost = posts.find(
-    (post) => post.created_by === currRecipe?.user_created
-  );
+  const posts = useSelector((state: any) => state.postReducer.posts);
+  const currPost = posts.find((post: any) => post.recipe_id === rid);
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // loads recipes
+  useEffect(() => {
+    const loadRecipes = async () => {
+      try {
+        const allRecipes = await recipeClient.getAllRecipes();
+        dispatch(setRecipes(allRecipes));
+
+        const allPosts = await postClient.getAllPosts();
+        dispatch(setPosts(allPosts));
+      } catch (error) {
+        console.error("Error loading recipes:", error);
+      }
+    };
+
+    loadRecipes();
+  }, [recipes.length, posts.length, currRecipe, dispatch]);
 
   return (
     <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
@@ -104,12 +124,14 @@ export default function RecipeDetails() {
                   <div key={section._id} className="mb-4 recipe-section">
                     <h6 className="fw-bold mb-2">For the {section.title}</h6>
                     <ul className="list-unstyled ps-3">
-                      {section["ingredients:"].map((ingredient: string, idx: number) => (
-                        <li key={idx} className="mb-1 recipe-ingredient-item">
-                          <span className="me-2">•</span>
-                          {ingredient}
-                        </li>
-                      ))}
+                      {section["ingredients:"].map(
+                        (ingredient: string, idx: number) => (
+                          <li key={idx} className="mb-1 recipe-ingredient-item">
+                            <span className="me-2">•</span>
+                            {ingredient}
+                          </li>
+                        )
+                      )}
                     </ul>
                   </div>
                 ))}
@@ -142,7 +164,7 @@ export default function RecipeDetails() {
             </Form>
 
             {/* Comments list */}
-            {currPost?.comments.map((comment, index) => (
+            {currPost?.comments.map((comment: any, index: any) => (
               <div key={index} className="mb-3 pb-3 border-bottom">
                 <Row className="g-3">
                   <Col xs="auto">

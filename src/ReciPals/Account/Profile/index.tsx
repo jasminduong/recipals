@@ -8,7 +8,8 @@ import { followUser, setUsers, unfollowUser } from "../userReducer";
 import { setPosts } from "../../Recipes/postReducer";
 import * as client from "../client";
 import * as postClient from "../../Recipes/postClient";
-
+import Followers from "./Followers";
+import Following from "./Following";
 
 export default function Profile() {
   const { uid } = useParams<{ uid: string }>();
@@ -28,32 +29,33 @@ export default function Profile() {
       }
     };
 
-    if (users.length === 0) {
-      loadUsers();
-    }
+    loadUsers();
   }, [users.length, dispatch]);
 
   // loads posts
   useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const allPosts = await postClient.getAllPosts(); 
-        dispatch(setPosts(allPosts)); 
-      } catch (error) {
-        console.error("Error loading posts:", error);
-      }
-    };
-
     if (posts.length === 0) {
+      const loadPosts = async () => {
+        try {
+          console.log("Loading posts...");
+          const allPosts = await postClient.getAllPosts();
+          dispatch(setPosts(allPosts));
+        } catch (error) {
+          console.error("Error loading posts:", error);
+        }
+      };
       loadPosts();
     }
-  }, [posts.length, dispatch]);
+  }, [dispatch, uid, posts.length]);
 
   // finds current logged in user
   const { currentUser: loggedInUser } = useSelector(
     (state: any) => state.accountReducer
   );
-  const user = users.find((u: any) => u._id === uid) ?? loggedInUser;
+  const user =
+    users.length > 0
+      ? users.find((u: any) => u._id === uid) ?? loggedInUser
+      : loggedInUser;
 
   // useEffect redirects user to login page if not signed in
   useEffect(() => {
@@ -86,6 +88,22 @@ export default function Profile() {
           targetUserId: user._id,
         })
       );
+
+      const updatedTargetUserFollowers = user.followers.filter(
+        (userId: string) => userId !== loggedInUser._id
+      );
+      const updatedCurrentUserFollowing = loggedInUser.following.filter(
+        (userId: string) => userId !== user._id
+      );
+
+      await client.updateUser({
+        ...user,
+        followers: updatedTargetUserFollowers,
+      });
+      await client.updateUser({
+        ...loggedInUser,
+        following: updatedCurrentUserFollowing,
+      });
     } else {
       dispatch(
         followUser({
@@ -93,8 +111,29 @@ export default function Profile() {
           targetUserId: user._id,
         })
       );
+
+      const updatedTargetUserFollowers = [...user.followers, loggedInUser._id];
+      const updatedCurrentUserFollowing = [...loggedInUser.following, user._id];
+
+      await client.updateUser({
+        ...user,
+        followers: updatedTargetUserFollowers,
+      });
+      await client.updateUser({
+        ...loggedInUser,
+        following: updatedCurrentUserFollowing,
+      });
     }
   };
+
+  // handlers for showing followers
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
+
+  const handleCloseFollowers = () => setShowFollowers(false);
+  const handleShowFollowers = () => setShowFollowers(true);
+  const handleCloseFollowing = () => setShowFollowing(false);
+  const handleShowFollowing = () => setShowFollowing(true);
 
   return (
     <div id="profile-screen" className="p-1">
@@ -146,10 +185,26 @@ export default function Profile() {
               <strong>{userPosts.length}</strong> posts
             </div>
             <div>
-              <strong>{user.followers.length}</strong> followers
+              <strong>{user.followers.length}</strong>
+              <Button onClick={handleShowFollowers} className="profile-follow">
+                followers
+              </Button>
+              <Followers
+                show={showFollowers}
+                handleClose={handleCloseFollowers}
+                dialogTitle="Followers"
+              />
             </div>
             <div>
-              <strong>{user.following.length}</strong> following
+              <strong>{user.following.length}</strong>
+              <Button onClick={handleShowFollowing} className="profile-follow">
+                following
+              </Button>
+              <Following
+                show={showFollowing}
+                handleClose={handleCloseFollowing}
+                dialogTitle="Following"
+              />
             </div>
           </div>
           <div className="profile-name">{user.name}</div>
@@ -186,49 +241,74 @@ export default function Profile() {
       </div>
 
       {/* posts */}
-      <div className="mt-4">
-        {activeTab === "myRecipes" && (
-          <Row className="gx-1 gy-1" style={{ marginLeft: "95px" }}>
-            {userPosts.map((post: any) => (
-              <Col key={post.post_id} xs={12} sm={6} md={4} className="p-1">
-                <div className="my-recipes text-center">
-                  <Image
-                    className="profile-post"
-                    src={post.photo}
-                    fluid
-                    style={{
-                      objectFit: "cover",
-                      width: "100%",
-                      height: "100%",
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      navigate(
-                        `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
-                      )
-                    }
-                  />
+      <div
+        className="mt-4"
+        style={{
+          marginLeft: "95px",
+          minHeight: "400px",
+        }}
+      >
+        <div
+          className="posts-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gap: "4px",
+            minHeight: "250px",
+          }}
+        >
+          {activeTab === "myRecipes" && (
+            <>
+              {userPosts.length > 0 ? (
+                userPosts.map((post: any) => (
+                  <div key={post.post_id} className="my-recipes text-center">
+                    <Image
+                      className="profile-post"
+                      src={post.photo}
+                      fluid
+                      style={{
+                        objectFit: "cover",
+                        width: "100%",
+                        aspectRatio: "1/1",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        navigate(
+                          `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
+                        )
+                      }
+                    />
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="text-center"
+                  style={{
+                    gridColumn: "1 / -1",
+                    height: "250px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p className="text-muted">No recipes yet</p>
                 </div>
-              </Col>
-            ))}
-          </Row>
-        )}
-        {activeTab === "saved" && (
-          <Row className="gx-1 gy-1" style={{ marginLeft: "95px" }}>
-            {user.saved?.length > 0 ? (
-              user.saved.map((savedPostId: string) => {
-                const savedPost = posts.find(
-                  (post: any) => post.post_id === savedPostId
-                );
-                return savedPost ? (
-                  <Col
-                    key={savedPost.post_id}
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    className="p-1"
-                  >
-                    <div className="my-recipes text-center">
+              )}
+            </>
+          )}
+
+          {activeTab === "saved" && (
+            <>
+              {user.saved?.length > 0 ? (
+                user.saved.map((savedPostId: string) => {
+                  const savedPost = posts.find(
+                    (post: any) => post.post_id === savedPostId
+                  );
+                  return savedPost ? (
+                    <div
+                      key={savedPost.post_id}
+                      className="my-recipes text-center"
+                    >
                       <Image
                         className="profile-post"
                         src={savedPost.photo}
@@ -236,7 +316,7 @@ export default function Profile() {
                         style={{
                           objectFit: "cover",
                           width: "100%",
-                          height: "100%",
+                          aspectRatio: "1/1",
                           cursor: "pointer",
                         }}
                         onClick={() =>
@@ -246,16 +326,25 @@ export default function Profile() {
                         }
                       />
                     </div>
-                  </Col>
-                ) : null;
-              })
-            ) : (
-              <div className="text-center py-5">
-                <p className="text-muted">No saved recipes yet</p>
-              </div>
-            )}
-          </Row>
-        )}
+                  ) : null;
+                })
+              ) : (
+                <div
+                  className="text-center"
+                  style={{
+                    gridColumn: "1 / -1",
+                    height: "250px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p className="text-muted">No saved recipes yet</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

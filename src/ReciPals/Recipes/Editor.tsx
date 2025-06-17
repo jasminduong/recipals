@@ -9,14 +9,15 @@ import {
   setRecipes,
   updateRecipe,
 } from "./recipeReducer";
-import { addPost, deletePost, updatePost } from "./postReducer";
+import { addPost, deletePost, setPosts, updatePost } from "./postReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
 import * as recipeClient from "./recipeClient";
 import * as postClient from "./postClient";
 import axios from "axios";
 import { setCurrentUser } from "../Account/reducer";
-const axiosWithCredentials = axios.create({ 
-  withCredentials: true 
+import * as client from "../Account/client";
+const axiosWithCredentials = axios.create({
+  withCredentials: true,
 });
 
 export default function RecipeEditor() {
@@ -43,44 +44,29 @@ export default function RecipeEditor() {
     photo: string;
   };
 
-  // gets user
-  const fetchProfile = async () => {
-    const response = await axiosWithCredentials.post("/api/users/profile");
-    return response.data;
-  };
-  useEffect(() => {
-    const loadProfile = async () => {
-      const user = await fetchProfile();
-      if (user) {
-        dispatch(setCurrentUser(user));
-      }
-    };
-
-    loadProfile();
-  }, []);
-
-  // gets all recipes
-  const fetchRecipes = async () => {
-    const recipes = await recipeClient.getAllRecipes();
-    return recipes;
-  };
-
   useEffect(() => {
     const loadData = async () => {
-      // load user profile
-      const user = await fetchProfile();
-      if (user) {
-        dispatch(setCurrentUser(user));
-      }
-      // load recipes
-      const recipes = await fetchRecipes();
-      if (recipes) {
-        dispatch(setRecipes(recipes));
+      try {
+        // loads user profile
+        const user = await axiosWithCredentials.post("/api/users/profile");
+        if (user.data) {
+          dispatch(setCurrentUser(user.data));
+        }
+
+        // loads recipes
+        const allRecipes = await recipeClient.getAllRecipes();
+        dispatch(setRecipes(allRecipes));
+
+        // loads posts
+        const allPosts = await postClient.getAllPosts();
+        dispatch(setPosts(allPosts));
+      } catch (error) {
+        console.error("Error loading data:", error);
       }
     };
 
     loadData();
-  }, [dispatch, navigate]);
+  }, [dispatch]);
 
   const recipeToEdit = recipes.find(
     (recipe: Recipe) => recipe.recipe_id === rid
@@ -111,10 +97,10 @@ export default function RecipeEditor() {
 
   // variables for each post field
   const recipeId = isNew ? uuidv4() : rid;
-  const postId = isNew ? uuidv4() : recipeToEdit?.post_id;
   const existingPost = !isNew
     ? posts.find((p: any) => p.recipe_id === rid)
     : null;
+  const postId = isNew ? uuidv4() : existingPost?.post_id;
 
   // event handler to update profile photo
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -301,16 +287,24 @@ export default function RecipeEditor() {
       const newRecipe = await recipeClient.createRecipe(recipePayload);
       const newPost = await postClient.createPost(postPayload);
 
+      const currentUserPosts = currentUser?.posts || [];
+      const updatedUser = await client.updateUser({
+        ...currentUser,
+        posts: [...currentUserPosts, newPost.post_id],
+      });
+
+      dispatch(setCurrentUser(updatedUser));
+
       dispatch(addRecipe(newRecipe));
       dispatch(addPost(newPost));
-      navigate(`/ReciPals/Home/${recipeId}`);
+      navigate(`/ReciPals/Account/Profile/${currentUser._id}`);
     } else {
       const updatedRecipe = await recipeClient.updateRecipe(recipePayload);
       const updatedPost = await postClient.updatePost(postPayload);
 
       dispatch(updateRecipe(updatedRecipe));
       dispatch(updatePost(updatedPost));
-      navigate(`/ReciPals/Home/${rid}`);
+      navigate(`/ReciPals/Recipes/${rid}`);
     }
   };
 
@@ -559,14 +553,16 @@ export default function RecipeEditor() {
           </Row>
 
           {/* Buttons */}
-          <div className="d-flex justify-content-between mt-4">
+          <div className="d-flex mt-4">
             {!isNew && (
               <Button id="delete-btn" size="sm" onClick={handleDeleteRecipe}>
                 Delete Recipe
               </Button>
             )}
-            <div className="d-flex justify-content-end">
-              <Link to={isNew ? "/ReciPals/Profile" : `/ReciPals/Home/${rid}`}>
+            <div className="ms-auto d-flex">
+              <Link
+                to={isNew ? "/ReciPals/Profile" : `/ReciPals/Recipes/${rid}`}
+              >
                 <Button id="cancel-btn" size="sm" className="me-2">
                   Cancel
                 </Button>
