@@ -51,11 +51,11 @@ export default function ProfileEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // loads users 
+  // loads users
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const allUsers = await client.getAllUsers(); 
+        const allUsers = await client.getAllUsers();
         dispatch(setUsers(allUsers));
       } catch (error) {
         console.error("Error loading users:", error);
@@ -85,14 +85,14 @@ export default function ProfileEditor() {
 
   // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
   useEffect(() => {
-    if (users.length > 0) { 
+    if (users.length > 0) {
       const originalUser = users.find((user: any) => user._id === uid);
       if (originalUser) {
-        setUserToEdit({ ...originalUser }); 
+        setUserToEdit({ ...originalUser });
         setSelectedTags(originalUser.tags || []);
       }
     }
-  }, [uid, users]); 
+  }, [uid, users]);
 
   // event handler to update profile photo
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +104,37 @@ export default function ProfileEditor() {
         setUserToEdit({ ...userToEdit, profile: base64String });
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  //
+  const [adminPassword, setAdminPassword] = useState("");
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+
+  // event handler for role change
+  const handleRoleChange = (selectedRole: string) => {
+    if (selectedRole === "ADMIN") {
+      setShowAdminPassword(true);
+    } else {
+      setUserToEdit({ ...userToEdit, role: selectedRole });
+      setShowAdminPassword(false);
+      setAdminPassword("");
+    }
+  };
+
+  // event handler for admin password verification
+  const handleAdminPasswordSubmit = () => {
+    const ADMIN_PASSWORD = "Admin4me!";
+
+    if (adminPassword === ADMIN_PASSWORD) {
+      setUserToEdit({ ...userToEdit, role: "ADMIN" });
+      setShowAdminPassword(false);
+      setAdminPassword("");
+      alert("Admin access granted!");
+    } else {
+      alert("Incorrect admin password");
+      setAdminPassword("");
+      setUserToEdit({ ...userToEdit, role: "USER" });
     }
   };
 
@@ -174,6 +205,58 @@ export default function ProfileEditor() {
                 setUserToEdit({ ...userToEdit, password: e.target.value })
               }
             />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Role</Form.Label>
+            <Form.Select
+              value={userToEdit.role || "USER"}
+              onChange={(e) => handleRoleChange(e.target.value)}
+              className="form-control mb-2"
+              id="wd-role"
+            >
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </Form.Select>
+
+            {showAdminPassword && (
+              <div className="mb-3">
+                <Form.Label>Admin Password Required</Form.Label>
+                <div className="d-flex gap-2">
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter admin password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && handleAdminPasswordSubmit()
+                    }
+                  />
+                  <Button
+                    id="save-btn"
+                    style={{
+                      fontSize: "14px",
+                    }}
+                    onClick={handleAdminPasswordSubmit}
+                  >
+                    Verify
+                  </Button>
+                  <Button
+                    id="cancel-btn"
+                    style={{
+                      fontSize: "14px",
+                    }}
+                    onClick={() => {
+                      setShowAdminPassword(false);
+                      setUserToEdit({ ...userToEdit, role: "USER" });
+                      setAdminPassword("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
           </Form.Group>
 
           {/* Bio */}

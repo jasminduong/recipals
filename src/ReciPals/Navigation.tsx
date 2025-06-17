@@ -5,6 +5,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { MdAccountCircle } from "react-icons/md";
+import { MdAdminPanelSettings } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import "./styles.css";
 import { v4 as uuidv4 } from "uuid";
@@ -126,6 +127,19 @@ export default function ReciPalNavigation() {
       >
         <MdAccountCircle size="35" className="fs-1 text-dark" />
         Profile
+      </ListGroup.Item>
+
+      {/* Admin link */}
+      <ListGroup.Item
+        key="Admin"
+        as={Link}
+        to="/ReciPals/Account/Admin"
+        className={`recipals-nav-link ${
+          pathname.includes("Admin") ? "text-bold" : ""
+        }`}
+      >
+        <MdAdminPanelSettings size="35" className="fs-1 text-dark" />
+        Admin
       </ListGroup.Item>
     </ListGroup>
   );
