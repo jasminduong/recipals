@@ -5,7 +5,7 @@ import Search from "./Search";
 import SavedRecipes from "./Saved";
 import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
-import Details from "./Recipes/Details";
+import RecipeDetails from "./Recipes/Details";
 import Session from "./Account/Session";
 
 export default function ReciPals() {
@@ -18,7 +18,7 @@ export default function ReciPals() {
             <Route path="/" element={<Navigate to="/ReciPals/Home" />} />
             <Route path="Home" element={<Home />} />
             <Route path="Search" element={<Search />} />
-            <Route path="Home/:rid" element={<Details />} />
+            <Route path="Recipes/:rid" element={<RecipeDetails />} />
             <Route path="Editor/:rid" element={<RecipeEditor />} />
             <Route path="Saved" element={<SavedRecipes />} />
             <Route path="Account/*" element={<Account />} />
