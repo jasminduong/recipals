@@ -424,3 +424,12 @@ body * {
 #users-table td {
   padding: 8px 24px !important;
 }
+.admin-filter-recipe {
+  height: 30px !important;
+  font-size: 14px !important;
+}
+.admin-recipe-tab {
+  border-bottom: 1px solid #e0e0e0;
+  gap: 50px;
+  margin-bottom: 16px;
+}

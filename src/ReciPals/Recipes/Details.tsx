@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setRecipes } from "./recipeReducer";
 import * as recipeClient from "./recipeClient";
-import * as postClient from "./postClient";
-import { setPosts } from "./postReducer";
+import * as postClient from "../Posts/postClient";
+import { setPosts } from "../Posts/postReducer";
 
 export default function RecipeDetails() {
   const { rid } = useParams();
@@ -93,7 +93,7 @@ export default function RecipeDetails() {
                 </div>
                 {currRecipe?.user_created === currentUser?._id && (
                   <Button
-                    className="edit-button text-dark"
+                    className="edit-button text-dark mt-2 mt-sm-0"
                     size="sm"
                     onClick={() =>
                       navigate(`/ReciPals/Editor/${currRecipe.recipe_id}`)
@@ -117,9 +117,14 @@ export default function RecipeDetails() {
 
           {/* Ingredients and Instructions */}
           <Row className="border-top pt-4">
-            <Col xs={12} lg={4} className="mb-4 mb-lg-0 recipe-ingredients-col">
-              <div className="border-end-lg pe-lg-4">
-                <h4 className="mb-4">Ingredients</h4>
+            <Col
+              xs={12}
+              lg={5}
+              xl={4}
+              className="mb-4 mb-lg-0 recipe-ingredients-col"
+            >
+              <div className="border-end-lg pe-lg-4 pe-xl-4">
+                <h4 className="mb-3 mb-lg-4">Ingredients</h4>
                 {currRecipe.ingredients_sec.map((section: any) => (
                   <div key={section._id} className="mb-4 recipe-section">
                     <h6 className="fw-bold mb-2">For the {section.title}</h6>
@@ -138,7 +143,7 @@ export default function RecipeDetails() {
               </div>
             </Col>
 
-            <Col xs={12} lg={8} className="recipe-instructions-col">
+            <Col xs={12} lg={7} xl={8} className="recipe-instructions-col">
               <h4 className="mb-3">Instructions</h4>
               <ol className="ps-3">
                 {currRecipe.steps.map((step: string, index: number) => (
@@ -166,27 +171,29 @@ export default function RecipeDetails() {
             {/* Comments list */}
             {currPost?.comments.map((comment: any, index: any) => (
               <div key={index} className="mb-3 pb-3 border-bottom">
-                <Row className="g-3">
+                <Row className="g-2 g-sm-3">
                   <Col xs="auto">
                     <img
                       src="/images/profile.png"
                       alt="Profile picture"
                       className="rounded-circle"
                       style={{
-                        width: "45px",
-                        height: "45px",
+                        width: "40px",
+                        height: "40px",
                         objectFit: "cover",
                       }}
                     />
                   </Col>
                   <Col>
                     <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
-                      <strong className="me-2">{comment.user_id}</strong>
+                      <strong className="me-2 mb-1 mb-sm-0">
+                        {comment.user_id}
+                      </strong>
                     </div>
                     <div>
                       <small className="text-muted">{comment.created_at}</small>
                     </div>
-                    <p className="mb-0">{comment.text}</p>
+                    <p className="mb-0 mt-1">{comment.text}</p>
                   </Col>
                 </Row>
               </div>

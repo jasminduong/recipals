@@ -5,7 +5,7 @@ import Signup from "./Signup";
 import SignupTags from "./SignupTags";
 import { useSelector } from "react-redux";
 import ProfileEditor from "./Profile/Editor";
-import UserPosts from "../Recipes/UserPosts";
+import UserPosts from "../Posts/UserPosts";
 import Admin from "./Admin";
 import ProtectedRoute from "./ProtectedRoute";
 

@@ -2,7 +2,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, unlikePost } from "./postReducer";
+import { likePost, unlikePost } from "../Posts/postReducer";
 import * as postClient from "./postClient";
 
 interface Post {
