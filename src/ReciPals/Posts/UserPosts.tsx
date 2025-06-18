@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { likePost, setPosts, unlikePost } from "./postReducer";
-import { setRecipes } from "./recipeReducer";
+import { setRecipes } from "../Recipes/recipeReducer";
 import * as postClient from "./postClient";
-import * as recipeClient from "./recipeClient";
+import * as recipeClient from "../Recipes/recipeClient";
 
 export default function UserPosts() {
   const { uid, pid } = useParams();

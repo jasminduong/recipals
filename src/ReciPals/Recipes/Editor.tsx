@@ -9,10 +9,15 @@ import {
   setRecipes,
   updateRecipe,
 } from "./recipeReducer";
-import { addPost, deletePost, setPosts, updatePost } from "./postReducer";
+import {
+  addPost,
+  deletePost,
+  setPosts,
+  updatePost,
+} from "../Posts/postReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
 import * as recipeClient from "./recipeClient";
-import * as postClient from "./postClient";
+import * as postClient from "../Posts/postClient";
 import axios from "axios";
 import { setCurrentUser } from "../Account/reducer";
 import * as client from "../Account/client";
@@ -335,7 +340,11 @@ export default function RecipeEditor() {
               value={name}
               placeholder="New Recipe"
               onChange={(e) => setName(e.target.value)}
+              maxLength={20}
             />
+            <Form.Text className="text-muted">
+              {name.length}/50 characters
+            </Form.Text>
           </Form.Group>
 
           {/* Description */}
@@ -347,7 +356,11 @@ export default function RecipeEditor() {
               value={description}
               placeholder="Recipe Caption"
               onChange={(e) => setDescription(e.target.value)}
+              maxLength={150}
             />
+            <Form.Text className="text-muted">
+              {name.length}/150 characters
+            </Form.Text>
           </Form.Group>
 
           {/* Ingredients Section */}

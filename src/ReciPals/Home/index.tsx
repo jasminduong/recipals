@@ -1,9 +1,9 @@
-import RecipePost from "../Recipes/Post";
+import RecipePost from "../Posts/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { setPosts } from "../Recipes/postReducer";
+import { setPosts } from "../Posts/postReducer";
 import * as client from "../Account/client";
-import * as postClient from "../Recipes/postClient";
+import * as postClient from "../Posts/postClient";
 import { setUsers } from "../Account/userReducer";
 import { setRecipes } from "../Recipes/recipeReducer";
 import * as recipeClient from "../Recipes/recipeClient";
@@ -99,7 +99,7 @@ export default function Home() {
         (post: any) => !followedUserIds.has(post.created_by)
       );
 
-      setSortedPosts([...followedPosts, ...shuffleArray(otherPosts)]);
+      setSortedPosts([...followedPosts, ...shuffleArray(otherPosts).reverse()]);
     }
   }, [posts, currentUser, sortedPosts.length]);
 

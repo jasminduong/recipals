@@ -13,6 +13,7 @@ export default function Admin() {
           <Route path="Users" element={<AllUsers />} />
           <Route path="Users/:uid" element={<AllUsers />} />
           <Route path="Recipes" element={<AllRecipes />} />
+          <Route path="Recipes/:rid" element={<AllRecipes />} />
         </Routes>
       </div>
     </div>

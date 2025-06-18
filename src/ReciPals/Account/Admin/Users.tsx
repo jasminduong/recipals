@@ -3,8 +3,8 @@ import { useParams } from "react-router";
 import * as client from "../client";
 import { Button, FormControl } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
-import PeopleTable from "../../Peope/Table";
-import PeopleDetails from "../../Peope/Details"; 
+import PeopleTable from "../../Users/Table";
+import PeopleDetails from "../../Users/Details"; 
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../userReducer";
 
@@ -56,6 +56,7 @@ export default function AllUsers() {
   return (
     <div className="position-relative">
       <div>
+      <h5>All Users</h5>
         <Button
           onClick={createUser}
           className="float-end"

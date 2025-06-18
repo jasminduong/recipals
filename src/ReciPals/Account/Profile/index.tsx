@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import { followUser, setUsers, unfollowUser } from "../userReducer";
-import { setPosts } from "../../Recipes/postReducer";
+import { setPosts } from "../../Posts/postReducer";
 import * as client from "../client";
-import * as postClient from "../../Recipes/postClient";
+import * as postClient from "../../Posts/postClient";
 import Followers from "./Followers";
 import Following from "./Following";
 
@@ -68,7 +68,9 @@ export default function Profile() {
   );
 
   // gets all of the user's posts
-  const userPosts = posts.filter((post: any) => post.created_by === user._id);
+  const userPosts = posts
+    .filter((post: any) => post.created_by === user._id)
+    .reverse();
 
   // check if current user is following this profile user
   const currentUserProfile = users.find(
