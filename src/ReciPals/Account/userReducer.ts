@@ -6,6 +6,7 @@ interface User {
   _id: string;
   following: string[];
   followers: string[];
+  saved_recipes?: string[];
 }
 
 interface UserState {
@@ -63,8 +64,29 @@ const userSlice = createSlice({
         );
       }
     },
+    saveRecipe: (state, action) => {
+      const { userId, recipeId } = action.payload;
+      const user = state.users.find((user) => user._id === userId);
+      if (user) {
+        if (!user.saved_recipes) {
+          user.saved_recipes = [];
+        }
+        if (!user.saved_recipes.includes(recipeId)) {
+          user.saved_recipes.push(recipeId);
+        }
+      }
+    },
+
+    unsaveRecipe: (state, action) => {
+      const { userId, recipeId } = action.payload;
+      const user = state.users.find((user) => user._id === userId);
+      if (user && user.saved_recipes) {
+        user.saved_recipes = user.saved_recipes.filter(id => id !== recipeId);
+      }
+    },
   },
+  
 });
 
-export const { setUsers, followUser, unfollowUser } = userSlice.actions;
+export const { setUsers, followUser, unfollowUser, saveRecipe, unsaveRecipe } = userSlice.actions;
 export default userSlice.reducer;

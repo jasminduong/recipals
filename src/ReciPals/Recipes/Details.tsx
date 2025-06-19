@@ -9,7 +9,10 @@ import * as recipeClient from "./recipeClient";
 import * as postClient from "../Posts/postClient";
 import { setPosts, addComment } from "../Posts/postReducer";
 import { fetchRecipes } from '../Search/reducer'; 
+import { saveRecipe, unsaveRecipe } from '../Account/userReducer'; // Add this import
+import * as userClient from '../Account/client'; // Add this import
 import type { RootState, AppDispatch } from '../store';
+import { BsBookmarkFill } from "react-icons/bs";
 
 export default function RecipeDetails() {
   const { rid } = useParams();
@@ -17,13 +20,41 @@ export default function RecipeDetails() {
   const dispatch = useDispatch<AppDispatch>();
   const [commentText, setCommentText] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // Add this state
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
   const posts = useSelector((state: any) => state.postReducer.posts);
   const currPost = posts.find((post: any) => post.recipe_id === rid);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { recipes: searchRecipes } = useSelector((state: RootState) => state.searchReducer);
+  const users = useSelector((state: any) => state.userReducer.users); // Add this
   const currRecipe = recipes.find((recipe: any) => recipe.recipe_id === rid) || 
                      searchRecipes.find((recipe: any) => recipe.recipe_id === rid);
+  // Check if recipe is saved by current user
+  const currentUserData = users.find((user: any) => user._id === currentUser?._id);
+  const isRecipeSaved = currentUserData?.saved_recipes?.includes(rid) || false;
+
+// Handle save/unsave functionality
+  const handleSaveToggle = async () => {
+    if (!currentUser || !rid) return;
+    
+    setIsSaving(true);
+    
+    try {
+      if (isRecipeSaved) {
+        // Unsave recipe
+        await userClient.unsaveRecipe(currentUser._id, rid);
+        dispatch(unsaveRecipe({ userId: currentUser._id, recipeId: rid }));
+      } else {
+        // Save recipe
+        await userClient.saveRecipe(currentUser._id, rid);
+        dispatch(saveRecipe({ userId: currentUser._id, recipeId: rid }));
+      }
+    } catch (error) {
+      console.error('Error toggling save:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     const loadRecipes = async () => {
@@ -120,15 +151,34 @@ export default function RecipeDetails() {
                 >
                   {currRecipe.name}
                 </h2>
-                <BiBookmark
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    minWidth: "30px",
-                    minHeight: "30px",
-                  }}
-                  className="flex-shrink-0"
-                />
+                {currentUser && (
+                  <div
+                    onClick={handleSaveToggle}
+                    style={{ cursor: isSaving ? 'not-allowed' : 'pointer' }}
+                    className="flex-shrink-0"
+                  >
+                    {isRecipeSaved ? (
+                      <BsBookmarkFill
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          minWidth: "30px",
+                          minHeight: "30px",
+                          color: "#000000", // Blue when saved
+                        }}
+                      />
+                    ) : (
+                      <BiBookmark
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          minWidth: "30px",
+                          minHeight: "30px",
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               {/* recipe description */}
               <p className="text-muted fst-italic mb-3">
