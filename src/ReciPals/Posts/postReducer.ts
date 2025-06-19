@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+interface Comment {
+  comment_id: string;
+  user_id: string;
+  text: string;
+  created_at: string;
+}
+
 interface Post {
   post_id: string;
   recipe_id: string;
@@ -8,7 +15,7 @@ interface Post {
   caption: string;
   photo: string;
   likes: string[]; 
-  comments: any[];
+  comments: Comment[];
   created_at: string;
 }
 
@@ -47,6 +54,14 @@ const postsSlice = createSlice({
       );
     },
 
+    // adds a new comment
+    addComment: (state, { payload: { postId, comment } }) => {
+      const post = state.posts.find((p: any) => p.post_id === postId);
+      if (post) {
+        post.comments = [...(post.comments || []), comment];
+      }
+    },
+
     // likes a post
     likePost: (state, { payload: { postId, userId } }) => {
       const post = state.posts.find((p: any) => p.post_id === postId);
@@ -67,6 +82,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setPosts, addPost, deletePost, updatePost, likePost, unlikePost } = postsSlice.actions;
+export const { setPosts, addPost, deletePost, updatePost, likePost, unlikePost, addComment } = postsSlice.actions;
 
 export default postsSlice.reducer;

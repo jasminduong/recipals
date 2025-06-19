@@ -3,7 +3,7 @@ import accountReducer from "./Account/reducer";
 import recipeReducer from "./Recipes/recipeReducer";
 import postReducer from "./Posts/postReducer";
 import userReducer from "./Account/userReducer";
-import searchReducer from "./Search/reducer"; // Add search reducer
+import searchReducer from "./Search/reducer";
 
 const store = configureStore({
   reducer: {
@@ -11,7 +11,7 @@ const store = configureStore({
     recipeReducer,
     postReducer,
     userReducer,
-    searchReducer, // Add this for search functionality
+    searchReducer, 
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
