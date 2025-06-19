@@ -12,10 +12,12 @@ export default function Search() {
   const { recipes, loading, error } = useSelector((state: RootState) => state.searchReducer);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // have recipes loaded in generic results
   const fetchAllRecipes = () => {
     dispatch(fetchRecipes());
   };
 
+  // filter by user input
   const filterRecipesByName = (name: string) => {
     setSearchTerm(name);
     if (name.trim()) {
@@ -26,7 +28,7 @@ export default function Search() {
   };
 
   const handleRecipeClick = (recipeId: string) => {
-    navigate(`/ReciPals/Home/${recipeId}`);
+    navigate(`/ReciPals/Recipes/${recipeId}`);
   };
 
   useEffect(() => {
