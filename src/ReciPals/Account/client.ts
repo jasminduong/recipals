@@ -71,3 +71,19 @@ export const createUser = async (user: any) => {
   const response = await axiosWithCredentials.post(`${USERS_API}`, user);
   return response.data;
 };
+
+// saveRecipe adds a recipe to user's saved list
+export const saveRecipe = async (userId: string, recipeId: string) => {
+  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/save`, {
+    recipeId: recipeId
+  });
+  return response.data;
+};
+
+// unsaveRecipe removes a recipe from user's saved list
+export const unsaveRecipe = async (userId: string, recipeId: string) => {
+  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/unsave`, {
+    recipeId: recipeId
+  });
+  return response.data;
+};
