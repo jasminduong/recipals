@@ -6,8 +6,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { followUser, setUsers, unfollowUser } from "../userReducer";
 import { setPosts } from "../../Posts/postReducer";
+import { setRecipes } from "../../Recipes/recipeReducer";
 import * as client from "../client";
 import * as postClient from "../../Posts/postClient";
+import * as recipeClient from "../../Recipes/recipeClient";
 import Followers from "./Followers";
 import Following from "./Following";
 
@@ -17,6 +19,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const users = useSelector((state: any) => state.userReducer.users);
   const posts = useSelector((state: any) => state.postReducer.posts);
+  const recipes = useSelector((state: any) => state.recipeReducer.recipes);
 
   // loads users
   useEffect(() => {
@@ -48,6 +51,21 @@ export default function Profile() {
     }
   }, [dispatch, uid, posts.length]);
 
+  // loads recipes
+  useEffect(() => {
+    if (recipes.length === 0) {
+      const loadRecipes = async () => {
+        try {
+          const allRecipes = await recipeClient.getAllRecipes();
+          dispatch(setRecipes(allRecipes));
+        } catch (error) {
+          console.error("Error loading recipes:", error);
+        }
+      };
+      loadRecipes();
+    }
+  }, [dispatch, recipes.length]);
+
   // finds current logged in user
   const { currentUser: loggedInUser } = useSelector(
     (state: any) => state.accountReducer
@@ -71,6 +89,12 @@ export default function Profile() {
   const userPosts = posts
     .filter((post: any) => post.created_by === user._id)
     .reverse();
+
+  // get user's saved recipes for the saved tab
+  const savedRecipeIds = user?.saved_recipes || [];
+  const savedRecipes = recipes.filter((recipe: any) => 
+    savedRecipeIds.includes(recipe.recipe_id)
+  );
 
   // check if current user is following this profile user
   const currentUserProfile = users.find(
@@ -248,14 +272,15 @@ export default function Profile() {
         style={{
           marginLeft: "95px",
           minHeight: "400px",
+          width: "calc(100% - 95px)", // Fixed width to prevent layout shifts
         }}
       >
         <div
           className="posts-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            gap: "4px",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "15px",
             minHeight: "250px",
           }}
         >
@@ -301,19 +326,21 @@ export default function Profile() {
 
           {activeTab === "saved" && (
             <>
-              {user.saved?.length > 0 ? (
-                user.saved.map((savedPostId: string) => {
-                  const savedPost = posts.find(
-                    (post: any) => post.post_id === savedPostId
+              {savedRecipes.length > 0 ? (
+                savedRecipes.map((recipe: any) => {
+                  // Find the corresponding post for this recipe
+                  const correspondingPost = posts.find(
+                    (post: any) => post.recipe_id === recipe.recipe_id
                   );
-                  return savedPost ? (
+                  
+                  return (
                     <div
-                      key={savedPost.post_id}
+                      key={recipe.recipe_id}
                       className="my-recipes text-center"
                     >
                       <Image
                         className="profile-post"
-                        src={savedPost.photo}
+                        src={recipe.photo}
                         fluid
                         style={{
                           objectFit: "cover",
@@ -321,14 +348,20 @@ export default function Profile() {
                           aspectRatio: "1/1",
                           cursor: "pointer",
                         }}
-                        onClick={() =>
-                          navigate(
-                            `/ReciPals/Account/Profile/${user._id}/Posts/${savedPost.post_id}`
-                          )
-                        }
+                        onClick={() => {
+                          // If there's a corresponding post, go to post page first
+                          if (correspondingPost) {
+                            navigate(
+                              `/ReciPals/Account/Profile/${user._id}/Posts/${correspondingPost.post_id}`
+                            );
+                          } else {
+                            // If no post, go directly to recipe details
+                            navigate(`/ReciPals/Recipes/${recipe.recipe_id}`);
+                          }
+                        }}
                       />
                     </div>
-                  ) : null;
+                  );
                 })
               ) : (
                 <div
