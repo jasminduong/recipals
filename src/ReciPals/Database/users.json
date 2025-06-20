@@ -14,6 +14,20 @@
     "following": []
   },
   {
+    "_id": "234",
+    "username": "danieljacob",
+    "password": "ReciPals",
+    "name": "Danny",
+    "role": "USER",
+    "bio": "",
+    "tags": [],
+    "profile": "/images/profile.png",
+    "posts": [],
+    "saved_recipes": [],
+    "followers": [],
+    "following": []
+  },
+  {
     "_id": "recipeBot",
     "username": "recipe_bot",
     "password": "ReciPals",

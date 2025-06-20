@@ -193,7 +193,7 @@ export default function Followers({
                   </div>
                 </Col>
                 <Col xs={1} className="ps-0">
-                  {loggedInUser && (
+                  {loggedInUser && follower._id !== loggedInUser._id && (
                     <Button
                       id={
                         isOwnProfile

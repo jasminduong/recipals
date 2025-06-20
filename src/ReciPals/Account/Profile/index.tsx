@@ -92,7 +92,7 @@ export default function Profile() {
 
   // get user's saved recipes for the saved tab
   const savedRecipeIds = user?.saved_recipes || [];
-  const savedRecipes = recipes.filter((recipe: any) => 
+  const savedRecipes = recipes.filter((recipe: any) =>
     savedRecipeIds.includes(recipe.recipe_id)
   );
 
@@ -171,12 +171,12 @@ export default function Profile() {
             roundedCircle
             fluid
             alt={`${user.username} profile`}
-            style={{ width: 160, objectFit: "cover" }}
+            style={{ width: 160, height: 160, objectFit: "cover" }}
           />
         </Col>
 
         {/* username, posts, followers, following, user's name */}
-        <Col xs={12} sm={8} md={9} className="text-sm-start text-center ps-5">
+        <Col xs={9} sm={8} md={9} className="text-sm-start text-center ps-5">
           <Row className="align-items-center justify-content-between">
             <Col xs="auto">
               <div className="profile-username">{user.username}</div>
@@ -272,7 +272,7 @@ export default function Profile() {
         style={{
           marginLeft: "95px",
           minHeight: "400px",
-          width: "calc(100% - 95px)", // Fixed width to prevent layout shifts
+          width: "calc(100% - 95px)",
         }}
       >
         <div
@@ -289,22 +289,20 @@ export default function Profile() {
               {userPosts.length > 0 ? (
                 userPosts.map((post: any) => (
                   <div key={post.post_id} className="my-recipes text-center">
-                    <Image
-                      className="profile-post"
-                      src={post.photo}
-                      fluid
-                      style={{
-                        objectFit: "cover",
-                        width: "100%",
-                        aspectRatio: "1/1",
-                        cursor: "pointer",
-                      }}
+                    <div
+                      className="recipe-image-container"
                       onClick={() =>
                         navigate(
                           `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
                         )
                       }
-                    />
+                    >
+                      <Image
+                        src={post.photo}
+                        className="recipe-image"
+                        alt="Recipe"
+                      />
+                    </div>
                   </div>
                 ))
               ) : (
@@ -332,7 +330,7 @@ export default function Profile() {
                   const correspondingPost = posts.find(
                     (post: any) => post.recipe_id === recipe.recipe_id
                   );
-                  
+
                   return (
                     <div
                       key={recipe.recipe_id}

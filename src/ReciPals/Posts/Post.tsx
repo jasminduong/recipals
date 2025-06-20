@@ -59,16 +59,16 @@ export default function RecipePost({ post }: { post: Post }) {
   return (
     <div key={post.post_id} id="recipe-post">
       <div className="d-flex align-items-center mb-3">
-        <img
-          src={profilePic}
-          alt="Profile picture"
-          className="rounded-circle"
-          style={{ width: "50px", height: "50px", objectFit: "cover" }}
-        />
         <Link
           className="text-decoration-none"
           to={`/ReciPals/Account/Profile/${user?._id}`}
         >
+          <img
+            src={profilePic}
+            alt="Profile picture"
+            className="rounded-circle"
+            style={{ width: "50px", height: "50px", objectFit: "cover" }}
+          />
           <span className="ms-3 text-dark">{user?.username}</span>
         </Link>
       </div>

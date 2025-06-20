@@ -1,55 +1,120 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import * as db from "../Database";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { likePost, setPosts, unlikePost } from "./postReducer";
 import { setRecipes } from "../Recipes/recipeReducer";
 import * as postClient from "./postClient";
 import * as recipeClient from "../Recipes/recipeClient";
+import * as client from "../Account/client";
+import { setUsers } from "../Account/userReducer";
 
 export default function UserPosts() {
   const { uid, pid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const posts = useSelector((state: any) => state.postReducer.posts);
-  const users = db.users;
-  const currUser = users.find((user) => user._id === uid);
+  const users = useSelector((state: any) => state.userReducer.users);
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
-  const currPost = posts.find((post: any) => post.post_id === pid);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // get current logged in user
   const { currentUser: loggedInUser } = useSelector(
     (state: any) => state.accountReducer
   );
 
-  // get updated post from redux
-  const updatedPost = posts.find((p: any) => p.post_id === pid) || currPost;
-
-  // loads recipe and posts
+  // loads data only once when component mounts
   useEffect(() => {
-    const loadPosts = async () => {
+    const loadAllData = async () => {
       try {
-        if (posts.length === 0) {
-          const allPosts = await postClient.getAllPosts();
-          dispatch(setPosts(allPosts));
-        }
+        setIsLoading(true);
 
-        if (recipes.length === 0) {
-          const allRecipes = await recipeClient.getAllRecipes();
-          dispatch(setRecipes(allRecipes));
-        }
+        const [allPosts, allRecipes, allUsers] = await Promise.all([
+          postClient.getAllPosts(),
+          recipeClient.getAllRecipes(),
+          client.getAllUsers(),
+        ]);
+
+        dispatch(setPosts(allPosts));
+        dispatch(setRecipes(allRecipes));
+        dispatch(setUsers(allUsers));
+
+        setIsLoading(false);
       } catch (error) {
-        console.error("Error loading post:", error);
+        console.error("Error loading data:", error);
+        setIsLoading(false);
       }
     };
 
-    loadPosts();
-  }, [dispatch, posts.length, recipes.length]);
+    const needsData =
+      posts.length === 0 ||
+      users.length === 0 ||
+      recipes.length === 0 ||
+      !posts.find((p: any) => p.post_id === pid) ||
+      !users.find((u: any) => u._id === uid);
+
+    if (needsData) {
+      loadAllData();
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // loading state
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="text-center">
+          <p>Loading...</p>
+          <small>
+            Posts: {posts.length}, Users: {users.length}, Recipes:{" "}
+            {recipes.length}
+          </small>
+        </div>
+      </div>
+    );
+  }
+
+  // gets current user and post
+  const currUser = users.find((user: any) => user._id === uid);
+  const currPost = posts.find((post: any) => post.post_id === pid);
+
+  console.log("Found data:", {
+    currUser: currUser?._id,
+    currPost: currPost?.post_id,
+    totalPosts: posts.length,
+    totalUsers: users.length,
+  });
+
+  // returns if post is not found
+  if (!currPost) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="text-center py-5">
+          <p className="text-danger fs-4">Post not found.</p>
+          <p>Looking for post ID: {pid}</p>
+          <p>Available posts: {posts.map((p: any) => p.post_id).join(", ")}</p>
+          <Button onClick={() => navigate(`/ReciPals/Account/Profile/${uid}`)}>
+            Back to Profile
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // get updated post from redux
+  const updatedPost = posts.find((p: any) => p.post_id === pid) || currPost;
 
   // gets current recipe
   const currRecipe = currPost
@@ -58,12 +123,12 @@ export default function UserPosts() {
 
   // gets post creator
   const postCreator = currPost
-    ? users.find((user) => user._id === currPost.created_by)
+    ? users.find((user: any) => user._id === currPost.created_by)
     : null;
 
   // gets all posts by the post creator
   const userPosts = postCreator
-    ? posts.filter((post: any) => post.created_by === postCreator._id)
+    ? posts.filter((post: any) => post.created_by === postCreator._id).reverse()
     : [];
 
   // finds current post's position in the user's posts array

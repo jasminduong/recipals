@@ -18,12 +18,8 @@ import {
 import { FaRegTrashCan } from "react-icons/fa6";
 import * as recipeClient from "./recipeClient";
 import * as postClient from "../Posts/postClient";
-import axios from "axios";
 import { setCurrentUser } from "../Account/reducer";
 import * as client from "../Account/client";
-const axiosWithCredentials = axios.create({
-  withCredentials: true,
-});
 
 export default function RecipeEditor() {
   const { rid } = useParams();
@@ -49,20 +45,23 @@ export default function RecipeEditor() {
     photo: string;
   };
 
+  const recipeToEdit = recipes.find(
+    (recipe: Recipe) => recipe.recipe_id === rid
+  );
+  const isNew = !recipeToEdit;
+
   useEffect(() => {
     const loadData = async () => {
       try {
-        // loads user profile
-        const user = await axiosWithCredentials.post("/api/users/profile");
-        if (user.data) {
-          dispatch(setCurrentUser(user.data));
+        if (isNew && !currentUser) {
+          alert("Please log in to create a recipe.");
+          navigate("/ReciPals/Account/Signin");
+          return;
         }
 
-        // loads recipes
         const allRecipes = await recipeClient.getAllRecipes();
         dispatch(setRecipes(allRecipes));
 
-        // loads posts
         const allPosts = await postClient.getAllPosts();
         dispatch(setPosts(allPosts));
       } catch (error) {
@@ -71,11 +70,7 @@ export default function RecipeEditor() {
     };
 
     loadData();
-  }, [dispatch]);
-
-  const recipeToEdit = recipes.find(
-    (recipe: Recipe) => recipe.recipe_id === rid
-  );
+  }, [isNew, currentUser]); 
 
   // state variables for each recipe field
   const [name, setName] = useState(recipeToEdit?.name || "");
@@ -90,7 +85,7 @@ export default function RecipeEditor() {
       {
         _id: uuidv4(),
         title: "",
-        "ingredients:": [""],
+        ingredients: [""],
       },
     ]
   );
@@ -98,7 +93,26 @@ export default function RecipeEditor() {
   const [photo, setPhoto] = useState(
     recipeToEdit?.photo || "/images/default.jpg"
   );
-  const isNew = !recipeToEdit;
+
+  useEffect(() => {
+    // updates all state when recipe is loaded
+    if (recipeToEdit) {
+      setName(recipeToEdit.name || "");
+      setDescription(recipeToEdit.description || "");
+      setTotalTime(recipeToEdit.total_time || "");
+      setServes(recipeToEdit.serves || 1);
+      setTags(recipeToEdit.tags?.join(",") || "");
+      setIngredientsSec(recipeToEdit.ingredients_sec || [
+        {
+          _id: uuidv4(),
+          title: "",
+          ingredients: [""],
+        },
+      ]);
+      setSteps(recipeToEdit.steps || [""]);
+      setPhoto(recipeToEdit.photo || "/images/default.jpg");
+    }
+  }, [recipeToEdit]);
 
   // variables for each post field
   const recipeId = isNew ? uuidv4() : rid;
@@ -129,9 +143,9 @@ export default function RecipeEditor() {
     setIngredientsSec(
       ingredientsSec.map((section: any) => {
         if (section._id === sectionId) {
-          const updatedIngredients = [...section["ingredients:"]];
+          const updatedIngredients = [...section["ingredients"]];
           updatedIngredients[index] = value;
-          return { ...section, "ingredients:": updatedIngredients };
+          return { ...section, ingredients: updatedIngredients };
         }
         return section;
       })
@@ -157,7 +171,7 @@ export default function RecipeEditor() {
         if (section._id === sectionId) {
           return {
             ...section,
-            "ingredients:": [...section["ingredients:"], ""],
+            ingredients: [...section["ingredients"], ""],
           };
         }
         return section;
@@ -170,7 +184,7 @@ export default function RecipeEditor() {
     const newSection = {
       _id: uuidv4(),
       title: "",
-      "ingredients:": [""],
+      ingredients: [""],
     };
     setIngredientsSec([...ingredientsSec, newSection]);
   };
@@ -207,9 +221,9 @@ export default function RecipeEditor() {
     setIngredientsSec(
       ingredientsSec.map((section: any) => {
         if (section._id === sectionId) {
-          const updatedIngredients = [...section["ingredients:"]];
+          const updatedIngredients = [...section["ingredients"]];
           updatedIngredients.splice(ingredientIndex, 1);
-          return { ...section, "ingredients:": updatedIngredients };
+          return { ...section, ingredients: updatedIngredients };
         }
         return section;
       })
@@ -232,6 +246,18 @@ export default function RecipeEditor() {
 
   // event handler that saves recipe
   const handleSave = async () => {
+    if (!currentUser || !currentUser._id) {
+      if (isNew) {
+        alert("You must be logged in to create a recipe. Please log in first.");
+        navigate("/ReciPals/Account/Signin");
+        return;
+      } else {
+        alert("Session expired. Please log in again.");
+        navigate("/ReciPals/Account/Signin");
+        return;
+      }
+    }
+
     // validation checks
     if (!name.trim()) {
       alert("Please enter a recipe name.");
@@ -244,7 +270,7 @@ export default function RecipeEditor() {
 
     // check if at least one ingredient exists and is not empty
     const hasValidIngredient = ingredientsSec.some((section: any) =>
-      section["ingredients:"].some((ingredient: string) => ingredient.trim())
+      section["ingredients"].some((ingredient: string) => ingredient.trim())
     );
     if (!hasValidIngredient) {
       alert("Please add at least one ingredient.");
@@ -260,6 +286,7 @@ export default function RecipeEditor() {
 
     const recipePayload = {
       recipe_id: recipeId,
+      post_id: postId,
       user_created: currentUser?._id || recipeToEdit?.user_created,
       name,
       description,
@@ -299,16 +326,24 @@ export default function RecipeEditor() {
       });
 
       dispatch(setCurrentUser(updatedUser));
-
       dispatch(addRecipe(newRecipe));
       dispatch(addPost(newPost));
-      navigate(`/ReciPals/Account/Profile/${currentUser._id}`);
+
+      navigate(`/ReciPals/Account/Profile/${currentUser._id}/Posts/${newPost.post_id}`);
     } else {
       const updatedRecipe = await recipeClient.updateRecipe(recipePayload);
       const updatedPost = await postClient.updatePost(postPayload);
 
       dispatch(updateRecipe(updatedRecipe));
       dispatch(updatePost(updatedPost));
+
+      recipeClient.getAllRecipes().then((allRecipes) => {
+        dispatch(setRecipes(allRecipes));
+      });
+
+      postClient.getAllPosts().then((allPosts) => {
+        dispatch(setPosts(allPosts));
+      });
       navigate(`/ReciPals/Recipes/${rid}`);
     }
   };
@@ -325,7 +360,7 @@ export default function RecipeEditor() {
         dispatch(deletePost(associatedPost.post_id));
       }
 
-      navigate("/ReciPals/Profile");
+      navigate(`/ReciPals/Account/Profile/${currentUser._id}`);
     }
   };
 
@@ -340,7 +375,7 @@ export default function RecipeEditor() {
               value={name}
               placeholder="New Recipe"
               onChange={(e) => setName(e.target.value)}
-              maxLength={20}
+              maxLength={50}
             />
             <Form.Text className="text-muted">
               {name.length}/50 characters
@@ -396,7 +431,7 @@ export default function RecipeEditor() {
                       />
                     </Form.Group>
                     <strong className="d-block mb-2">Ingredients</strong>
-                    {section["ingredients:"].map(
+                    {section["ingredients"].map(
                       (ingredient: string, index: number) => (
                         <div
                           key={index}
@@ -413,7 +448,7 @@ export default function RecipeEditor() {
                               )
                             }
                           />
-                          {section["ingredients:"].length > 1 && (
+                          {section["ingredients"].length > 1 && (
                             <FaRegTrashCan
                               style={{
                                 cursor: "pointer",

@@ -70,15 +70,11 @@ export default function RecipeDetails() {
   useEffect(() => {
     const loadRecipes = async () => {
       try {
-        if (recipes.length === 0) {
-          const allRecipes = await recipeClient.getAllRecipes();
-          dispatch(setRecipes(allRecipes));
-        }
+        const allRecipes = await recipeClient.getAllRecipes();
+        dispatch(setRecipes(allRecipes));
 
-        if (posts.length === 0) {
-          const allPosts = await postClient.getAllPosts();
-          dispatch(setPosts(allPosts));
-        }
+        const allPosts = await postClient.getAllPosts();
+        dispatch(setPosts(allPosts));
 
         if (searchRecipes.length === 0) {
           dispatch(fetchRecipes());
@@ -86,12 +82,8 @@ export default function RecipeDetails() {
 
         // load users
         if (users.length === 0) {
-          try {
-            const allUsers = await userClient.getAllUsers();
-            dispatch(setUsers(allUsers));
-          } catch (error) {
-            console.error("Error loading users:", error);
-          }
+          const allUsers = await userClient.getAllUsers();
+          dispatch(setUsers(allUsers));
         }
       } catch (error) {
         console.error("Error loading recipes:", error);
@@ -278,7 +270,7 @@ export default function RecipeDetails() {
                   <div key={section._id} className="mb-4 recipe-section">
                     <h6 className="fw-bold mb-2">For the {section.title}</h6>
                     <ul className="list-unstyled ps-3">
-                      {section["ingredients:"]?.map(
+                      {section["ingredients"]?.map(
                         (ingredient: string, idx: number) => (
                           <li key={idx} className="mb-1 recipe-ingredient-item">
                             <span className="me-2">•</span>

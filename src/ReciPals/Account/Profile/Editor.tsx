@@ -83,6 +83,18 @@ export default function ProfileEditor() {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
+  useEffect(() => {
+    if (users.length > 0) {
+      const targetUser = users.find((user: any) => user._id === uid);
+
+      if (!targetUser) {
+        alert("User not found. Redirecting to login page.");
+        navigate("/ReciPals/Account/Login");
+        return;
+      }
+    }
+  }, [users, uid, currentUser, navigate]);
+
   // when userToEdit is loaded or changes, initialize selectedTags with userToEdit.tags
   useEffect(() => {
     if (users.length > 0) {
@@ -346,12 +358,7 @@ export default function ProfileEditor() {
                   Cancel
                 </Button>
               </Link>
-              <Button
-                id="save-btn"
-                size="sm"
-                type="submit"
-                onClick={handleSave}
-              >
+              <Button id="save-btn" size="sm" onClick={handleSave}>
                 Save
               </Button>
             </div>
