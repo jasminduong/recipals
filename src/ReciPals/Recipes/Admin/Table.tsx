@@ -10,16 +10,16 @@ export default function RecipesTable({
 }) {
   return (
     <div id="recipes-table">
-      <Table striped style={{ fontSize: "12px" }}>
+      <Table striped className="recipes-table text-nowrap" style={{ fontSize: "12px" }}>
         <thead>
           <tr>
             <th style={{ width: "25%" }}>Name</th>
-            <th>Creator Id</th>
-            <th>Recipe Id</th>
-            <th>Post Id</th>
-            <th>Likes</th>
-            <th>Comments</th>
-            <th>Date Created</th>
+            <th style={{ width: "15%" }}>Creator Id</th>
+            <th style={{ width: "15%" }}>Recipe Id</th>
+            <th style={{ width: "12%" }}>Post Id</th>
+            <th style={{ width: "8%" }}>Likes</th>
+            <th style={{ width: "10%" }}>Comments</th>
+            <th style={{ width: "15%" }}>Date Created</th>
           </tr>
         </thead>
         <tbody>
@@ -49,7 +49,7 @@ export default function RecipesTable({
                     <span>{recipe.name}</span>
                   </Link>
                 </td>
-                <td className="recipe-info align-middle ">
+                <td className="recipe-info align-middle">
                   {recipe.user_created || matchingPost?.created_by || "N/A"}
                 </td>
                 <td className="recipe-info align-middle">{recipe.recipe_id}</td>

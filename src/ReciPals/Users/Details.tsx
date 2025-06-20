@@ -80,17 +80,17 @@ export default function PeopleDetails() {
       </div>
       <div className="user-username pb-1">
         <b>Username: </b>
-        {user.username}
+        <span style={{ fontSize: "14px" }}>{user.username}</span>
       </div>
       <div className="user-bio pb-1">
         <b>Bio: </b>
-        {user.bio}
+        <span style={{ fontSize: "14px" }}>{user.bio}</span>
       </div>
       <div className="user-bio pb-1">
         <b>Tags: </b>
-        {Array.isArray(user.tags) && user.tags.length > 0
+        <span style={{ fontSize: "14px" }}>{Array.isArray(user.tags) && user.tags.length > 0
           ? user.tags.join(", ")
-          : "No tags"}
+          : "No tags"}</span>
       </div>
       <div className="mb-3 d-flex align-items-center">
         <Form.Label className="mb-0 me-2">

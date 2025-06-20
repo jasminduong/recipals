@@ -8,10 +8,10 @@ import { setRecipes } from "./recipeReducer";
 import * as recipeClient from "./recipeClient";
 import * as postClient from "../Posts/postClient";
 import { setPosts, addComment } from "../Posts/postReducer";
-import { fetchRecipes } from '../Search/reducer'; 
-import { saveRecipe, unsaveRecipe } from '../Account/userReducer'; // Add this import
-import * as userClient from '../Account/client'; // Add this import
-import type { RootState, AppDispatch } from '../store';
+import { fetchRecipes } from "../Search/reducer";
+import { saveRecipe, setUsers, unsaveRecipe } from "../Account/userReducer";
+import * as userClient from "../Account/client";
+import type { RootState, AppDispatch } from "../store";
 import { BsBookmarkFill } from "react-icons/bs";
 
 export default function RecipeDetails() {
@@ -20,25 +20,36 @@ export default function RecipeDetails() {
   const dispatch = useDispatch<AppDispatch>();
   const [commentText, setCommentText] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-  const [isSaving, setIsSaving] = useState(false); // Add this state
+  const [isSaving, setIsSaving] = useState(false);
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
   const posts = useSelector((state: any) => state.postReducer.posts);
   const currPost = posts.find((post: any) => post.recipe_id === rid);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { recipes: searchRecipes } = useSelector((state: RootState) => state.searchReducer);
-  const users = useSelector((state: any) => state.userReducer.users); // Add this
-  const currRecipe = recipes.find((recipe: any) => recipe.recipe_id === rid) || 
-                     searchRecipes.find((recipe: any) => recipe.recipe_id === rid);
+  const { recipes: searchRecipes } = useSelector(
+    (state: RootState) => state.searchReducer
+  );
+  const users = useSelector((state: any) => state.userReducer.users);
+  const currRecipe =
+    recipes.find((recipe: any) => recipe.recipe_id === rid) ||
+    searchRecipes.find((recipe: any) => recipe.recipe_id === rid);
   // Check if recipe is saved by current user
-  const currentUserData = users.find((user: any) => user._id === currentUser?._id);
+  const currentUserData = users.find(
+    (user: any) => user._id === currentUser?._id
+  );
   const isRecipeSaved = currentUserData?.saved_recipes?.includes(rid) || false;
 
-// Handle save/unsave functionality
+  // find the recipe creator's username
+  const recipeCreator = users.find(
+    (user: any) => user._id === currRecipe?.user_created
+  );
+  const creatorUsername = recipeCreator?.username || "Unknown User";
+
+  // Handle save/unsave functionality
   const handleSaveToggle = async () => {
     if (!currentUser || !rid) return;
-    
+
     setIsSaving(true);
-    
+
     try {
       if (isRecipeSaved) {
         // Unsave recipe
@@ -50,7 +61,7 @@ export default function RecipeDetails() {
         dispatch(saveRecipe({ userId: currentUser._id, recipeId: rid }));
       }
     } catch (error) {
-      console.error('Error toggling save:', error);
+      console.error("Error toggling save:", error);
     } finally {
       setIsSaving(false);
     }
@@ -68,9 +79,19 @@ export default function RecipeDetails() {
           const allPosts = await postClient.getAllPosts();
           dispatch(setPosts(allPosts));
         }
-        
+
         if (searchRecipes.length === 0) {
           dispatch(fetchRecipes());
+        }
+
+        // load users
+        if (users.length === 0) {
+          try {
+            const allUsers = await userClient.getAllUsers();
+            dispatch(setUsers(allUsers));
+          } catch (error) {
+            console.error("Error loading users:", error);
+          }
         }
       } catch (error) {
         console.error("Error loading recipes:", error);
@@ -83,40 +104,46 @@ export default function RecipeDetails() {
   // Handle comment submission
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!commentText.trim() || !currentUser || !currPost) {
       return;
     }
 
     setIsSubmittingComment(true);
-    
+
     try {
-      const response = await fetch(`http://localhost:4000/api/posts/${currPost.post_id}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: currentUser._id || currentUser.username,
-          text: commentText.trim(),
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:4000/api/posts/${currPost.post_id}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: currentUser._id || currentUser.username,
+            text: commentText.trim(),
+          }),
+        }
+      );
 
       if (response.ok) {
         const updatedPost = await response.json();
-        
-        const newComment = updatedPost.comments[updatedPost.comments.length - 1];
-        dispatch(addComment({ 
-          postId: currPost.post_id, 
-          comment: newComment 
-        }));
-        
+
+        const newComment =
+          updatedPost.comments[updatedPost.comments.length - 1];
+        dispatch(
+          addComment({
+            postId: currPost.post_id,
+            comment: newComment,
+          })
+        );
+
         setCommentText("");
       } else {
-        console.error('Failed to add comment');
+        console.error("Failed to add comment");
       }
     } catch (error) {
-      console.error('Error adding comment:', error);
+      console.error("Error adding comment:", error);
     } finally {
       setIsSubmittingComment(false);
     }
@@ -143,32 +170,50 @@ export default function RecipeDetails() {
             {/* recipe title and bookmark */}
             <Col xs={12} md={7} lg={8}>
               <div className="d-flex justify-content-between align-items-start mb-2">
-                <h2
-                  className="mb-0 me-2 flex-grow-1"
-                  style={{
-                    lineHeight: "1.2",
-                  }}
-                >
-                  {currRecipe.name}
-                </h2>
+                <div className="flex-grow-1 me-2">
+                  <h2
+                    className="mb-1"
+                    style={{
+                      lineHeight: "1.2",
+                    }}
+                  >
+                    {currRecipe.name}
+                  </h2>
+                  <div className="text-muted mb-2">
+                    Created by:{" "}
+                    <span
+                      className="fw-semibold text-dark text-decoration-none"
+                      style={{
+                        cursor: "pointer",
+                        color: "#0066cc",
+                      }}
+                      onClick={() =>
+                        recipeCreator &&
+                        navigate(`/ReciPals/Profile/${currRecipe.user_creator}`)
+                      }
+                    >
+                      {creatorUsername}
+                    </span>
+                  </div>
+                </div>
                 {currentUser && (
                   <div
                     onClick={handleSaveToggle}
-                    style={{ cursor: isSaving ? 'not-allowed' : 'pointer' }}
+                    style={{ cursor: isSaving ? "not-allowed" : "pointer" }}
                     className="flex-shrink-0"
                   >
                     {isRecipeSaved ? (
-                      <BsBookmarkFill
+                      <BsBookmarkFill className="bookmark-icon"
                         style={{
                           width: "40px",
                           height: "40px",
                           minWidth: "30px",
                           minHeight: "30px",
-                          color: "#000000", // Blue when saved
+                          color: "#BEDBFF",
                         }}
                       />
                     ) : (
-                      <BiBookmark
+                      <BiBookmark className="bookmark-icon"
                         style={{
                           width: "40px",
                           height: "40px",
@@ -189,10 +234,10 @@ export default function RecipeDetails() {
               <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3">
                 <div className="mb-2 mb-sm-0">
                   <div>
-                    <strong>Total Time:</strong> {currRecipe.total_time}
+                    <strong>Total Time:</strong> {currRecipe.total_time || "1+ min"}
                   </div>
                   <div>
-                    <strong>Serves:</strong> {currRecipe.serves}
+                    <strong>Serves:</strong> {currRecipe.serves || "1+"}
                   </div>
                 </div>
                 {currRecipe?.user_created === currentUser?._id && (
@@ -271,18 +316,18 @@ export default function RecipeDetails() {
             {currentUser ? (
               <Form onSubmit={handleAddComment} className="mb-4">
                 <div className="d-flex gap-2">
-                  <Form.Control 
-                    placeholder="Add a comment..." 
+                  <Form.Control
+                    placeholder="Add a comment..."
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     disabled={isSubmittingComment}
                   />
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     disabled={!commentText.trim() || isSubmittingComment}
                     variant="primary"
                   >
-                    {isSubmittingComment ? 'Posting...' : 'Post'}
+                    {isSubmittingComment ? "Posting..." : "Post"}
                   </Button>
                 </div>
               </Form>
@@ -294,7 +339,10 @@ export default function RecipeDetails() {
 
             {/* Comments list */}
             {currPost?.comments?.map((comment: any, index: any) => (
-              <div key={comment.comment_id || index} className="mb-3 pb-3 border-bottom">
+              <div
+                key={comment.comment_id || index}
+                className="mb-3 pb-3 border-bottom"
+              >
                 <Row className="g-2 g-sm-3">
                   <Col xs="auto">
                     <img
