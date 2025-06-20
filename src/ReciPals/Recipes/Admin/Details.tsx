@@ -127,21 +127,49 @@ export default function RecipeDetails({
 
   // deletes recipe
   const deleteRecipe = async () => {
-    if (!recipe || !post) return;
+    if (!recipe) {
+      console.error("No recipe found to delete");
+      alert("Error: Recipe not found");
+      return;
+    }
 
     if (window.confirm("Are you sure you want to delete this recipe?")) {
       try {
-        await recipeClient.deleteRecipe(recipe._id);
-        await postClient.deletePost(post.post_id);
+        const recipeId = recipe._id || recipe.id || recipe.recipe_id;
 
-        const updatedRecipes = recipes.filter((r: any) => r.recipe_id !== rid);
-        const updatedPosts = posts.filter((p: any) => p.recipe_id !== rid);
+        if (!recipeId) {
+          throw new Error("No valid recipe ID found");
+        }
+
+        await recipeClient.deleteRecipe(recipeId);
+
+        if (post && post.post_id) {
+          try {
+            await postClient.deletePost(post.post_id);
+          } catch (postError) {
+            console.warn("Post deletion failed, but continuing:", postError);
+          }
+        }
+
+        const updatedRecipes = recipes.filter((r: any) => {
+            r.recipe_id !== recipe.recipe_id && r.recipe_id !== rid;
+        });
+
+        const updatedPosts = posts.filter((p: any) => {
+          return p.recipe_id !== recipe.recipe_id && p.recipe_id !== rid;
+        });
+
         dispatch(setRecipes(updatedRecipes));
         dispatch(setPosts(updatedPosts));
 
         navigate(-1);
       } catch (error) {
         console.error("Error deleting recipe:", error);
+        alert(
+          `Failed to delete recipe: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
       }
     }
   };
@@ -424,7 +452,7 @@ export default function RecipeDetails({
           Delete
         </Button>
         <div className="d-flex gap-2">
-          <Button onClick={() => navigate(-1)} id="cancel-btn"size="sm">
+          <Button onClick={() => navigate(-1)} id="cancel-btn" size="sm">
             Close
           </Button>
         </div>

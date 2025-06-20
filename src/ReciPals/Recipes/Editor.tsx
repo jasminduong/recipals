@@ -359,7 +359,7 @@ export default function RecipeEditor() {
               maxLength={150}
             />
             <Form.Text className="text-muted">
-              {name.length}/150 characters
+              {description.length}/150 characters
             </Form.Text>
           </Form.Group>
 

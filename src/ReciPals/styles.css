@@ -306,16 +306,16 @@ body * {
 }
 
 .recipe-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
 }
 
 .recipe-sub-title {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .recipe-body {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .recipe-sub-body {
@@ -359,6 +359,11 @@ body * {
 
 .recipe-step-item {
   min-height: 30px;
+}
+
+.bookmark-icon {
+  color: #cd9f08 !important;
+  fill: #cd9f08 !important;
 }
 
 /* USER POST PAGE STYLE*/
