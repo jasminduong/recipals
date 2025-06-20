@@ -438,3 +438,9 @@ body * {
   gap: 50px;
   margin-bottom: 16px;
 }
+
+.posts-grid .my-recipes .profile-post {
+  width: 300px !important;
+  height: 300px !important;
+  max-width: none !important;
+}
