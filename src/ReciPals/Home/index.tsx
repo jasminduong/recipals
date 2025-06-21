@@ -104,10 +104,45 @@ export default function Home() {
   }, [posts, currentUser, sortedPosts.length]);
 
   return (
-    <div id="recipals-home">
-      {sortedPosts.map((post: any) => (
-        <RecipePost key={post.post_id} post={post} />
-      ))}
+    <div 
+      id="recipals-home"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+        minHeight: "100vh",
+        padding: "10px",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+        minWidth: "500px" // Enforce minimum width to prevent clipping
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          minWidth: "500px", // Increased from 300px to prevent clipping
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px"
+        }}
+      >
+        {sortedPosts.map((post: any) => (
+          <div
+            key={post.post_id}
+            style={{
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+              wordWrap: "break-word",
+              wordBreak: "break-word"
+            }}
+          >
+            <RecipePost post={post} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
