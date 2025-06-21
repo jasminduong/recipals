@@ -39,7 +39,7 @@
     "total_time": "80min",
     "serves": 4,
     "tags": ["Savory", "High Protein", "Asian Fusion"],
-    "photo": "/images/noodleDish.png"
+    "photo": "https://recipals.netlify.app/images/noodleDish.png"
   },
   {
     "recipe_id": "recipeBot-R1",
