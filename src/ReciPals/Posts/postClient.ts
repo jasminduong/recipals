@@ -1,10 +1,6 @@
 import axios from "axios";
 export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "https://recipals-node-server-app.onrender.com";
 
-console.log("🔍 Posts Client Debug:");
-console.log("VITE_REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
-console.log("Final REMOTE_SERVER:", REMOTE_SERVER);
-
 export const POSTS_API = `${REMOTE_SERVER}/api/posts`;
 const axiosWithCredentials = axios.create({ 
   withCredentials: true,
