@@ -366,8 +366,7 @@ export default function RecipeDetails() {
         </div>
       ) : (
         <div className="text-center py-5">
-          <p className="text-danger fs-4">Recipe not found.</p>
-          <p className="text-muted">Recipe ID: {rid}</p>
+          <p className="text-dark fs-4">Loading...</p>
         </div>
       )}
     </Container>
