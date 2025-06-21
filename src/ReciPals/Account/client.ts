@@ -1,7 +1,19 @@
 import axios from "axios";
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+// Change this line - use production URL as fallback
+export const REMOTE_SERVER =
+  import.meta.env.VITE_REMOTE_SERVER ||
+  "https://recipals-node-server-app.onrender.com";
+
+// Add debugging
+console.log("🔍 Users Client Debug:");
+console.log("VITE_REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
+console.log("Final REMOTE_SERVER:", REMOTE_SERVER);
+
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
-const axiosWithCredentials = axios.create({ withCredentials: true });
+const axiosWithCredentials = axios.create({
+  withCredentials: true,
+  baseURL: REMOTE_SERVER, // Add this
+});
 
 // Account client.ts integrates with the user routes implemented in the server
 
@@ -74,16 +86,22 @@ export const createUser = async (user: any) => {
 
 // saveRecipe adds a recipe to user's saved list
 export const saveRecipe = async (userId: string, recipeId: string) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/save`, {
-    recipeId: recipeId
-  });
+  const response = await axiosWithCredentials.put(
+    `${USERS_API}/${userId}/save`,
+    {
+      recipeId: recipeId,
+    }
+  );
   return response.data;
 };
 
 // unsaveRecipe removes a recipe from user's saved list
 export const unsaveRecipe = async (userId: string, recipeId: string) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/unsave`, {
-    recipeId: recipeId
-  });
+  const response = await axiosWithCredentials.put(
+    `${USERS_API}/${userId}/unsave`,
+    {
+      recipeId: recipeId,
+    }
+  );
   return response.data;
 };

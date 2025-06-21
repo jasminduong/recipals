@@ -1,7 +1,15 @@
 import axios from "axios";
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "https://recipals-node-server-app.onrender.com";
+
+console.log("🔍 Recipes Client Debug:");
+console.log("VITE_REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
+console.log("Final REMOTE_SERVER:", REMOTE_SERVER);
+
 export const RECIPES_API = `${REMOTE_SERVER}/api/recipes`;
-const axiosWithCredentials = axios.create({ withCredentials: true });
+const axiosWithCredentials = axios.create({ 
+  withCredentials: true,
+  baseURL: REMOTE_SERVER
+});
 
 // Recipe client.ts integrates with the recipes routes implemented in the server
 
