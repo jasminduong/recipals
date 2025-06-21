@@ -105,6 +105,7 @@ export default function Profile() {
   // check if this is the current user's own profile
   const isOwnProfile = loggedInUser && user._id === loggedInUser._id;
 
+  
   // handles follow/unfollow action
   const handleFollowToggle = async () => {
     if (isFollowing) {

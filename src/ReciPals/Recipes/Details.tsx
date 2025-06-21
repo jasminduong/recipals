@@ -42,6 +42,12 @@ export default function RecipeDetails() {
   const recipeCreator = users.find(
     (user: any) => user._id === currRecipe?.user_created
   );
+  // Function to get username by user_id for comments
+  const getUsernameById = (userId: string) => {
+    const user = users.find((user: any) => user._id === userId);
+    return user?.username || "Unknown User";
+  };
+
   const creatorUsername = recipeCreator?.username || "Unknown User";
 
   // Handle save/unsave functionality
@@ -351,7 +357,7 @@ export default function RecipeDetails() {
                   <Col>
                     <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
                       <strong className="me-2 mb-1 mb-sm-0">
-                        {comment.user_id}
+                        {getUsernameById(comment.user_id)}
                       </strong>
                     </div>
                     <div>
