@@ -8,11 +8,24 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 // signin posts a credentials object containing the username and password expected by the server
 // if the credentials are found, the response should contain the logged in user
 export const signin = async (credentials: any) => {
-  const response = await axiosWithCredentials.post(
-    `${USERS_API}/signin`,
-    credentials
-  );
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.post(
+      `${USERS_API}/signin`,
+      credentials
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // Axios-specific error
+      console.error("Axios error:", error.response?.data || error.message);
+    } else {
+      // Generic error
+      console.error("Unexpected error:", error);
+    }
+
+    // Optionally rethrow or return a custom error
+    throw error;
+  }
 };
 
 // signup posts a user object
@@ -74,16 +87,22 @@ export const createUser = async (user: any) => {
 
 // saveRecipe adds a recipe to user's saved list
 export const saveRecipe = async (userId: string, recipeId: string) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/save`, {
-    recipeId: recipeId
-  });
+  const response = await axiosWithCredentials.put(
+    `${USERS_API}/${userId}/save`,
+    {
+      recipeId: recipeId,
+    }
+  );
   return response.data;
 };
 
 // unsaveRecipe removes a recipe from user's saved list
 export const unsaveRecipe = async (userId: string, recipeId: string) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/unsave`, {
-    recipeId: recipeId
-  });
+  const response = await axiosWithCredentials.put(
+    `${USERS_API}/${userId}/unsave`,
+    {
+      recipeId: recipeId,
+    }
+  );
   return response.data;
 };
