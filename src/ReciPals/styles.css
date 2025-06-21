@@ -476,8 +476,60 @@ body * {
   margin-bottom: 16px;
 }
 
-.posts-grid .my-recipes .profile-post {
-  width: 300px !important;
-  height: 300px !important;
+.posts-grid .my-recipes img {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1/1 !important;
+  object-fit: cover !important;
   max-width: none !important;
+  max-height: none !important;
+}
+
+#profile-screen {
+  min-width: 1000px !important;
+  width: 100% !important;
+}
+
+/* Post image styling */
+.post-image {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #f8f9fa;
+}
+
+/* Prevent text overflow in usernames and captions */
+.post-caption {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure profile links don't overflow */
+.d-flex .text-decoration-none {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.d-flex .text-decoration-none span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Set minimum container width to prevent extreme clipping */
+#recipals-home > div {
+  min-width: 500px !important;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 400px) {
+  #recipals-home {
+    padding: 5px !important;
+  }
+  
+  .d-flex.gap-4 {
+    gap: 1rem !important;
+  }
 }

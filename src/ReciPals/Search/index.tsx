@@ -1,4 +1,4 @@
-import { Col, Container, FormControl, Row } from "react-bootstrap";
+import { Container, FormControl } from "react-bootstrap";
 import { BiSearch } from "react-icons/bi";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -104,12 +104,22 @@ export default function Search() {
   }
 
   return (
-    <Container fluid className="mt-4 px-2 px-md-4" id="search" style={{ minHeight: "100vh" }}>
-      <div className="position-relative me-3 d-flex align-items-center mb-4">
+    <div 
+      className="container-fluid mt-4 px-2 px-md-4" 
+      id="search"
+      style={{
+        minHeight: "100vh",
+        minWidth: "320px",
+        maxWidth: "100%",
+        overflow: "hidden"
+      }}
+    >
+      {/* Search Bar */}
+      <div className="position-relative d-flex align-items-center mb-4 w-100">
         <FormControl
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search recipes, ingredients, users..."
-          className="ps-5"
+          className="ps-5 w-100"
           value={searchTerm}
         />
         <div className="position-absolute top-50 translate-middle-y ms-3 text-secondary">
@@ -131,11 +141,11 @@ export default function Search() {
                 <div
                   key={user._id}
                   onClick={() => handleUserClick(user._id)}
-                  style={{ cursor: "pointer" }}
                   className="user-card mb-3 p-3 border rounded"
+                  style={{ cursor: "pointer" }}
                 >
-                  <Row className="align-items-center">
-                    <Col xs="auto">
+                  <div className="d-flex align-items-center w-100">
+                    <div className="flex-shrink-0 me-3">
                       <img
                         src={user.profile}
                         className="rounded-circle"
@@ -146,12 +156,12 @@ export default function Search() {
                         }}
                         alt={`${user.username} profile`}
                       />
-                    </Col>
-                    <Col>
-                      <div className="fw-bold fs-5 mb-1">{user.username}</div>
-                      <div className="text-muted">{user.name}</div>
-                    </Col>
-                  </Row>
+                    </div>
+                    <div className="flex-grow-1 text-truncate">
+                      <div className="fw-bold fs-5 mb-1 text-truncate">{user.username}</div>
+                      <div className="text-muted text-truncate">{user.name}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
               <hr className="my-4" />
@@ -161,53 +171,82 @@ export default function Search() {
       )}
 
       {/* Recipe Results Section */}
-      <div>
+      <div className="w-100">
         {searchTerm && <h5 className="mb-3">Recipes</h5>}
         {recipes.length === 0 && searchTerm && !loading ? (
           <div className="text-center mt-5">
             <p>No recipes found matching "{searchTerm}"</p>
           </div>
         ) : (
-          recipes.map((recipe: any) => (
-            <div
-              key={recipe.recipe_id}
-              onClick={() => handleRecipeClick(recipe.recipe_id)}
-              style={{ cursor: "pointer" }}
-              className="recipe-card"
-            >
-              <Row className="pt-2 pb-2">
-                <Col xs={3} className="mb-3 mb-md-0">
-                  <img
-                    src={recipe.photo}
-                    className="img-fluid"
-                    style={{
-                      width: "180px",
-                      height: "180px",
-                      objectFit: "cover",
-                    }}
-                    alt={recipe.name}
-                  />
-                </Col>
-                <Col xs={9}>
-                  <div className="recipe-body mt-2 mb-1">
-                    {getUsernameById(recipe.user_created)}
+          <div className="row">
+            {recipes.map((recipe: any) => (
+              <div key={recipe.recipe_id} className="col-12 mb-3">
+                <div
+                  onClick={() => handleRecipeClick(recipe.recipe_id)}
+                  className="recipe-card h-100"
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="row g-0 align-items-center py-3">
+                    {/* Recipe Image */}
+                    <div className="col-12 col-sm-4 col-md-3 mb-3 mb-sm-0">
+                      <div className="d-flex justify-content-center justify-content-sm-start">
+                        <img
+                          src={recipe.photo}
+                          className="img-fluid"
+                          style={{
+                            width: "100%",
+                            maxWidth: "200px",
+                            height: "150px",
+                            objectFit: "cover"
+                          }}
+                          alt={recipe.name}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Recipe Content */}
+                    <div className="col-12 col-sm-8 col-md-9">
+                      <div className="ps-0 ps-sm-3">
+                        <div className="recipe-body mb-2 text-muted text-truncate">
+                          {getUsernameById(recipe.user_created)}
+                        </div>
+                        
+                        <div className="row align-items-start mb-2">
+                          <div className="col-12 col-md-8">
+                            <div className="recipe-title fw-bold fs-5 text-truncate">
+                              {recipe.name}
+                            </div>
+                          </div>
+                          <div className="col-12 col-md-4 text-md-end">
+                            <div className="recipe-sub-title text-muted">
+                              <b>Total Time:</b> {recipe.total_time || "0+ min"}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="recipe-sub-title text-muted">
+                          <div 
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              wordWrap: "break-word"
+                            }}
+                          >
+                            {recipe.description}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="d-flex justify-content-between align-items-end">                     
-                    <div className="recipe-title">{recipe.name}</div>                     
-                    <div className="recipe-sub-title">                       
-                      <b>Total Time:</b> {recipe.total_time || "0+ min"}                    
-                    </div>                   
-                  </div> 
-                  <div className="recipe-sub-title mt-3">
-                    {recipe.description}
-                  </div>
-                </Col>
-              </Row>
-              <hr />
-            </div>
-          ))
+                  <hr className="m-0" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-    </Container>
+    </div>
   );
 }

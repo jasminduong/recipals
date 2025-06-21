@@ -1,4 +1,4 @@
-import { Row, Col, Image, Button } from "react-bootstrap";
+import { Image, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -105,7 +105,21 @@ export default function Profile() {
   // check if this is the current user's own profile
   const isOwnProfile = loggedInUser && user._id === loggedInUser._id;
 
-  
+  // Create invisible placeholder component
+  const InvisiblePlaceholder = () => (
+    <div className="my-recipes text-center">
+      <div
+        style={{
+          width: "100%",
+          aspectRatio: "1/1",
+          opacity: 0,
+          pointerEvents: "none",
+          backgroundColor: "transparent"
+        }}
+      />
+    </div>
+  );
+
   // handles follow/unfollow action
   const handleFollowToggle = async () => {
     if (isFollowing) {
@@ -163,51 +177,66 @@ export default function Profile() {
   const handleShowFollowing = () => setShowFollowing(true);
 
   return (
-    <div id="profile-screen" className="p-1">
-      {/* profile picture */}
-      <Row className="align-items-center profile-pic">
-        <Col xs={3}>
+    <div id="profile-screen" className="p-1" style={{ overflowX: "hidden" }}>
+      <div style={{ minWidth: "320px", maxWidth: "100%", width: "100%", boxSizing: "border-box" }}>
+        {/* profile picture */}
+        <div
+          className="align-items-center profile-pic"
+          style={{
+            paddingLeft: "clamp(20px, 8vw, 80px)",
+            paddingTop: "0px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "20px"
+          }}
+        >
+        <div style={{ flex: "0 0 auto" }}>
           <Image
             src={user.profile}
             roundedCircle
             fluid
             alt={`${user.username} profile`}
-            style={{ width: 160, height: 160, objectFit: "cover" }}
+            style={{ 
+              width: "clamp(120px, 15vw, 160px)", 
+              height: "clamp(120px, 15vw, 160px)", 
+              objectFit: "cover" 
+            }}
           />
-        </Col>
+        </div>
 
         {/* username, posts, followers, following, user's name */}
-        <Col xs={9} sm={8} md={9} className="text-sm-start text-center ps-5">
-          <Row className="align-items-center justify-content-between">
-            <Col xs="auto">
-              <div className="profile-username">{user.username}</div>
-            </Col>
-            <Col xs="auto">
-              {!isOwnProfile && loggedInUser && (
-                <Button
-                  id={isFollowing ? "cancel-btn" : "save-btn"}
-                  onClick={handleFollowToggle}
-                  className="mb-4"
-                >
-                  {isFollowing ? "Unfollow" : "Follow"}
-                </Button>
-              )}
-            </Col>
-            <Col xs="auto">
-              {loggedInUser && user._id === loggedInUser._id && (
-                <Button
-                  className="edit-button text-dark"
-                  onClick={() =>
-                    navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
-                  }
-                >
-                  Edit Profile
-                </Button>
-              )}
-            </Col>
-          </Row>
+        <div className="text-sm-start text-center" style={{ flex: "1", minWidth: "250px" }}>
+          <div style={{ display: "flex", marginBottom: "20px", flexDirection: "column", gap: "15px" }}>
+            <div className="align-items-center" style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "space-between" }}>
+              <div style={{ minWidth: 0 }}>
+                <div className="profile-username" style={{ wordWrap: "break-word" }}>{user.username}</div>
+              </div>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                {!isOwnProfile && loggedInUser && (
+                  <Button
+                    id={isFollowing ? "cancel-btn" : "save-btn"}
+                    onClick={handleFollowToggle}
+                    size="sm"
+                  >
+                    {isFollowing ? "Unfollow" : "Follow"}
+                  </Button>
+                )}
+                {loggedInUser && user._id === loggedInUser._id && (
+                  <Button
+                    className="edit-button text-dark"
+                    onClick={() =>
+                      navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
+                    }
+                    size="sm"
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
 
-          <div className="d-flex justify-content-sm-start justify-content-center profile-user-info">
+          <div className="d-flex justify-content-sm-start justify-content-center profile-user-info" style={{ flexWrap: "wrap", gap: "15px" }}>
             <div>
               <strong>{userPosts.length}</strong> posts
             </div>
@@ -235,14 +264,14 @@ export default function Profile() {
             </div>
           </div>
           <div className="profile-name">{user.name}</div>
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       {/* bio and tags*/}
-      <div className="profile-bio">{user.bio}</div>
+      <div className="profile-bio" style={{ paddingLeft: "clamp(20px, 8vw, 95px)", paddingRight: "20px" }}>{user.bio}</div>
       <div
         className="d-flex flex-wrap gap-2 mt-3"
-        style={{ paddingLeft: "95px" }}
+        style={{ paddingLeft: "clamp(20px, 8vw, 95px)", paddingRight: "20px" }}
       >
         {user.tags.map((tag: string, index: number) => (
           <div key={index} className="btn profile-tags">
@@ -252,28 +281,30 @@ export default function Profile() {
       </div>
 
       {/* tabs */}
-      <div className="profile-recipes d-flex justify-content-center mt-4">
-        <button
-          className={`tab-btn ${activeTab === "myRecipes" ? "active" : ""}`}
-          onClick={() => setActiveTab("myRecipes")}
-        >
-          My Recipes
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "saved" ? "active" : ""}`}
-          onClick={() => setActiveTab("saved")}
-        >
-          Saved
-        </button>
+      <div className="profile-recipes mt-4" style={{ display: "flex", justifyContent: "center", padding: "0 20px" }}>
+        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
+          <button
+            className={`tab-btn ${activeTab === "myRecipes" ? "active" : ""}`}
+            onClick={() => setActiveTab("myRecipes")}
+          >
+            My Recipes
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "saved" ? "active" : ""}`}
+            onClick={() => setActiveTab("saved")}
+          >
+            Saved
+          </button>
+        </div>
       </div>
 
       {/* posts */}
       <div
         className="mt-4"
         style={{
-          marginLeft: "95px",
+          paddingLeft: "clamp(20px, 8vw, 95px)",
           minHeight: "400px",
-          width: "calc(100% - 95px)",
+          paddingRight: "clamp(20px, 4vw, 50px)",
         }}
       >
         <div
@@ -283,6 +314,9 @@ export default function Profile() {
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "15px",
             minHeight: "250px",
+            width: "100%",
+            maxWidth: "100%",
+            minWidth: "300px",
           }}
         >
           {activeTab === "myRecipes" && (
@@ -297,13 +331,24 @@ export default function Profile() {
                           `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
                         )
                       }
+                      style={{
+                        cursor: "pointer",
+                        width: "100%",
+                        aspectRatio: "1/1",
+                        overflow: "hidden"
+                      }}
                     >
                       <Image
                         src={post.photo}
                         className="recipe-image"
                         alt="Recipe"
+                        style={{
+                          objectFit: "cover",
+                          width: "100%",
+                          height: "100%"
+                        }}
                       />
-                    </div> 
+                    </div>
                   </div>
                 ))
               ) : (
@@ -315,6 +360,7 @@ export default function Profile() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    width: "100%",
                   }}
                 >
                   <p className="text-muted">No recipes yet</p>
@@ -325,6 +371,9 @@ export default function Profile() {
 
           {activeTab === "saved" && (
             <>
+              {/* Add invisible placeholder if no saved recipes */}
+              {savedRecipes.length === 0 && <InvisiblePlaceholder />}
+              
               {savedRecipes.length > 0 ? (
                 savedRecipes.map((recipe: any) => {
                   // Find the corresponding post for this recipe
@@ -379,6 +428,7 @@ export default function Profile() {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
