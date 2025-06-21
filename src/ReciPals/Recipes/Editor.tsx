@@ -91,7 +91,7 @@ export default function RecipeEditor() {
   );
   const [steps, setSteps] = useState(recipeToEdit?.steps || [""]);
   const [photo, setPhoto] = useState(
-    recipeToEdit?.photo || "/images/default.jpg"
+    recipeToEdit?.photo || "https://recipals.netlify.app/images/default.jpg"
   );
 
   useEffect(() => {

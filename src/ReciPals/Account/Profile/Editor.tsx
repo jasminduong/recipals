@@ -293,7 +293,7 @@ export default function ProfileEditor() {
               <div className="d-flex align-items-center gap-3">
                 {/* Current Photo Preview */}
                 <Image
-                  src={userToEdit.profile || "/images/profile.png"}
+                  src={userToEdit.profile || "https://recipals.netlify.app/images/profile.png"}
                   alt="Profile"
                   roundedCircle
                   width={80}
