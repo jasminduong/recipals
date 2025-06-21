@@ -303,7 +303,7 @@ export default function Profile() {
                         className="recipe-image"
                         alt="Recipe"
                       />
-                    </div>
+                    </div> 
                   </div>
                 ))
               ) : (
