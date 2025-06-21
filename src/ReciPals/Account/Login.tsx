@@ -17,7 +17,9 @@ export default function Login() {
   // ignore the sign in attempt if there's no match
   // after signing in, navigate to the Home
   const signin = async () => {
+    console.log(credentials, "BEFORE FINDING USER")
     const user = await client.signin(credentials); // fetches signin credentials from client
+    console.log(user, "AFTER FINDING USER")
     if (!user) return;
     dispatch(setCurrentUser(user));
     navigate("/ReciPals/Home");
