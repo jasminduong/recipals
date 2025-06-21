@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { setUsers } from "../userReducer";
 import * as client from "../client";
+import imageCompression from "browser-image-compression";
 
 // defines each section of tags
 const sections = [
@@ -107,19 +108,35 @@ export default function ProfileEditor() {
   }, [uid, users]);
 
   // event handler to update profile photo
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setUserToEdit({ ...userToEdit, profile: base64String });
-      };
-      reader.readAsDataURL(file);
+      try {
+        // set compression options 
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 800, 
+          useWebWorker: true, 
+        };
+
+        // compress the image file
+        const compressedFile = await imageCompression(file, options);
+
+        // convert compressed file to base64 string
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          setUserToEdit({ ...userToEdit, profile: base64String });
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        alert("Failed to process the image. Please try again.");
+      }
     }
   };
 
-  //
+  // sets admin password
   const [adminPassword, setAdminPassword] = useState("");
   const [showAdminPassword, setShowAdminPassword] = useState(false);
 
@@ -293,7 +310,10 @@ export default function ProfileEditor() {
               <div className="d-flex align-items-center gap-3">
                 {/* Current Photo Preview */}
                 <Image
-                  src={userToEdit.profile || "https://recipals.netlify.app/images/profile.png"}
+                  src={
+                    userToEdit.profile ||
+                    "https://recipals.netlify.app/images/profile.png"
+                  }
                   alt="Profile"
                   roundedCircle
                   width={80}
