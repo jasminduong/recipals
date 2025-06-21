@@ -16,14 +16,10 @@ export const signin = async (credentials: any) => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      // Axios-specific error
       console.error("Axios error:", error.response?.data || error.message);
     } else {
-      // Generic error
       console.error("Unexpected error:", error);
     }
-
-    // Optionally rethrow or return a custom error
     throw error;
   }
 };
