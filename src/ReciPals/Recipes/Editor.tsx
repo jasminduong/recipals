@@ -20,6 +20,7 @@ import * as recipeClient from "./recipeClient";
 import * as postClient from "../Posts/postClient";
 import { setCurrentUser } from "../Account/reducer";
 import * as client from "../Account/client";
+import imageCompression from "browser-image-compression";
 
 export default function RecipeEditor() {
   const { rid } = useParams();
@@ -70,7 +71,7 @@ export default function RecipeEditor() {
     };
 
     loadData();
-  }, [isNew, currentUser]); 
+  }, [isNew, currentUser]);
 
   // state variables for each recipe field
   const [name, setName] = useState(recipeToEdit?.name || "");
@@ -102,13 +103,15 @@ export default function RecipeEditor() {
       setTotalTime(recipeToEdit.total_time || "");
       setServes(recipeToEdit.serves || 1);
       setTags(recipeToEdit.tags?.join(",") || "");
-      setIngredientsSec(recipeToEdit.ingredients_sec || [
-        {
-          _id: uuidv4(),
-          title: "",
-          ingredients: [""],
-        },
-      ]);
+      setIngredientsSec(
+        recipeToEdit.ingredients_sec || [
+          {
+            _id: uuidv4(),
+            title: "",
+            ingredients: [""],
+          },
+        ]
+      );
       setSteps(recipeToEdit.steps || [""]);
       setPhoto(recipeToEdit.photo || "/images/default.jpg");
     }
@@ -121,16 +124,32 @@ export default function RecipeEditor() {
     : null;
   const postId = isNew ? uuidv4() : existingPost?.post_id;
 
-  // event handler to update profile photo
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // event handler to update recipe photo
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPhoto(base64String);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // set compression options
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 800,
+          useWebWorker: true,
+        };
+
+        // compress the image file
+        const compressedFile = await imageCompression(file, options);
+
+        // convert compressed file to base64 string
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          setPhoto(base64String);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        alert("Failed to process the image. Please try again.");
+      }
     }
   };
 
@@ -329,7 +348,9 @@ export default function RecipeEditor() {
       dispatch(addRecipe(newRecipe));
       dispatch(addPost(newPost));
 
-      navigate(`/ReciPals/Account/Profile/${currentUser._id}/Posts/${newPost.post_id}`);
+      navigate(
+        `/ReciPals/Account/Profile/${currentUser._id}/Posts/${newPost.post_id}`
+      );
     } else {
       const updatedRecipe = await recipeClient.updateRecipe(recipePayload);
       const updatedPost = await postClient.updatePost(postPayload);
