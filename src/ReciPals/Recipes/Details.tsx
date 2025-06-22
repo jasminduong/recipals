@@ -100,62 +100,65 @@ export default function RecipeDetails() {
   }, [recipes.length, posts.length, searchRecipes.length, dispatch]);
 
   // Add this at the top of your file with other imports/constants
-const getBaseUrl = () => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:4000';
-  }
-  return 'https://your-backend-domain.com'; // Replace with your actual backend URL
-};
+  const getBaseUrl = () => {
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+    ) {
+      return "http://localhost:4000";
+    }
+    return "https://your-backend-domain.com"; // Replace with your actual backend URL
+  };
 
-const BASE_URL = getBaseUrl();
+  const BASE_URL = getBaseUrl();
 
-// Handle comment submission
-const handleAddComment = async (e: React.FormEvent) => {
-  e.preventDefault();
+  // Handle comment submission
+  const handleAddComment = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!commentText.trim() || !currentUser || !currPost) {
-    return;
-  }
+    if (!commentText.trim() || !currentUser || !currPost) {
+      return;
+    }
 
-  setIsSubmittingComment(true);
+    setIsSubmittingComment(true);
 
-  try {
-    const response = await fetch(
-      `${BASE_URL}/api/posts/${currPost.post_id}/comments`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: currentUser._id || currentUser.username,
-          text: commentText.trim(),
-        }),
-      }
-    );
-
-    if (response.ok) {
-      const updatedPost = await response.json();
-
-      const newComment =
-        updatedPost.comments[updatedPost.comments.length - 1];
-      dispatch(
-        addComment({
-          postId: currPost.post_id,
-          comment: newComment,
-        })
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/posts/${currPost.post_id}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: currentUser._id || currentUser.username,
+            text: commentText.trim(),
+          }),
+        }
       );
 
-      setCommentText("");
-    } else {
-      console.error("Failed to add comment");
+      if (response.ok) {
+        const updatedPost = await response.json();
+
+        const newComment =
+          updatedPost.comments[updatedPost.comments.length - 1];
+        dispatch(
+          addComment({
+            postId: currPost.post_id,
+            comment: newComment,
+          })
+        );
+
+        setCommentText("");
+      } else {
+        console.error("Failed to add comment");
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    } finally {
+      setIsSubmittingComment(false);
     }
-  } catch (error) {
-    console.error("Error adding comment:", error);
-  } finally {
-    setIsSubmittingComment(false);
-  }
-};
+  };
 
   return (
     <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
@@ -197,7 +200,9 @@ const handleAddComment = async (e: React.FormEvent) => {
                       }}
                       onClick={() =>
                         recipeCreator &&
-                        navigate(`/ReciPals/Account/Profile/${currRecipe.user_created}`)
+                        navigate(
+                          `/ReciPals/Account/Profile/${currRecipe.user_created}`
+                        )
                       }
                     >
                       {creatorUsername}
@@ -211,7 +216,8 @@ const handleAddComment = async (e: React.FormEvent) => {
                     className="flex-shrink-0"
                   >
                     {isRecipeSaved ? (
-                      <BsBookmarkFill className="bookmark-icon"
+                      <BsBookmarkFill
+                        className="bookmark-icon"
                         style={{
                           width: "40px",
                           height: "40px",
@@ -221,7 +227,8 @@ const handleAddComment = async (e: React.FormEvent) => {
                         }}
                       />
                     ) : (
-                      <BiBookmark className="bookmark-icon"
+                      <BiBookmark
+                        className="bookmark-icon"
                         style={{
                           width: "40px",
                           height: "40px",
@@ -242,7 +249,8 @@ const handleAddComment = async (e: React.FormEvent) => {
               <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3">
                 <div className="mb-2 mb-sm-0">
                   <div>
-                    <strong>Total Time:</strong> {currRecipe.total_time || "1+ min"}
+                    <strong>Total Time:</strong>{" "}
+                    {currRecipe.total_time || "1+ min"}
                   </div>
                   <div>
                     <strong>Serves:</strong> {currRecipe.serves || "1+"}
@@ -333,7 +341,11 @@ const handleAddComment = async (e: React.FormEvent) => {
                   <Button
                     type="submit"
                     disabled={!commentText.trim() || isSubmittingComment}
-                    variant="primary"
+                    style={{
+                      backgroundColor: "#6399DA",
+                      borderColor: "#6399DA",
+                      color: "white",
+                    }}
                   >
                     {isSubmittingComment ? "Posting..." : "Post"}
                   </Button>
