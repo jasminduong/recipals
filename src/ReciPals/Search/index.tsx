@@ -18,7 +18,7 @@ export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [userResults, setUserResults] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
-  const [initialRecipesShuffled, setInitialRecipesShuffled] = useState(false);
+  const [shuffledRecipes, setShuffledRecipes] = useState<any[]>([]);
   const [displayedRecipes, setDisplayedRecipes] = useState<any[]>([]);
 
   // helper method to shuffle an array
@@ -39,11 +39,7 @@ export default function Search() {
 
   // have recipes loaded in generic results
   const fetchAllRecipes = () => {
-    dispatch(fetchRecipes()).then(() => {
-      if (!initialRecipesShuffled) {
-        setInitialRecipesShuffled(true);
-      }
-    });
+    dispatch(fetchRecipes());
   };
 
   // Load all users initially
@@ -62,20 +58,24 @@ export default function Search() {
     loadUsers();
   }, [users.length, dispatch]);
 
-  // loads shuffled recipes
+  // loads shuffled recipes when recipes first load
   useEffect(() => {
-    if (recipes.length > 0 && !searchTerm && !initialRecipesShuffled) {
-      const shuffledRecipes = shuffleArray(recipes);
-      setDisplayedRecipes(shuffledRecipes);
-      setInitialRecipesShuffled(true);
-    } else if (searchTerm) {
-      // when searching, use the recipes from Redux as-is
-      setDisplayedRecipes(recipes);
-    } else if (recipes.length > 0 && !searchTerm) {
-      // when clearing search, show shuffled recipes
-      setDisplayedRecipes(recipes);
+    if (recipes.length > 0 && shuffledRecipes.length === 0) {
+      const shuffled = shuffleArray(recipes);
+      setShuffledRecipes(shuffled);
     }
-  }, [recipes, searchTerm, initialRecipesShuffled]);
+  }, [recipes, shuffledRecipes.length]);
+
+  // loads shuffled recipes if not search
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      // when searching, show filtered results as-is (not shuffled)
+      setDisplayedRecipes(recipes);
+    } else {
+      // when not searching, show shuffled recipes
+      setDisplayedRecipes(shuffledRecipes);
+    }
+  }, [recipes, searchTerm, shuffledRecipes]);
 
   // Search both recipes and users
   const handleSearch = async (searchValue: string) => {
