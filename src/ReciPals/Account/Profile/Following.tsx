@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../client";
 import { followUser, setUsers, unfollowUser } from "../userReducer";
+import { setCurrentUser } from "../reducer";
 
 // represents a modal that displays who the user is following
 export default function Following({
@@ -51,30 +52,31 @@ export default function Following({
   // handles unfollowing a user (from own profile)
   // profile = current user
   const handleUnfollow = async (followedUser: any) => {
-    const updatedUserFollowing = user.following.filter(
-      (userId: string) => userId !== followedUser._id
-    );
+    try {
+      // Update Redux first
+      dispatch(
+        unfollowUser({
+          currentUserId: user._id,
+          targetUserId: followedUser._id,
+        })
+      );
 
-    const updatedFollowedUserFollowers = followedUser.followers.filter(
-      (userId: string) => userId !== user._id
-    );
+      // Call dedicated backend API
+      await client.unfollowUser(followedUser._id);
 
-    // unfollow current user
-    dispatch(
-      unfollowUser({
-        currentUserId: user._id,
-        targetUserId: followedUser._id,
-      })
-    );
+      // Refresh all user data
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
 
-    await client.updateUser({
-      ...user,
-      following: updatedUserFollowing,
-    });
-    await client.updateUser({
-      ...followedUser,
-      followers: updatedFollowedUserFollowers,
-    });
+      // Update current user in Redux store
+      const updatedCurrentUser = await client.profile();
+      dispatch(setCurrentUser(updatedCurrentUser));
+    } catch (error) {
+      console.error("Error in unfollow operation:", error);
+      // Reload users on error
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
+    }
   };
 
   // checks if current user is following a specific follower
@@ -89,62 +91,38 @@ export default function Following({
   // handles follow/unfollow action (from other users' profiles)
   // profile = NOT current user
   const handleFollowToggle = async (follower: any) => {
-    const isCurrentlyFollowing = isFollowing(follower._id);
+    try {
+      const isCurrentlyFollowing = isFollowing(follower._id);
 
-    const currentUserProfile = users.find(
-      (u: any) => u._id === loggedInUser?._id
-    );
+      if (isCurrentlyFollowing) {
+        dispatch(
+          unfollowUser({
+            currentUserId: loggedInUser._id,
+            targetUserId: follower._id,
+          })
+        );
 
-    if (isCurrentlyFollowing) {
-      // unfollow user
-      dispatch(
-        unfollowUser({
-          currentUserId: loggedInUser._id,
-          targetUserId: follower._id,
-        })
-      );
+        await client.unfollowUser(follower._id);
+      } else {
+        dispatch(
+          followUser({
+            currentUserId: loggedInUser._id,
+            targetUserId: follower._id,
+          })
+        );
 
-      const updatedTargetUserFollowers = follower.followers.filter(
-        (userId: string) => userId !== loggedInUser._id
-      );
-      const updatedCurrentUserFollowing = currentUserProfile.following.filter(
-        (userId: string) => userId !== follower._id
-      );
+        await client.followUser(follower._id);
+      }
 
-      await client.updateUser({
-        ...follower,
-        followers: updatedTargetUserFollowers,
-      });
-      await client.updateUser({
-        ...currentUserProfile,
-        following: updatedCurrentUserFollowing,
-      });
-    } else {
-      // follow user
-      dispatch(
-        followUser({
-          currentUserId: loggedInUser._id,
-          targetUserId: follower._id,
-        })
-      );
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
 
-      const updatedTargetUserFollowers = [
-        ...follower.followers,
-        loggedInUser._id,
-      ];
-      const updatedCurrentUserFollowing = [
-        ...currentUserProfile.following,
-        follower._id,
-      ];
-
-      await client.updateUser({
-        ...follower,
-        followers: updatedTargetUserFollowers,
-      });
-      await client.updateUser({
-        ...currentUserProfile,
-        following: updatedCurrentUserFollowing,
-      });
+      const updatedCurrentUser = await client.profile();
+      dispatch(setCurrentUser(updatedCurrentUser));
+    } catch (error) {
+      console.error("Error in follow/unfollow operation:", error);
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
     }
   };
 

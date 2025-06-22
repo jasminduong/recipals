@@ -102,3 +102,13 @@ export const unsaveRecipe = async (userId: string, recipeId: string) => {
   );
   return response.data;
 };
+
+export const followUser = async (targetUserId: string) => {
+  const response = await axiosWithCredentials.post(`${USERS_API}/follow/${targetUserId}`);
+  return response.data;
+};
+
+export const unfollowUser = async (targetUserId: string) => {
+  const response = await axiosWithCredentials.post(`${USERS_API}/unfollow/${targetUserId}`);
+  return response.data;
+};
