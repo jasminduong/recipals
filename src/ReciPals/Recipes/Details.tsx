@@ -99,53 +99,63 @@ export default function RecipeDetails() {
     loadRecipes();
   }, [recipes.length, posts.length, searchRecipes.length, dispatch]);
 
-  // Handle comment submission
-  const handleAddComment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Add this at the top of your file with other imports/constants
+const getBaseUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:4000';
+  }
+  return 'https://your-backend-domain.com'; // Replace with your actual backend URL
+};
 
-    if (!commentText.trim() || !currentUser || !currPost) {
-      return;
-    }
+const BASE_URL = getBaseUrl();
 
-    setIsSubmittingComment(true);
+// Handle comment submission
+const handleAddComment = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/posts/${currPost.post_id}/comments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: currentUser._id || currentUser.username,
-            text: commentText.trim(),
-          }),
-        }
+  if (!commentText.trim() || !currentUser || !currPost) {
+    return;
+  }
+
+  setIsSubmittingComment(true);
+
+  try {
+    const response = await fetch(
+      `${BASE_URL}/api/posts/${currPost.post_id}/comments`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: currentUser._id || currentUser.username,
+          text: commentText.trim(),
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const updatedPost = await response.json();
+
+      const newComment =
+        updatedPost.comments[updatedPost.comments.length - 1];
+      dispatch(
+        addComment({
+          postId: currPost.post_id,
+          comment: newComment,
+        })
       );
 
-      if (response.ok) {
-        const updatedPost = await response.json();
-
-        const newComment =
-          updatedPost.comments[updatedPost.comments.length - 1];
-        dispatch(
-          addComment({
-            postId: currPost.post_id,
-            comment: newComment,
-          })
-        );
-
-        setCommentText("");
-      } else {
-        console.error("Failed to add comment");
-      }
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    } finally {
-      setIsSubmittingComment(false);
+      setCommentText("");
+    } else {
+      console.error("Failed to add comment");
     }
-  };
+  } catch (error) {
+    console.error("Error adding comment:", error);
+  } finally {
+    setIsSubmittingComment(false);
+  }
+};
 
   return (
     <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
