@@ -9,6 +9,7 @@ import { setCurrentUser } from "../Account/reducer";
 import * as recipeClient from "../Recipes/recipeClient";
 import * as userClient from "../Account/client";
 
+// represents the saved recipes page
 export default function SavedRecipes() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,14 +20,14 @@ export default function SavedRecipes() {
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
   const users = useSelector((state: any) => state.userReducer.users);
 
-  // Redirect to login if not authenticated
+  // redirect to login if not authenticated
   useEffect(() => {
     if (!currentUser) {
       navigate("/ReciPals/Account/Login");
     }
   }, [currentUser, navigate]);
 
-  // Load recipes and users data
+  // load recipes and users data
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -56,7 +57,7 @@ export default function SavedRecipes() {
     if (currentUser?._id) {
       loadData();
     }
-  }, [currentUser?._id, dispatch]); 
+  }, [currentUser?._id, dispatch]);
 
   // Get current user's saved recipes
   const currentUserFromUsers = users.find(
@@ -81,7 +82,7 @@ export default function SavedRecipes() {
       await userClient.unsaveRecipe(currentUser._id, recipeId);
       dispatch(unsaveRecipe({ userId: currentUser._id, recipeId }));
 
-      // Update current user in account reducer
+      // ypdate current user in account reducer
       const updatedUser = {
         ...currentUser,
         saved_recipes:
@@ -96,7 +97,7 @@ export default function SavedRecipes() {
     }
   };
 
-  // Handle recipe card click - navigate directly to recipe details
+  // handle recipe card click - navigate directly to recipe details
   const handleRecipeClick = (recipeId: string) => {
     navigate(`/ReciPals/Recipes/${recipeId}`);
   };
@@ -130,88 +131,39 @@ export default function SavedRecipes() {
             </div>
           ) : (
             <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "flex-start",
-                gap: "1rem",
-              }}
+              className="saved-recipes-grid"
             >
               {savedRecipes.map((recipe: any) => (
                 <div key={recipe.recipe_id}>
                   <Card
                     className="h-100 saved-recipe-card"
-                    style={{
-                      cursor: "pointer",
-                      minWidth: "290px",
-                      width: "280px",
-                    }}
                     onClick={() => handleRecipeClick(recipe.recipe_id)}
                   >
                     <div className="position-relative">
                       <Card.Img
                         variant="top"
                         src={recipe.photo}
-                        style={{
-                          height: "150px",
-                          objectFit: "cover",
-                        }}
+                        className="saved-recipe-image"
                         alt={recipe.name}
                       />
                       <div
-                        className="position-absolute top-0 end-0 m-2"
+                        className="position-absolute top-0 end-0 m-2 saved-recipe-bookmark"
                         onClick={(e) => handleUnsaveRecipe(recipe.recipe_id, e)}
                         style={{
                           cursor:
                             unsavingRecipe === recipe.recipe_id
                               ? "not-allowed"
                               : "pointer",
-                          backgroundColor: "rgba(255, 255, 255, 0.9)",
-                          borderRadius: "50%",
-                          padding: "8px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                         }}
                       >
-                        <BsBookmarkFill
-                          className="bookmark-icon"
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            color: "#cd9f08",
-                          }}
-                        />
+                        <BsBookmarkFill className="save-bookmark-icon" />
                       </div>
                     </div>
                     <Card.Body className="p-0">
-                      <Card.Title
-                        className="fw-bold mt-4 mb-0"
-                        style={{
-                          fontSize: "16px",
-                          lineHeight: "1.3",
-                          minHeight: "2.6rem",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          height: "1.3rem",
-                        }}
-                      >
+                      <Card.Title className="fw-bold mt-4 mb-0 saved-recipe-title">
                         {recipe.name}
                       </Card.Title>
-                      <Card.Text
-                        className="text-muted"
-                        style={{
-                          fontSize: "14px",
-                          lineHeight: "1.4",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          marginTop: "-12px",
-                        }}
-                      >
+                      <Card.Text className="text-muted saved-recipe-description">
                         {recipe.description}
                       </Card.Text>
                     </Card.Body>

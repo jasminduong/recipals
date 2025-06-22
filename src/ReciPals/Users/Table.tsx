@@ -1,6 +1,7 @@
 import { Table, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+// represents the people table that stores all user info
 export default function PeopleTable({ users = [] }: { users?: any[] }) {
   return (
     <div id="users-table">
@@ -29,6 +30,7 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
                     roundedCircle
                     fluid
                     alt={`${user.username} profile`}
+                    className="people-table-profile-pic"
                     style={{
                       width: 30,
                       objectFit: "cover",

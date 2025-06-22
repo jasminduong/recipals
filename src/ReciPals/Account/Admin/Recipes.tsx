@@ -10,6 +10,7 @@ import { setPosts } from "../../Posts/postReducer";
 import RecipesTable from "../../Recipes/Admin/Table";
 import RecipeDetails from "../../Recipes/Admin/Details";
 
+// represents the admin recipes filtering
 export default function AllRecipes() {
   const { rid } = useParams();
   const reduxRecipes = useSelector((state: any) => state.recipeReducer.recipes);
@@ -27,9 +28,7 @@ export default function AllRecipes() {
   }, [reduxRecipes, searchTerm, users]);
 
   useEffect(() => {
-    console.log("rid changed to:", rid);
     if (!rid && reduxRecipes.length > 0) {
-      console.log("Navigated back from details, refreshing filtered recipes");
       filterRecipes(searchTerm);
     }
   }, [rid]);

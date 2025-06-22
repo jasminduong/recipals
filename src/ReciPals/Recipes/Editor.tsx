@@ -22,6 +22,7 @@ import { setCurrentUser } from "../Account/reducer";
 import * as client from "../Account/client";
 import imageCompression from "browser-image-compression";
 
+// represents a recipe editor for users to edit their recipes
 export default function RecipeEditor() {
   const { rid } = useParams();
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ export default function RecipeEditor() {
   );
   const isNew = !recipeToEdit;
 
+  // load recipes
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -95,8 +97,8 @@ export default function RecipeEditor() {
     recipeToEdit?.photo || "https://recipals.netlify.app/images/default.jpg"
   );
 
+  // updates the recipe
   useEffect(() => {
-    // updates all state when recipe is loaded
     if (recipeToEdit) {
       setName(recipeToEdit.name || "");
       setDescription(recipeToEdit.description || "");
@@ -476,12 +478,7 @@ export default function RecipeEditor() {
                           />
                           {section["ingredients"].length > 1 && (
                             <FaRegTrashCan
-                              style={{
-                                cursor: "pointer",
-                                minWidth: "16px",
-                                fontSize: "16px",
-                                color: "#e13626",
-                              }}
+                              className="delete-icon"
                               onClick={() =>
                                 handleDeleteIngredient(section._id, index)
                               }
@@ -534,12 +531,7 @@ export default function RecipeEditor() {
                     />
                     {steps.length > 1 && (
                       <FaRegTrashCan
-                        style={{
-                          cursor: "pointer",
-                          minWidth: "16px",
-                          fontSize: "16px",
-                          color: "#e13626",
-                        }}
+                        className="delete-icon"
                         onClick={() => handleDeleteStep(idx)}
                       />
                     )}

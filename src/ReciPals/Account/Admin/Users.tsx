@@ -8,6 +8,7 @@ import PeopleDetails from "../../Users/Details";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../userReducer";
 
+// represents the admin user filtering
 export default function AllUsers() {
   const { uid } = useParams();
   const dispatch = useDispatch();

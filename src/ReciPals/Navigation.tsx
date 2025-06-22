@@ -17,7 +17,7 @@ const axiosWithCredentials = axios.create({
   withCredentials: true,
 });
 
-/* ReciPal Sidebar navigation with links to main sections (home, search, create, saved, profile) */
+// represents the sidebar navigation with links to main sections (home, search, create, saved, profile) 
 export default function ReciPalNavigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

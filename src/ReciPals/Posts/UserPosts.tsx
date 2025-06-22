@@ -5,18 +5,21 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect} from "react";
+import { useEffect, useState } from "react";
 import { likePost, setPosts, unlikePost } from "./postReducer";
 import { setRecipes } from "../Recipes/recipeReducer";
 import * as postClient from "./postClient";
 import * as recipeClient from "../Recipes/recipeClient";
 import * as client from "../Account/client";
 import { setUsers } from "../Account/userReducer";
+import LikesModal from "./LikesModal";
 
+// represents a carousel of posts from the profile page 
 export default function UserPosts() {
   const { uid, pid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [showLikesModal, setShowLikesModal] = useState(false);
   const posts = useSelector((state: any) => state.postReducer.posts);
   const users = useSelector((state: any) => state.userReducer.users);
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
@@ -30,7 +33,6 @@ export default function UserPosts() {
   useEffect(() => {
     const loadAllData = async () => {
       try {
-
         const [allPosts, allRecipes, allUsers] = await Promise.all([
           postClient.getAllPosts(),
           recipeClient.getAllRecipes(),
@@ -40,14 +42,13 @@ export default function UserPosts() {
         dispatch(setPosts(allPosts));
         dispatch(setRecipes(allRecipes));
         dispatch(setUsers(allUsers));
-
       } catch (error) {
         console.error("Error loading data:", error);
       }
     };
 
     loadAllData();
-  }, [pid, uid, dispatch]); 
+  }, [pid, uid, dispatch]);
 
   // gets current user and post
   const currUser = users.find((user: any) => user._id === uid);
@@ -135,19 +136,21 @@ export default function UserPosts() {
     });
   };
 
+  // handle opening likes modal
+  const handleLikesClick = () => {
+    if (updatedPost.likes.length > 0) {
+      setShowLikesModal(true);
+    }
+  };
+
+  // handle closing likes modal
+  const handleCloseLikesModal = () => {
+    setShowLikesModal(false);
+  };
+
   return (
     <div
-      className="d-flex justify-content-center align-items-center"
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        position: "fixed",
-        top: 20,
-        left: 0,
-        zIndex: 100,
-        paddingLeft: "inherit",
-        pointerEvents: "all",
-      }}
+      className="user-posts d-flex justify-content-center align-items-center"
       onClick={() => navigate(`/ReciPals/Account/Profile/${uid}`)}
     >
       <div
@@ -202,12 +205,7 @@ export default function UserPosts() {
                   <img
                     src={postCreator?.profile || currUser?.profile}
                     alt="Profile picture"
-                    className="rounded-circle"
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      objectFit: "cover",
-                    }}
+                    className="user-posts-profile-pic rounded-circle"
                   />
                   <span className="ms-3 text-dark">
                     {postCreator?.username}
@@ -216,7 +214,7 @@ export default function UserPosts() {
                 {currUser && currPost.created_by === loggedInUser._id && (
                   <Button
                     className="edit-button text-dark"
-                    style={{marginRight: "0px"}}
+                    style={{ marginRight: "0px" }}
                     size="sm"
                     onClick={() =>
                       navigate(`/ReciPals/Editor/${currRecipe.recipe_id}`)
@@ -234,11 +232,7 @@ export default function UserPosts() {
                   <div className="post-image overflow-hidden">
                     <img
                       src={currPost.photo}
-                      style={{
-                        objectFit: "cover",
-                        width: "100%",
-                        height: "100%",
-                      }}
+                      className="user-post-image"
                     />
                   </div>
                 </div>
@@ -246,15 +240,24 @@ export default function UserPosts() {
               <div className="d-flex gap-4 mb-2">
                 <div
                   className="d-flex align-items-center gap-1 post-icons"
-                  onClick={handleLikeToggle}
                   style={{ cursor: loggedInUser ? "pointer" : "default" }}
                 >
-                  {isLiked ? (
-                    <FaHeart size={18} style={{ color: "#e91e63" }} />
-                  ) : (
-                    <FaRegHeart size={18} />
-                  )}
-                  <span>{updatedPost?.likes?.length || 0}</span>
+                  <div onClick={handleLikeToggle}>
+                    {isLiked ? (
+                      <FaHeart size={18} style={{ color: "#e91e63" }} />
+                    ) : (
+                      <FaRegHeart size={18} />
+                    )}
+                  </div>
+                  <span
+                    onClick={handleLikesClick}
+                    style={{
+                      cursor:
+                        updatedPost.likes.length > 0 ? "pointer" : "default",
+                    }}
+                  >
+                    {updatedPost.likes.length}
+                  </span>
                 </div>
                 <div className="d-flex align-items-center gap-1 post-icons">
                   <Link
@@ -279,6 +282,12 @@ export default function UserPosts() {
           </div>
         )}
       </div>
+
+      <LikesModal
+        show={showLikesModal}
+        handleClose={handleCloseLikesModal}
+        post={updatedPost}
+      />
     </div>
   );
 }

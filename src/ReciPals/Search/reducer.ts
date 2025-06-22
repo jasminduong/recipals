@@ -1,13 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Create a base URL that works for both environments
 const getBaseUrl = () => {
-  // Check if we're in development (localhost) or production
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:4000';
   }
-  // For production, use your deployed backend URL
-  return 'https://recipals-node-server-app.onrender.com'; // Replace with your actual backend URL
+  return 'https://recipals-node-server-app.onrender.com'; 
 };
 
 const BASE_URL = getBaseUrl();

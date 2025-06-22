@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setNewUser } from "./reducer";
-//import { setNewUser } from "./reducer";
 
+// represents the signup component to add user info
 export default function Signup() {
   // sets new user name, username, password
   const [formData, setFormData] = useState({

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../client";
 import { followUser, setUsers, unfollowUser } from "../userReducer";
 
+// represents a modal that displays followers of the user
 export default function Followers({
   show,
   handleClose,
@@ -163,7 +164,7 @@ export default function Followers({
                     roundedCircle
                     fluid
                     alt={`${follower.username} profile`}
-                    style={{ width: 60, height: 60, objectFit: "cover", cursor: "pointer" }}
+                    className="follower-photo"
                     onClick={() => {
                       navigate(`/ReciPals/Account/Profile/${follower._id}`);
                       handleClose();

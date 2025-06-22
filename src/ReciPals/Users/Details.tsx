@@ -6,6 +6,7 @@ import { Button, Form, Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../Account/userReducer";
 
+// represents the people details overlay for admin management
 export default function PeopleDetails() {
   const { uid } = useParams();
   const users = useSelector((state: any) => state.userReducer.users);
@@ -60,7 +61,7 @@ export default function PeopleDetails() {
         onClick={() => navigate(-1)}
         className="btn position-fixed end-0 top-0 wd-close-details"
       >
-        <IoCloseSharp className="fs-1" />{" "}
+        <IoCloseSharp className="fs-1" />
       </button>
       <div className="text-center mt-2">
         <Image
@@ -68,29 +69,28 @@ export default function PeopleDetails() {
           roundedCircle
           fluid
           alt={`${user.username} profile`}
-          style={{ width: 50, objectFit: "cover" }}
+          className="people-details-profile-image"
         />
       </div>
       <hr />
-      <div
-        className="user-name text-bold pb-1"
-        style={{ fontSize: "20px", color: "#cd9f08" }}
-      >
+      <div className="user-name text-bold pb-1 people-details-user-name">
         {user.name}
       </div>
       <div className="user-username pb-1">
         <b>Username: </b>
-        <span style={{ fontSize: "14px" }}>{user.username}</span>
+        <span className="people-details-info-text">{user.username}</span>
       </div>
       <div className="user-bio pb-1">
         <b>Bio: </b>
-        <span style={{ fontSize: "14px" }}>{user.bio}</span>
+        <span className="people-details-info-text">{user.bio}</span>
       </div>
       <div className="user-bio pb-1">
         <b>Tags: </b>
-        <span style={{ fontSize: "14px" }}>{Array.isArray(user.tags) && user.tags.length > 0
-          ? user.tags.join(", ")
-          : "No tags"}</span>
+        <span className="people-details-info-text">
+          {Array.isArray(user.tags) && user.tags.length > 0
+            ? user.tags.join(", ")
+            : "No tags"}
+        </span>
       </div>
       <div className="mb-3 d-flex align-items-center">
         <Form.Label className="mb-0 me-2">
@@ -99,8 +99,7 @@ export default function PeopleDetails() {
         <Form.Select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="form-control"
-          style={{ width: "auto", fontSize: "14px" }}
+          className="form-control people-details-role-select"
         >
           <option value="USER">User</option>
           <option value="ADMIN">Admin</option>
@@ -111,13 +110,12 @@ export default function PeopleDetails() {
         <div className="pb-1">
           <b>Posts ({user.posts?.length || 0}): </b>
         </div>
-        <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+        <div className="people-details-posts-container">
           {user.posts && user.posts.length > 0 ? (
             user.posts.map((recipeId: string, _index: number) => (
               <div
                 key={recipeId}
-                className="d-flex justify-content-between align-items-center rounded p-2 mb-2"
-                style={{ fontSize: "14px" }}
+                className="d-flex justify-content-between align-items-center rounded p-2 mb-2 people-details-post-item"
               >
                 <div>
                   <b>Recipe ID:</b> {recipeId}
@@ -134,7 +132,7 @@ export default function PeopleDetails() {
               </div>
             ))
           ) : (
-            <div style={{ fontSize: "12px", color: "#666" }}>No posts yet</div>
+            <div className="people-details-no-posts">No posts yet</div>
           )}
         </div>
       </div>

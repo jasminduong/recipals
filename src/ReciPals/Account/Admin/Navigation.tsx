@@ -1,6 +1,7 @@
 import { ListGroup } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
 
+// represents the admin navigation between users and recipes
 export default function AdminNavigation() {
   const location = useLocation();
   const isActive = (pathPrefix: string) =>

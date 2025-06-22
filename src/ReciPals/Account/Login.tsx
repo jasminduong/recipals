@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import * as client from "./client";
 
+// represents the login component
 export default function Login() {
   // initializes state variable credentials with mutator function setCredentials
   const [credentials, setCredentials] = useState<any>({});
@@ -17,10 +18,30 @@ export default function Login() {
   // ignore the sign in attempt if there's no match
   // after signing in, navigate to the Home
   const signin = async () => {
-    const user = await client.signin(credentials); // fetches signin credentials from client
-    if (!user) return;
-    dispatch(setCurrentUser(user));
-    navigate("/ReciPals/Home");
+    try {
+      const user = await client.signin(credentials); // fetches signin credentials from client
+      if (!user) {
+        alert("Invalid username or password. Please try again.");
+        return;
+      }
+      dispatch(setCurrentUser(user));
+      navigate("/ReciPals/Home");
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        alert("Invalid username or password. Please try again.");
+      } else if (err.response?.status === 404) {
+        alert("User not found. Please check your username.");
+      } else {
+        alert("Login failed. Please try again later.");
+      }
+    }
+  };
+
+  // event handler for handling key press
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      signin();
+    }
   };
 
   return (
@@ -34,6 +55,7 @@ export default function Login() {
           onChange={(e) =>
             setCredentials({ ...credentials, username: e.target.value })
           }
+          onKeyPress={handleKeyPress}
           className="mb-2 text-input-field"
         />
         <Form.Control
@@ -44,6 +66,7 @@ export default function Login() {
           onChange={(e) =>
             setCredentials({ ...credentials, password: e.target.value })
           }
+          onKeyPress={handleKeyPress}
           className="mb-2 text-input-field"
         />
         <Button

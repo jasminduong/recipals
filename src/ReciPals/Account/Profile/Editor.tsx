@@ -46,6 +46,7 @@ const sections = [
   },
 ];
 
+// represents a profile editor 
 export default function ProfileEditor() {
   const { uid } = useParams();
   const { users } = useSelector((state: any) => state.userReducer);
@@ -74,6 +75,7 @@ export default function ProfileEditor() {
   // initializes a state variable selectedTags as an array of strings, to store the tags the user selects
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  // handles tag selection
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags((prev) => prev.filter((t) => t !== tag));
@@ -84,8 +86,10 @@ export default function ProfileEditor() {
     }
   };
 
+  // gets the current user
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
+  // loads users
   useEffect(() => {
     if (users.length > 0) {
       const targetUser = users.find((user: any) => user._id === uid);

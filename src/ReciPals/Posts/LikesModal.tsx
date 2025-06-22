@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import * as client from "../Account/client";
 import { followUser, setUsers, unfollowUser } from "../Account/userReducer";
 
+// represents a modal that shows the users who liked the post
 export default function LikesModal({
   show,
   handleClose,
@@ -157,12 +158,7 @@ export default function LikesModal({
                       roundedCircle
                       fluid
                       alt={`${user.username} profile`}
-                      style={{
-                        width: 60,
-                        height: 60,
-                        objectFit: "cover",
-                        cursor: "pointer",
-                      }}
+                      className="likes-modal-profile-image"
                       onClick={() => handleUserClick(user._id)}
                     />
                   </Col>

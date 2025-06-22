@@ -8,6 +8,7 @@ import { setUsers } from "../Account/userReducer";
 import * as userClient from "../Account/client";
 import type { RootState, AppDispatch } from "../store";
 
+// represents the search page
 export default function Search() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -137,16 +138,7 @@ export default function Search() {
   }
 
   return (
-    <div
-      className="container-fluid mt-4 px-2 px-md-4"
-      id="search"
-      style={{
-        minHeight: "100vh",
-        minWidth: "320px",
-        maxWidth: "100%",
-        overflow: "hidden",
-      }}
-    >
+    <div className="container-fluid mt-4 px-2 px-md-4" id="search">
       {/* Search Bar */}
       <div className="position-relative d-flex align-items-center mb-4 w-100">
         <FormControl
@@ -175,18 +167,12 @@ export default function Search() {
                   key={user._id}
                   onClick={() => handleUserClick(user._id)}
                   className="user-card mb-3 p-3 border rounded"
-                  style={{ cursor: "pointer" }}
                 >
                   <div className="d-flex align-items-center w-100">
                     <div className="flex-shrink-0 me-3">
                       <img
                         src={user.profile}
-                        className="rounded-circle"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                        }}
+                        className="rounded-circle search-user-profile-image"
                         alt={`${user.username} profile`}
                       />
                     </div>
@@ -221,7 +207,6 @@ export default function Search() {
                 <div
                   onClick={() => handleRecipeClick(recipe.recipe_id)}
                   className="recipe-card h-100"
-                  style={{ cursor: "pointer" }}
                 >
                   <div className="row g-0 align-items-center py-3">
                     {/* Recipe Image */}
@@ -229,13 +214,7 @@ export default function Search() {
                       <div className="d-flex justify-content-center justify-content-sm-start">
                         <img
                           src={recipe.photo}
-                          className="img-fluid"
-                          style={{
-                            width: "100%",
-                            maxWidth: "200px",
-                            height: "150px",
-                            objectFit: "cover",
-                          }}
+                          className="img-fluid search-recipe-image"
                           alt={recipe.name}
                         />
                       </div>
@@ -262,15 +241,7 @@ export default function Search() {
                         </div>
 
                         <div className="recipe-sub-title text-muted">
-                          <div
-                            style={{
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                              wordWrap: "break-word",
-                            }}
-                          >
+                          <div className="search-recipe-description">
                             {recipe.description}
                           </div>
                         </div>

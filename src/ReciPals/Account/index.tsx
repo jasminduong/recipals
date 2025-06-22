@@ -9,6 +9,7 @@ import UserPosts from "../Posts/UserPosts";
 import Admin from "./Admin";
 import ProtectedRoute from "./ProtectedRoute";
 
+// represents the routes of account management, including login, signup, profile, and admin
 export default function Account() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 

@@ -19,6 +19,7 @@ interface Post {
   created_at: string;
 }
 
+// represents a recipe post that shows the recipe photo, number of likes and comments, and user
 export default function RecipePost({ post }: { post: Post }) {
   const dispatch = useDispatch();
   const [showLikesModal, setShowLikesModal] = useState(false);
@@ -81,8 +82,7 @@ export default function RecipePost({ post }: { post: Post }) {
           <img
             src={profilePic}
             alt="Profile picture"
-            className="rounded-circle"
-            style={{ width: "50px", height: "50px", objectFit: "cover" }}
+            className="rounded-circle recipe-profile-pic"
           />
           <span className="ms-3 text-dark">{user?.username}</span>
         </Link>
@@ -93,11 +93,11 @@ export default function RecipePost({ post }: { post: Post }) {
           to={`/ReciPals/Recipes/${post.recipe_id}`}
           className="text-decoration-none"
         >
-          <div className="post-image overflow-hidden">
+          <div className="overflow-hidden">
             <img
               src={post.photo}
               alt={post.title}
-              style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              className="post-image"
             />
           </div>
         </Link>

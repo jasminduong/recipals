@@ -10,6 +10,7 @@ import { setPosts } from "../../Posts/postReducer";
 import { FaPencil } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
 
+// represents the recipe details page in admin management
 export default function RecipeDetails({
   recipes = [],
   posts = [],
