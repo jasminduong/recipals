@@ -21,50 +21,26 @@ export default function Profile() {
   const posts = useSelector((state: any) => state.postReducer.posts);
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
 
-  // loads users
+  // loads posts, recipes, and users
   useEffect(() => {
-    const loadUsers = async () => {
+    const loadAllData = async () => {
       try {
-        const allUsers = await client.getAllUsers();
+        const [allUsers, allPosts, allRecipes] = await Promise.all([
+          client.getAllUsers(),
+          postClient.getAllPosts(),
+          recipeClient.getAllRecipes(),
+        ]);
+
         dispatch(setUsers(allUsers));
+        dispatch(setPosts(allPosts));
+        dispatch(setRecipes(allRecipes));
       } catch (error) {
-        console.error("Error loading users:", error);
+        console.error("Error loading data:", error);
       }
     };
 
-    loadUsers();
-  }, [users.length, dispatch]);
-
-  // loads posts
-  useEffect(() => {
-    if (posts.length === 0) {
-      const loadPosts = async () => {
-        try {
-          console.log("Loading posts...");
-          const allPosts = await postClient.getAllPosts();
-          dispatch(setPosts(allPosts));
-        } catch (error) {
-          console.error("Error loading posts:", error);
-        }
-      };
-      loadPosts();
-    }
-  }, [dispatch, uid, posts.length]);
-
-  // loads recipes
-  useEffect(() => {
-    if (recipes.length === 0) {
-      const loadRecipes = async () => {
-        try {
-          const allRecipes = await recipeClient.getAllRecipes();
-          dispatch(setRecipes(allRecipes));
-        } catch (error) {
-          console.error("Error loading recipes:", error);
-        }
-      };
-      loadRecipes();
-    }
-  }, [dispatch, recipes.length]);
+    loadAllData();
+  }, [uid, dispatch]);
 
   // finds current logged in user
   const { currentUser: loggedInUser } = useSelector(
@@ -488,10 +464,11 @@ export default function Profile() {
                     className="text-center"
                     style={{
                       gridColumn: "1 / -1",
-                      height: "250px",
                       display: "flex",
-                      alignItems: "center",
+                      alignItems: "flex-start",
                       justifyContent: "center",
+                      width: "100%",
+                      marginTop: "-200px",
                     }}
                   >
                     <p className="text-muted">No saved recipes yet</p>

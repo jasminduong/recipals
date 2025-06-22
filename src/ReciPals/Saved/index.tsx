@@ -123,7 +123,7 @@ export default function SavedRecipes() {
 
           {savedRecipes.length === 0 ? (
             <div className="text-center py-5">
-              <p className="text-muted fs-5">No saved recipes yet</p>
+              <p className="text-muted fs-5 fst-italic">No saved recipes yet</p>
               <p className="text-muted">
                 Start exploring recipes and save your favorites!
               </p>
