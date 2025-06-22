@@ -197,7 +197,7 @@ const handleAddComment = async (e: React.FormEvent) => {
                       }}
                       onClick={() =>
                         recipeCreator &&
-                        navigate(`/ReciPals/Profile/${currRecipe.user_creator}`)
+                        navigate(`/ReciPals/Account/Profile/${currRecipe.user_created}`)
                       }
                     >
                       {creatorUsername}

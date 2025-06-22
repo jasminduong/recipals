@@ -32,16 +32,19 @@ export default function SavedRecipes() {
       try {
         setIsLoading(true);
 
-        // Load recipes if not already loaded
-        if (recipes.length === 0) {
-          const allRecipes = await recipeClient.getAllRecipes();
-          dispatch(setRecipes(allRecipes));
-        }
+        const [allUsers, allRecipes] = await Promise.all([
+          userClient.getAllUsers(),
+          recipeClient.getAllRecipes(),
+        ]);
 
-        // Load users if not already loaded
-        if (users.length === 0) {
-          const allUsers = await userClient.getAllUsers();
-          dispatch(setUsers(allUsers));
+        dispatch(setUsers(allUsers));
+        dispatch(setRecipes(allRecipes));
+
+        const freshCurrentUser = allUsers.find(
+          (u: any) => u._id === currentUser._id
+        );
+        if (freshCurrentUser) {
+          dispatch(setCurrentUser(freshCurrentUser));
         }
       } catch (error) {
         console.error("Error loading data:", error);
@@ -50,16 +53,16 @@ export default function SavedRecipes() {
       }
     };
 
-    if (currentUser) {
+    if (currentUser?._id) {
       loadData();
     }
-  }, [currentUser, recipes.length, users.length, dispatch]);
+  }, [currentUser?._id, dispatch]); 
 
   // Get current user's saved recipes
-  const currentUserData = users.find(
+  const currentUserFromUsers = users.find(
     (user: any) => user._id === currentUser?._id
   );
-  const savedRecipeIds = currentUserData?.saved_recipes || [];
+  const savedRecipeIds = currentUserFromUsers?.saved_recipes || [];
 
   // Get the actual recipe objects
   const savedRecipes = recipes.filter((recipe: any) =>
@@ -141,7 +144,7 @@ export default function SavedRecipes() {
                     style={{
                       cursor: "pointer",
                       minWidth: "290px",
-                      width: "280px"
+                      width: "280px",
                     }}
                     onClick={() => handleRecipeClick(recipe.recipe_id)}
                   >
@@ -192,7 +195,7 @@ export default function SavedRecipes() {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          height: "1.3rem"
+                          height: "1.3rem",
                         }}
                       >
                         {recipe.name}
@@ -206,7 +209,7 @@ export default function SavedRecipes() {
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: "vertical",
                           overflow: "hidden",
-                          marginTop: "-12px" 
+                          marginTop: "-12px",
                         }}
                       >
                         {recipe.description}

@@ -10,7 +10,7 @@ export default function RecipesTable({
 }) {
   return (
     <div id="recipes-table">
-      <Table striped className="recipes-table text-nowrap" style={{ fontSize: "12px" }}>
+      <Table striped className="recipes-table text-nowrap" style={{ fontSize: "12px", tableLayout: "fixed", }}>
         <thead>
           <tr>
             <th style={{ width: "25%" }}>Name</th>
