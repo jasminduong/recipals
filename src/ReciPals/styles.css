@@ -191,7 +191,7 @@ body * {
 .username-follow-container {
   display: flex;
   align-items: center;
-  gap: 60px; 
+  gap: 40px; 
   flex-wrap: wrap;
 }
 .profile-username {

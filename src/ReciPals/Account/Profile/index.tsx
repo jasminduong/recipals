@@ -12,6 +12,7 @@ import * as postClient from "../../Posts/postClient";
 import * as recipeClient from "../../Recipes/recipeClient";
 import Followers from "./Followers";
 import Following from "./Following";
+import { setCurrentUser } from "../reducer";
 
 // represents the profile of a user
 export default function Profile() {
@@ -99,48 +100,35 @@ export default function Profile() {
 
   // handles follow/unfollow action
   const handleFollowToggle = async () => {
-    if (isFollowing) {
-      dispatch(
-        unfollowUser({
-          currentUserId: loggedInUser._id,
-          targetUserId: user._id,
-        })
-      );
+    try {
+      if (isFollowing) {
+        dispatch(
+          unfollowUser({
+            currentUserId: loggedInUser._id,
+            targetUserId: user._id,
+          })
+        );
 
-      const updatedTargetUserFollowers = user.followers.filter(
-        (userId: string) => userId !== loggedInUser._id
-      );
-      const updatedCurrentUserFollowing = loggedInUser.following.filter(
-        (userId: string) => userId !== user._id
-      );
+        await client.unfollowUser(user._id);
+      } else {
+        dispatch(
+          followUser({
+            currentUserId: loggedInUser._id,
+            targetUserId: user._id,
+          })
+        );
+        await client.followUser(user._id);
+      }
 
-      await client.updateUser({
-        ...user,
-        followers: updatedTargetUserFollowers,
-      });
-      await client.updateUser({
-        ...loggedInUser,
-        following: updatedCurrentUserFollowing,
-      });
-    } else {
-      dispatch(
-        followUser({
-          currentUserId: loggedInUser._id,
-          targetUserId: user._id,
-        })
-      );
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
 
-      const updatedTargetUserFollowers = [...user.followers, loggedInUser._id];
-      const updatedCurrentUserFollowing = [...loggedInUser.following, user._id];
-
-      await client.updateUser({
-        ...user,
-        followers: updatedTargetUserFollowers,
-      });
-      await client.updateUser({
-        ...loggedInUser,
-        following: updatedCurrentUserFollowing,
-      });
+      const updatedCurrentUser = await client.profile();
+      dispatch(setCurrentUser(updatedCurrentUser));
+    } catch (error) {
+      console.error("Error in follow/unfollow operation:", error);
+      const allUsers = await client.getAllUsers();
+      dispatch(setUsers(allUsers));
     }
   };
 
