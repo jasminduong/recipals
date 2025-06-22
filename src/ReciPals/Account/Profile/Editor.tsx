@@ -103,20 +103,24 @@ export default function ProfileEditor() {
       if (originalUser) {
         setUserToEdit({ ...originalUser });
         setSelectedTags(originalUser.tags || []);
+        setPhotoChanged(false);
       }
     }
   }, [uid, users]);
+
+  // tracks whether the photo was changed
+  const [photoChanged, setPhotoChanged] = useState(false);
 
   // event handler to update profile photo
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        // set compression options 
+        // set compression options
         const options = {
           maxSizeMB: 0.5,
-          maxWidthOrHeight: 800, 
-          useWebWorker: true, 
+          maxWidthOrHeight: 800,
+          useWebWorker: true,
         };
 
         // compress the image file
@@ -127,6 +131,7 @@ export default function ProfileEditor() {
         reader.onloadend = () => {
           const base64String = reader.result as string;
           setUserToEdit({ ...userToEdit, profile: base64String });
+          setPhotoChanged(true);
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
@@ -176,20 +181,30 @@ export default function ProfileEditor() {
       tags: selectedTags,
     };
 
-    const updatedUser = await client.updateUser(updatedUserPayload);
-
-    // update local redux state
-    const updatedUsers = users.map((user: any) =>
-      user._id === uid ? updatedUserPayload : user
-    );
-    dispatch(setUsers(updatedUsers));
-
-    // update current user if editing own profile
-    if (currentUser && currentUser._id === uid) {
-      dispatch(setCurrentUser(updatedUser));
+    // if photo wasn't changed, remove from payload
+    if (!photoChanged) {
+      delete updatedUserPayload.profile;
     }
 
-    navigate(`/ReciPals/Account/Profile/${uid}`);
+    try {
+      const updatedUser = await client.updateUser(updatedUserPayload);
+
+      // update local redux state
+      const updatedUsers = users.map((user: any) =>
+        user._id === uid ? { ...user, ...updatedUserPayload } : user
+      );
+      dispatch(setUsers(updatedUsers));
+
+      // update current user if editing own profile
+      if (currentUser && currentUser._id === uid) {
+        dispatch(setCurrentUser(updatedUser));
+      }
+
+      navigate(`/ReciPals/Account/Profile/${uid}`);
+    } catch (error) {
+      console.error("Error saving user:", error);
+      alert("Failed to save changes. Please try again.");
+    }
   };
 
   // signout event handler clears the current user from the redux store and then redirects user to signin page
