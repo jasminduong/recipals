@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { likePost, unlikePost } from "../Posts/postReducer";
 import * as postClient from "./postClient";
+import { useState } from "react";
+import LikesModal from "./LikesModal";
 
 interface Post {
   post_id: string;
@@ -19,6 +21,7 @@ interface Post {
 
 export default function RecipePost({ post }: { post: Post }) {
   const dispatch = useDispatch();
+  const [showLikesModal, setShowLikesModal] = useState(false);
   const { currentUser: loggedInUser } = useSelector(
     (state: any) => state.accountReducer
   );
@@ -56,6 +59,18 @@ export default function RecipePost({ post }: { post: Post }) {
     });
   };
 
+  // handle opening likes modal
+  const handleLikesClick = () => {
+    if (updatedPost.likes.length > 0) {
+      setShowLikesModal(true);
+    }
+  };
+
+  // handle closing likes modal
+  const handleCloseLikesModal = () => {
+    setShowLikesModal(false);
+  };
+
   return (
     <div key={post.post_id} id="recipe-post">
       <div className="d-flex align-items-center mb-3">
@@ -91,15 +106,23 @@ export default function RecipePost({ post }: { post: Post }) {
       <div className="d-flex gap-4 mb-2">
         <div
           className="d-flex align-items-center gap-1 post-icons"
-          onClick={handleLikeToggle}
           style={{ cursor: loggedInUser ? "pointer" : "default" }}
         >
-          {isLiked ? (
-            <FaHeart size={18} style={{ color: "#e91e63" }} />
-          ) : (
-            <FaRegHeart size={18} />
-          )}
-          <span>{updatedPost.likes.length}</span>
+          <div onClick={handleLikeToggle}>
+            {isLiked ? (
+              <FaHeart size={18} style={{ color: "#e91e63" }} />
+            ) : (
+              <FaRegHeart size={18} />
+            )}
+          </div>
+          <span
+            onClick={handleLikesClick}
+            style={{
+              cursor: updatedPost.likes.length > 0 ? "pointer" : "default",
+            }}
+          >
+            {updatedPost.likes.length}
+          </span>
         </div>
         <div className="d-flex align-items-center gap-1 post-icons">
           <Link
@@ -116,6 +139,12 @@ export default function RecipePost({ post }: { post: Post }) {
         <span className="fw-semibold">{user?.username}</span>{" "}
         <span>{post.caption}</span>
       </div>
+
+      <LikesModal
+        show={showLikesModal}
+        handleClose={handleCloseLikesModal}
+        post={updatedPost}
+      />
     </div>
   );
 }
