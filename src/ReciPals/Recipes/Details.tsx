@@ -41,10 +41,10 @@ export default function RecipeDetails() {
   const recipeCreator = users.find(
     (user: any) => user._id === currRecipe?.user_created
   );
-  // Function to get username by user_id for comments
-  const getUsernameById = (userId: string) => {
-    const user = users.find((user: any) => user._id === userId);
-    return user?.username || "Unknown User";
+
+  // gets user by user_id for comments 
+  const getUserById = (userId: string) => {
+    return users.find((user: any) => user._id === userId);
   };
 
   const creatorUsername = recipeCreator?.username || "Unknown User";
@@ -100,7 +100,7 @@ export default function RecipeDetails() {
     loadRecipes();
   }, [recipes.length, posts.length, searchRecipes.length, dispatch]);
 
-  // gets base url 
+  // gets base url
   const getBaseUrl = () => {
     if (
       window.location.hostname === "localhost" ||
@@ -108,12 +108,12 @@ export default function RecipeDetails() {
     ) {
       return "http://localhost:4000";
     }
-    return "https://recipals-node-server-app.onrender.com"; 
+    return "https://recipals-node-server-app.onrender.com";
   };
 
   const BASE_URL = getBaseUrl();
 
-  // event handler for adding comments 
+  // event handler for adding comments
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -160,7 +160,6 @@ export default function RecipeDetails() {
       setIsSubmittingComment(false);
     }
   };
-
   return (
     <Container fluid className="mt-4 px-2 px-md-4" id="recipe-details">
       {currRecipe ? (
@@ -178,11 +177,7 @@ export default function RecipeDetails() {
             <Col xs={12} md={7} lg={8}>
               <div className="d-flex justify-content-between align-items-start mb-2">
                 <div className="flex-grow-1 me-2">
-                  <h2
-                    className="mb-1"
-                  >
-                    {currRecipe.name}
-                  </h2>
+                  <h2 className="mb-1">{currRecipe.name}</h2>
                   <div className="mb-2">
                     Created by:{" "}
                     <span
@@ -208,13 +203,9 @@ export default function RecipeDetails() {
                     className="flex-shrink-0"
                   >
                     {isRecipeSaved ? (
-                      <BsBookmarkFill
-                        className="bookmark-icon"
-                      />
+                      <BsBookmarkFill className="bookmark-icon" />
                     ) : (
-                      <BiBookmark
-                        className="bookmark-icon"
-                      />
+                      <BiBookmark className="bookmark-icon" />
                     )}
                   </div>
                 )}
@@ -333,33 +324,39 @@ export default function RecipeDetails() {
             )}
 
             {/* Comments list */}
-            {currPost?.comments?.map((comment: any, index: any) => (
-              <div
-                key={comment.comment_id || index}
-                className="mb-3 pb-3 border-bottom"
-              >
-                <Row className="g-2 g-sm-3">
-                  <Col xs="auto">
-                    <img
-                      src="/images/profile.png"
-                      alt="Profile picture"
-                      className="rounded-circle comment-profile-pic"
-                    />
-                  </Col>
-                  <Col>
-                    <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
-                      <strong className="me-2 mb-1 mb-sm-0">
-                        {getUsernameById(comment.user_id)}
-                      </strong>
-                    </div>
-                    <div>
-                      <small className="text-muted">{comment.created_at}</small>
-                    </div>
-                    <p className="mb-0 mt-1">{comment.text}</p>
-                  </Col>
-                </Row>
-              </div>
-            ))}
+            {currPost?.comments?.map((comment: any, index: any) => {
+              const commenter = getUserById(comment.user_id);
+
+              return (
+                <div
+                  key={comment.comment_id || index}
+                  className="mb-3 pb-3 border-bottom"
+                >
+                  <Row className="g-2 g-sm-3">
+                    <Col xs="auto">
+                      <img
+                        src={commenter?.profile || "/images/profile.png"}
+                        alt="Profile picture"
+                        className="rounded-circle comment-profile-pic"
+                      />
+                    </Col>
+                    <Col>
+                      <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
+                        <strong className="me-2 mb-1 mb-sm-0">
+                          {commenter?.username || "Unknown User"}
+                        </strong>
+                      </div>
+                      <div>
+                        <small className="text-muted">
+                          {comment.created_at}
+                        </small>
+                      </div>
+                      <p className="mb-0 mt-1">{comment.text}</p>
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
