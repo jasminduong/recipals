@@ -147,21 +147,35 @@ body * {
 }
 
 /* PROFILE */
+.posts-grid .my-recipes img {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1/1 !important;
+  object-fit: cover !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+#profile-screen {
+  min-width: 1000px !important;
+  width: 100% !important;
+}
+
 .profile-pic {
   padding-left: 80px;
   padding-top: 0px;
 }
 .profile-username {
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 .profile-user-info {
   font-size: 20px;
-  gap: 50px;
+  gap: 50px !important;
 }
 .profile-name {
   font-size: 20px;
-  margin-top: 16px;
+  margin-top: 8px;
   font-weight: bold;
 }
 .profile-bio {
@@ -182,12 +196,14 @@ body * {
 }
 .edit-button {
   margin-bottom: 20px;
+  margin-right: 60px;
   background: #ededed !important;
   border-color: transparent !important;
 }
 .profile-recipes {
   border-bottom: 1px solid #e0e0e0;
-  margin-left: 100px;
+  margin-left: 60px;
+  margin-right: 60px;
   gap: 110px;
 }
 .tab-btn {
@@ -474,20 +490,6 @@ body * {
   border-bottom: 1px solid #e0e0e0;
   gap: 50px;
   margin-bottom: 16px;
-}
-
-.posts-grid .my-recipes img {
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 1/1 !important;
-  object-fit: cover !important;
-  max-width: none !important;
-  max-height: none !important;
-}
-
-#profile-screen {
-  min-width: 1000px !important;
-  width: 100% !important;
 }
 
 /* Post image styling */

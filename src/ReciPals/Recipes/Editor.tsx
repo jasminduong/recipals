@@ -630,7 +630,7 @@ export default function RecipeEditor() {
             )}
             <div className="ms-auto d-flex">
               <Link
-                to={isNew ? "/ReciPals/Profile" : `/ReciPals/Recipes/${rid}`}
+                to={isNew ? `/ReciPals/Account/Profile/${currentUser._id}` : `/ReciPals/Recipes/${rid}`}
               >
                 <Button id="cancel-btn" size="sm" className="me-2">
                   Cancel

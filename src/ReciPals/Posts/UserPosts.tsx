@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { likePost, setPosts, unlikePost } from "./postReducer";
 import { setRecipes } from "../Recipes/recipeReducer";
 import * as postClient from "./postClient";
@@ -21,8 +21,6 @@ export default function UserPosts() {
   const users = useSelector((state: any) => state.userReducer.users);
   const recipes = useSelector((state: any) => state.recipeReducer.recipes);
 
-  const [isLoading, setIsLoading] = useState(true);
-
   // get current logged in user
   const { currentUser: loggedInUser } = useSelector(
     (state: any) => state.accountReducer
@@ -32,7 +30,6 @@ export default function UserPosts() {
   useEffect(() => {
     const loadAllData = async () => {
       try {
-        setIsLoading(true);
 
         const [allPosts, allRecipes, allUsers] = await Promise.all([
           postClient.getAllPosts(),
@@ -44,44 +41,13 @@ export default function UserPosts() {
         dispatch(setRecipes(allRecipes));
         dispatch(setUsers(allUsers));
 
-        setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:", error);
-        setIsLoading(false);
       }
     };
 
-    const needsData =
-      posts.length === 0 ||
-      users.length === 0 ||
-      recipes.length === 0 ||
-      !posts.find((p: any) => p.post_id === pid) ||
-      !users.find((u: any) => u._id === uid);
-
-    if (needsData) {
-      loadAllData();
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // loading state
-  if (isLoading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "100vh" }}
-      >
-        <div className="text-center">
-          <p>Loading...</p>
-          <small>
-            Posts: {posts.length}, Users: {users.length}, Recipes:{" "}
-            {recipes.length}
-          </small>
-        </div>
-      </div>
-    );
-  }
+    loadAllData();
+  }, [pid, uid, dispatch]); 
 
   // gets current user and post
   const currUser = users.find((user: any) => user._id === uid);
@@ -250,6 +216,7 @@ export default function UserPosts() {
                 {currUser && currPost.created_by === loggedInUser._id && (
                   <Button
                     className="edit-button text-dark"
+                    style={{marginRight: "0px"}}
                     size="sm"
                     onClick={() =>
                       navigate(`/ReciPals/Editor/${currRecipe.recipe_id}`)
