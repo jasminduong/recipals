@@ -154,7 +154,7 @@ export default function ReciPalNavigation() {
           pathname.includes("Info") ? "text-bold" : ""
         }`}
       >
-        <BsInfoCircle size="35" className="fs-1 text-dark" />
+        <BsInfoCircle size="25" className="ms-1 mb-1 me-4 fs-1 text-dark" />
         Info
       </ListGroup.Item>
     </ListGroup>
