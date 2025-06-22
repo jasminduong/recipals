@@ -113,7 +113,8 @@ export default function RecipeEditor() {
         ]
       );
       setSteps(recipeToEdit.steps || [""]);
-      setPhoto(recipeToEdit.photo || "/images/default.jpg");
+      setPhoto(recipeToEdit.photo || "https://recipals.netlify.app/images/default.jpg");
+      setPhotoChanged(false);
     }
   }, [recipeToEdit]);
 
@@ -123,6 +124,9 @@ export default function RecipeEditor() {
     ? posts.find((p: any) => p.recipe_id === rid)
     : null;
   const postId = isNew ? uuidv4() : existingPost?.post_id;
+
+  // track if photo was changed
+  const [photoChanged, setPhotoChanged] = useState(false);
 
   // event handler to update recipe photo
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +148,7 @@ export default function RecipeEditor() {
         reader.onloadend = () => {
           const base64String = reader.result as string;
           setPhoto(base64String);
+          setPhotoChanged(true);
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
@@ -317,7 +322,7 @@ export default function RecipeEditor() {
         .filter((tag: any) => tag),
       ingredients_sec: ingredientsSec,
       steps,
-      photo,
+      ...(isNew || photoChanged ? { photo } : {}),
     };
 
     const postPayload = {
@@ -326,7 +331,7 @@ export default function RecipeEditor() {
       created_by: currentUser?._id || recipeToEdit?.user_created,
       title: name,
       caption: description,
-      photo: photo,
+      ...(isNew || photoChanged ? { photo } : {}),
       likes: isNew ? [] : existingPost?.likes || [],
       comments: isNew ? [] : existingPost?.comments || [],
       created_at: isNew
@@ -630,7 +635,11 @@ export default function RecipeEditor() {
             )}
             <div className="ms-auto d-flex">
               <Link
-                to={isNew ? `/ReciPals/Account/Profile/${currentUser._id}` : `/ReciPals/Recipes/${rid}`}
+                to={
+                  isNew
+                    ? `/ReciPals/Account/Profile/${currentUser._id}`
+                    : `/ReciPals/Recipes/${rid}`
+                }
               >
                 <Button id="cancel-btn" size="sm" className="me-2">
                   Cancel

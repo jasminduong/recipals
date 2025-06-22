@@ -79,6 +79,8 @@ export default function ProfileEditor() {
       setSelectedTags((prev) => prev.filter((t) => t !== tag));
     } else if (selectedTags.length < 3) {
       setSelectedTags((prev) => [...prev, tag]);
+    } else {
+      alert("You can only select up to 3 tags. Please deselect a tag before selecting a new one.");
     }
   };
 
