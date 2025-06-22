@@ -183,13 +183,13 @@ body * {
 .profile-header-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px; 
+  gap: 40px; 
   justify-content: flex-start; 
   align-items: center;
 }
 .profile-username {
   font-size: 24px;
-  margin-bottom: 0; 
+  margin-bottom: 12px; 
   word-wrap: break-word;
 }
 @media (max-width: 480px) {
