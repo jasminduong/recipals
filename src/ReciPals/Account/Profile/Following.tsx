@@ -163,7 +163,7 @@ export default function Following({
                     roundedCircle
                     fluid
                     alt={`${followedUser.username} profile`}
-                    style={{ width: 60, objectFit: "cover", cursor: "pointer" }}
+                    style={{ width: 60, height: 60, objectFit: "cover", cursor: "pointer" }}
                     onClick={() => {
                       navigate(`/ReciPals/Account/Profile/${followedUser._id}`);
                       handleClose();
