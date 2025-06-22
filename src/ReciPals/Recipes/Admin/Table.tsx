@@ -1,6 +1,7 @@
 import { Table, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+// represents the recipes table in admin management 
 export default function RecipesTable({
   recipes = [],
   posts = [],
@@ -39,12 +40,7 @@ export default function RecipesTable({
                       src={recipe.photo}
                       fluid
                       alt={recipe.name}
-                      style={{
-                        width: 30,
-                        height: 30,
-                        objectFit: "cover",
-                        marginRight: "10px",
-                      }}
+                      className="admin-recipe-photo"
                     />
                     <span>{recipe.name}</span>
                   </Link>

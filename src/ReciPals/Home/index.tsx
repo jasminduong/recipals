@@ -8,6 +8,7 @@ import { setUsers } from "../Account/userReducer";
 import { setRecipes } from "../Recipes/recipeReducer";
 import * as recipeClient from "../Recipes/recipeClient";
 
+// represents the home page with the recipe post feed
 export default function Home() {
   const dispatch = useDispatch();
   const posts = useSelector((state: any) => state.postReducer.posts);
@@ -104,41 +105,10 @@ export default function Home() {
   }, [posts, currentUser, sortedPosts.length]);
 
   return (
-    <div 
-      id="recipals-home"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: "100%",
-        minHeight: "100vh",
-        padding: "10px",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        minWidth: "500px" // Enforce minimum width to prevent clipping
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "600px",
-          minWidth: "500px", // Increased from 300px to prevent clipping
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px"
-        }}
-      >
+    <div id="recipals-home">
+      <div className="posts-feed-container">
         {sortedPosts.map((post: any) => (
-          <div
-            key={post.post_id}
-            style={{
-              width: "100%",
-              maxWidth: "100%",
-              overflow: "hidden",
-              wordWrap: "break-word",
-              wordBreak: "break-word"
-            }}
-          >
+          <div key={post.post_id} className="post-wrapper">
             <RecipePost post={post} />
           </div>
         ))}

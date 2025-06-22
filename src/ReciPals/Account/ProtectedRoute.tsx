@@ -6,6 +6,7 @@ interface ProtectedRouteProps {
   requiredRole?: string;
 }
 
+// represents the protected route component that prevents users from accessing certain pages unless logged in
 export default function ProtectedRoute({
   children,
   requiredRole = "ADMIN",

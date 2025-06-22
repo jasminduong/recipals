@@ -44,6 +44,7 @@ const sections = [
   },
 ];
 
+// represents the signup component to add tags
 export default function SignupTags() {
   // initializes a state variable selectedTags as an array of strings, to store the tags the user selects
   const [selectedTags, setSelectedTags] = useState<string[]>([]);

@@ -64,6 +64,8 @@ const userSlice = createSlice({
         );
       }
     },
+
+    // saves the given recipe to this user
     saveRecipe: (state, action) => {
       const { userId, recipeId } = action.payload;
       const user = state.users.find((user) => user._id === userId);
@@ -77,6 +79,7 @@ const userSlice = createSlice({
       }
     },
 
+    // unsaves the given recipe to this user
     unsaveRecipe: (state, action) => {
       const { userId, recipeId } = action.payload;
       const user = state.users.find((user) => user._id === userId);

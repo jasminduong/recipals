@@ -3,6 +3,7 @@ import AdminNavigation from "./Navigation";
 import AllUsers from "./Users";
 import AllRecipes from "./Recipes";
 
+// represents the admin routes
 export default function Admin() {
   return (
     <div className="d-flex">

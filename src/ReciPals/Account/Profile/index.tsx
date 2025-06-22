@@ -13,6 +13,7 @@ import * as recipeClient from "../../Recipes/recipeClient";
 import Followers from "./Followers";
 import Following from "./Following";
 
+// represents the profile of a user
 export default function Profile() {
   const { uid } = useParams<{ uid: string }>();
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ export default function Profile() {
   // check if this is the current user's own profile
   const isOwnProfile = loggedInUser && user._id === loggedInUser._id;
 
-  // Create invisible placeholder component
+  // creates invisible placeholder component
   const InvisiblePlaceholder = () => (
     <div className="my-recipes text-center">
       <div
@@ -163,90 +164,49 @@ export default function Profile() {
         }}
       >
         {/* profile picture */}
-        <div
-          className="align-items-center profile-pic"
-          style={{
-            paddingLeft: "clamp(20px, 4vw, 40px)",
-            paddingTop: "0px",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "60px",
-          }}
-        >
+        <div className="align-items-center profile-pic">
           <div style={{ flex: "0 0 auto" }}>
             <Image
               src={user.profile}
               roundedCircle
               fluid
               alt={`${user.username} profile`}
-              style={{
-                width: "clamp(120px, 15vw, 160px)",
-                height: "clamp(120px, 15vw, 160px)",
-                objectFit: "cover",
-              }}
+              className="profile-img"
             />
           </div>
 
           {/* username, posts, followers, following, user's name */}
-          <div
-            className="text-sm-start text-center"
-            style={{ flex: "1", minWidth: "20px" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                marginBottom: "10px",
-                flexDirection: "column",
-                gap: "15px",
-              }}
-            >
-              <div
-                className="align-items-center"
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  justifyContent: "space-between",
-                }}
-              >
+          <div className="text-sm-start text-center profile-user-info">
+            <div className="profile-header-row">
+              <div>
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "40px",
-                    minWidth: 0,
-                  }}
+                  className="profile-username"
+                  style={{ wordWrap: "break-word" }}
                 >
-                  <div
-                    className="profile-username"
-                    style={{ wordWrap: "break-word" }}
+                  {user.username}
+                </div>
+                {!isOwnProfile && loggedInUser && (
+                  <Button
+                    id={isFollowing ? "cancel-btn" : "save-btn"}
+                    onClick={handleFollowToggle}
+                    size="sm"
                   >
-                    {user.username}
-                  </div>
-                  {!isOwnProfile && loggedInUser && (
-                    <Button
-                      id={isFollowing ? "cancel-btn" : "save-btn"}
-                      onClick={handleFollowToggle}
-                      size="sm"
-                    >
-                      {isFollowing ? "Unfollow" : "Follow"}
-                    </Button>
-                  )}
-                </div>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {loggedInUser && user._id === loggedInUser._id && (
-                    <Button
-                      className="edit-button text-dark"
-                      onClick={() =>
-                        navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
-                      }
-                      size="sm"
-                    >
-                      Edit Profile
-                    </Button>
-                  )}
-                </div>
+                    {isFollowing ? "Unfollow" : "Follow"}
+                  </Button>
+                )}
+              </div>
+              <div>
+                {loggedInUser && user._id === loggedInUser._id && (
+                  <Button
+                    className="edit-button text-dark"
+                    onClick={() =>
+                      navigate(`/ReciPals/Account/Profile/${user._id}/Edit`)
+                    }
+                    size="sm"
+                  >
+                    Edit Profile
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -291,22 +251,8 @@ export default function Profile() {
         </div>
 
         {/* bio and tags*/}
-        <div
-          className="profile-bio"
-          style={{
-            paddingLeft: "clamp(20px, 4vw, 55px)",
-            paddingRight: "20px",
-          }}
-        >
-          {user.bio}
-        </div>
-        <div
-          className="d-flex flex-wrap gap-2 mt-3"
-          style={{
-            paddingLeft: "clamp(20px, 4vw, 55px)",
-            paddingRight: "20px",
-          }}
-        >
+        <div className="profile-bio">{user.bio}</div>
+        <div className="d-flex flex-wrap gap-2 mt-3 profile-tags-section">
           {user.tags.map((tag: string, index: number) => (
             <div key={index} className="btn profile-tags">
               {tag}
@@ -315,22 +261,8 @@ export default function Profile() {
         </div>
 
         {/* tabs */}
-        <div
-          className="profile-recipes mt-4"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "0 20px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "60px",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
+        <div className="profile-recipes-tab mt-4">
+          <div className="profile-recipes-btn">
             <button
               className={`tab-btn ${activeTab === "myRecipes" ? "active" : ""}`}
               onClick={() => setActiveTab("myRecipes")}
@@ -347,26 +279,8 @@ export default function Profile() {
         </div>
 
         {/* posts */}
-        <div
-          className="mt-4"
-          style={{
-            paddingLeft: "clamp(20px, 4vw, 55px)",
-            minHeight: "400px",
-            paddingRight: "clamp(20px, 4vw, 50px)",
-          }}
-        >
-          <div
-            className="posts-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "15px",
-              minHeight: "250px",
-              width: "100%",
-              maxWidth: "100%",
-              minWidth: "300px",
-            }}
-          >
+        <div className="posts-container">
+          <div className="posts-grid">
             {activeTab === "myRecipes" && (
               <>
                 {userPosts.length > 0 ? (
@@ -379,38 +293,17 @@ export default function Profile() {
                             `/ReciPals/Account/Profile/${user._id}/Posts/${post.post_id}`
                           )
                         }
-                        style={{
-                          cursor: "pointer",
-                          width: "100%",
-                          aspectRatio: "1/1",
-                          overflow: "hidden",
-                        }}
                       >
                         <Image
                           src={post.photo}
                           className="recipe-image"
                           alt="Recipe"
-                          style={{
-                            objectFit: "cover",
-                            width: "100%",
-                            height: "100%",
-                          }}
                         />
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div
-                    className="text-center"
-                    style={{
-                      gridColumn: "1 / -1",
-                      height: "250px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
+                  <div className="no-recipes-message text-center">
                     <p className="text-muted">No recipes yet</p>
                   </div>
                 )}
@@ -424,7 +317,7 @@ export default function Profile() {
 
                 {savedRecipes.length > 0 ? (
                   savedRecipes.map((recipe: any) => {
-                    // Find the corresponding post for this recipe
+                    // find the corresponding post for this recipe
                     const correspondingPost = posts.find(
                       (post: any) => post.recipe_id === recipe.recipe_id
                     );
@@ -438,20 +331,14 @@ export default function Profile() {
                           className="profile-post"
                           src={recipe.photo}
                           fluid
-                          style={{
-                            objectFit: "cover",
-                            width: "100%",
-                            aspectRatio: "1/1",
-                            cursor: "pointer",
-                          }}
                           onClick={() => {
-                            // If there's a corresponding post, go to post page first
+                            // ff there's a corresponding post, go to post page first
                             if (correspondingPost) {
                               navigate(
                                 `/ReciPals/Account/Profile/${user._id}/Posts/${correspondingPost.post_id}`
                               );
                             } else {
-                              // If no post, go directly to recipe details
+                              // ff no post, go directly to recipe details
                               navigate(`/ReciPals/Recipes/${recipe.recipe_id}`);
                             }
                           }}
@@ -460,17 +347,7 @@ export default function Profile() {
                     );
                   })
                 ) : (
-                  <div
-                    className="text-center"
-                    style={{
-                      gridColumn: "1 / -1",
-                      display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "center",
-                      width: "100%",
-                      marginTop: "-200px",
-                    }}
-                  >
+                  <div className="no-saved-recipes-message text-center">
                     <p className="text-muted">No saved recipes yet</p>
                   </div>
                 )}

@@ -15,6 +15,7 @@ import type { RootState, AppDispatch } from "../store";
 import { setCurrentUser } from "../Account/reducer";
 import { BsBookmarkFill } from "react-icons/bs";
 
+// represents the recipe details page
 export default function RecipeDetails() {
   const { rid } = useParams();
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ export default function RecipeDetails() {
     loadRecipes();
   }, [recipes.length, posts.length, searchRecipes.length, dispatch]);
 
-  // Add this at the top of your file with other imports/constants
+  // gets base url 
   const getBaseUrl = () => {
     if (
       window.location.hostname === "localhost" ||
@@ -107,12 +108,12 @@ export default function RecipeDetails() {
     ) {
       return "http://localhost:4000";
     }
-    return "https://your-backend-domain.com"; // Replace with your actual backend URL
+    return "https://recipals-node-server-app.onrender.com"; 
   };
 
   const BASE_URL = getBaseUrl();
 
-  // Handle comment submission
+  // event handler for adding comments 
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -169,12 +170,7 @@ export default function RecipeDetails() {
             <Col xs={12} md={5} lg={4} className="mb-3 mb-md-0">
               <img
                 src={currRecipe.photo}
-                className="img-fluid"
-                style={{
-                  width: "230px",
-                  height: "230px",
-                  objectFit: "cover",
-                }}
+                className="img-fluid recipe-photo"
                 alt={currRecipe.name}
               />
             </Col>
@@ -184,19 +180,15 @@ export default function RecipeDetails() {
                 <div className="flex-grow-1 me-2">
                   <h2
                     className="mb-1"
-                    style={{
-                      lineHeight: "1.2",
-                    }}
                   >
                     {currRecipe.name}
                   </h2>
-                  <div className="text-muted mb-2">
+                  <div className="mb-2">
                     Created by:{" "}
                     <span
                       className="fw-semibold text-dark text-decoration-none"
                       style={{
                         cursor: "pointer",
-                        color: "#0066cc",
                       }}
                       onClick={() =>
                         recipeCreator &&
@@ -218,23 +210,10 @@ export default function RecipeDetails() {
                     {isRecipeSaved ? (
                       <BsBookmarkFill
                         className="bookmark-icon"
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          minWidth: "30px",
-                          minHeight: "30px",
-                          color: "#BEDBFF",
-                        }}
                       />
                     ) : (
                       <BiBookmark
                         className="bookmark-icon"
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          minWidth: "30px",
-                          minHeight: "30px",
-                        }}
                       />
                     )}
                   </div>
@@ -341,11 +320,7 @@ export default function RecipeDetails() {
                   <Button
                     type="submit"
                     disabled={!commentText.trim() || isSubmittingComment}
-                    style={{
-                      backgroundColor: "#6399DA",
-                      borderColor: "#6399DA",
-                      color: "white",
-                    }}
+                    className="comment-btn"
                   >
                     {isSubmittingComment ? "Posting..." : "Post"}
                   </Button>
@@ -368,12 +343,7 @@ export default function RecipeDetails() {
                     <img
                       src="/images/profile.png"
                       alt="Profile picture"
-                      className="rounded-circle"
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        objectFit: "cover",
-                      }}
+                      className="rounded-circle comment-profile-pic"
                     />
                   </Col>
                   <Col>

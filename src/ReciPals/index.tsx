@@ -8,6 +8,7 @@ import RecipeEditor from "./Recipes/Editor";
 import RecipeDetails from "./Recipes/Details";
 import Session from "./Account/Session";
 
+// represents the app routing of the main pages, including home, search, recipes, saved, and account
 export default function ReciPals() {
   return (
     <Session>
