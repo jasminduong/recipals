@@ -40,12 +40,16 @@ export default function PeopleDetails() {
   // saves the user
   const saveUser = async () => {
     try {
-      const updatedUser = { ...user, role };
-      await client.updateUser(updatedUser);
-      setUser(updatedUser);
+      const { profile, ...userWithoutProfile } = user;
+      const updatedUserPayload = { ...userWithoutProfile, role };
+
+      await client.updateUser(updatedUserPayload);
+
+      const finalUpdatedUser = { ...user, role };
+      setUser(finalUpdatedUser);
 
       const updatedUsers = users.map((u: any) =>
-        u._id === updatedUser._id ? updatedUser : u
+        u._id === finalUpdatedUser._id ? finalUpdatedUser : u
       );
       dispatch(setUsers(updatedUsers));
 
