@@ -18,6 +18,18 @@ export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [userResults, setUserResults] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [initialRecipesShuffled, setInitialRecipesShuffled] = useState(false);
+  const [displayedRecipes, setDisplayedRecipes] = useState<any[]>([]);
+
+  // helper method to shuffle an array
+  const shuffleArray = (array: any[]) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
 
   // gets username by user ID
   const getUsernameById = (userId: string) => {
@@ -27,7 +39,11 @@ export default function Search() {
 
   // have recipes loaded in generic results
   const fetchAllRecipes = () => {
-    dispatch(fetchRecipes());
+    dispatch(fetchRecipes()).then(() => {
+      if (!initialRecipesShuffled) {
+        setInitialRecipesShuffled(true);
+      }
+    });
   };
 
   // Load all users initially
@@ -46,10 +62,25 @@ export default function Search() {
     loadUsers();
   }, [users.length, dispatch]);
 
+  // loads shuffled recipes
+  useEffect(() => {
+    if (recipes.length > 0 && !searchTerm && !initialRecipesShuffled) {
+      const shuffledRecipes = shuffleArray(recipes);
+      setDisplayedRecipes(shuffledRecipes);
+      setInitialRecipesShuffled(true);
+    } else if (searchTerm) {
+      // when searching, use the recipes from Redux as-is
+      setDisplayedRecipes(recipes);
+    } else if (recipes.length > 0 && !searchTerm) {
+      // when clearing search, show shuffled recipes
+      setDisplayedRecipes(recipes);
+    }
+  }, [recipes, searchTerm, initialRecipesShuffled]);
+
   // Search both recipes and users
   const handleSearch = async (searchValue: string) => {
     setSearchTerm(searchValue);
-    
+
     // Search recipes
     if (searchValue.trim()) {
       dispatch(searchRecipesByName(searchValue));
@@ -67,7 +98,9 @@ export default function Search() {
       }, 300);
 
       try {
-        const userSearchResults = await userClient.findUsersByPartialName(searchValue);
+        const userSearchResults = await userClient.findUsersByPartialName(
+          searchValue
+        );
         clearTimeout(loadingTimer);
         if (showLoading) setLoadingUsers(false);
         setUserResults(userSearchResults);
@@ -104,14 +137,14 @@ export default function Search() {
   }
 
   return (
-    <div 
-      className="container-fluid mt-4 px-2 px-md-4" 
+    <div
+      className="container-fluid mt-4 px-2 px-md-4"
       id="search"
       style={{
         minHeight: "100vh",
         minWidth: "320px",
         maxWidth: "100%",
-        overflow: "hidden"
+        overflow: "hidden",
       }}
     >
       {/* Search Bar */}
@@ -158,8 +191,12 @@ export default function Search() {
                       />
                     </div>
                     <div className="flex-grow-1 text-truncate">
-                      <div className="fw-bold fs-5 mb-1 text-truncate">{user.username}</div>
-                      <div className="text-muted text-truncate">{user.name}</div>
+                      <div className="fw-bold fs-5 mb-1 text-truncate">
+                        {user.username}
+                      </div>
+                      <div className="text-muted text-truncate">
+                        {user.name}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -173,13 +210,13 @@ export default function Search() {
       {/* Recipe Results Section */}
       <div className="w-100">
         {searchTerm && <h5 className="mb-3">Recipes</h5>}
-        {recipes.length === 0 && searchTerm && !loading ? (
+        {displayedRecipes.length === 0 && searchTerm && !loading ? (
           <div className="text-center mt-5">
             <p>No recipes found matching "{searchTerm}"</p>
           </div>
         ) : (
           <div className="row">
-            {recipes.map((recipe: any) => (
+            {displayedRecipes.map((recipe: any) => (
               <div key={recipe.recipe_id} className="col-12 mb-3">
                 <div
                   onClick={() => handleRecipeClick(recipe.recipe_id)}
@@ -197,7 +234,7 @@ export default function Search() {
                             width: "100%",
                             maxWidth: "200px",
                             height: "150px",
-                            objectFit: "cover"
+                            objectFit: "cover",
                           }}
                           alt={recipe.name}
                         />
@@ -210,7 +247,7 @@ export default function Search() {
                         <div className="recipe-body mb-2 text-muted text-truncate">
                           {getUsernameById(recipe.user_created)}
                         </div>
-                        
+
                         <div className="row align-items-start mb-2">
                           <div className="col-12 col-md-8">
                             <div className="recipe-title fw-bold fs-5 text-truncate">
@@ -223,15 +260,15 @@ export default function Search() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="recipe-sub-title text-muted">
-                          <div 
+                          <div
                             style={{
                               display: "-webkit-box",
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: "vertical",
                               overflow: "hidden",
-                              wordWrap: "break-word"
+                              wordWrap: "break-word",
                             }}
                           >
                             {recipe.description}
