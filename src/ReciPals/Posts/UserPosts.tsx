@@ -247,7 +247,7 @@ export default function UserPosts() {
                     {postCreator?.username}
                   </span>
                 </div>
-                {currUser && currPost.created_by === currUser._id && (
+                {currUser && currPost.created_by === loggedInUser._id && (
                   <Button
                     className="edit-button text-dark"
                     size="sm"
