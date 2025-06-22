@@ -178,21 +178,23 @@ export default function Profile() {
           {/* username, posts, followers, following, user's name */}
           <div className="text-sm-start text-center profile-user-info">
             <div className="profile-header-row">
-              <div
-                className="profile-username"
-                style={{ wordWrap: "break-word" }}
-              >
-                {user.username}
-              </div>
-              {!isOwnProfile && loggedInUser && (
-                <Button
-                  id={isFollowing ? "cancel-btn" : "save-btn"}
-                  onClick={handleFollowToggle}
-                  size="sm"
+              <div className="username-follow-container">
+                <div
+                  className="profile-username"
+                  style={{ wordWrap: "break-word" }}
                 >
-                  {isFollowing ? "Unfollow" : "Follow"}
-                </Button>
-              )}
+                  {user.username}
+                </div>
+                {!isOwnProfile && loggedInUser && (
+                  <Button
+                    id={isFollowing ? "cancel-btn" : "save-btn"}
+                    onClick={handleFollowToggle}
+                    size="sm"
+                  >
+                    {isFollowing ? "Unfollow" : "Follow"}
+                  </Button>
+                )}
+              </div>
               <div>
                 {loggedInUser && user._id === loggedInUser._id && (
                   <Button

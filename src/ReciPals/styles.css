@@ -173,7 +173,7 @@ body * {
   height: clamp(120px, 15vw, 160px);
   object-fit: cover;
   flex-shrink: 0 !important;
-  border-radius: 50% !important; 
+  border-radius: 50% !important;
   aspect-ratio: 1 / 1 !important;
 }
 .profile-user-info {
@@ -183,9 +183,16 @@ body * {
 .profile-header-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px; 
-  justify-content: flex-start; 
+  gap: 10px;
+  justify-content: space-between; 
   align-items: center;
+}
+
+.username-follow-container {
+  display: flex;
+  align-items: center;
+  gap: 60px; 
+  flex-wrap: wrap;
 }
 .profile-username {
   font-size: 24px;
