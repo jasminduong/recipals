@@ -12,6 +12,7 @@ import { fetchRecipes } from "../Search/reducer";
 import { saveRecipe, setUsers, unsaveRecipe } from "../Account/userReducer";
 import * as userClient from "../Account/client";
 import type { RootState, AppDispatch } from "../store";
+import { setCurrentUser } from "../Account/reducer";
 import { BsBookmarkFill } from "react-icons/bs";
 
 export default function RecipeDetails() {
@@ -32,11 +33,8 @@ export default function RecipeDetails() {
   const currRecipe =
     recipes.find((recipe: any) => recipe.recipe_id === rid) ||
     searchRecipes.find((recipe: any) => recipe.recipe_id === rid);
-  // Check if recipe is saved by current user
-  const currentUserData = users.find(
-    (user: any) => user._id === currentUser?._id
-  );
-  const isRecipeSaved = currentUserData?.saved_recipes?.includes(rid) || false;
+
+  const isRecipeSaved = currentUser?.saved_recipes?.includes(rid) || false;
 
   // find the recipe creator's username
   const recipeCreator = users.find(
@@ -59,12 +57,14 @@ export default function RecipeDetails() {
     try {
       if (isRecipeSaved) {
         // Unsave recipe
-        await userClient.unsaveRecipe(currentUser._id, rid);
+        const updatedUser = await userClient.unsaveRecipe(currentUser._id, rid);
         dispatch(unsaveRecipe({ userId: currentUser._id, recipeId: rid }));
+        dispatch(setCurrentUser(updatedUser));
       } else {
         // Save recipe
-        await userClient.saveRecipe(currentUser._id, rid);
+        const updatedUser = await userClient.saveRecipe(currentUser._id, rid);
         dispatch(saveRecipe({ userId: currentUser._id, recipeId: rid }));
+        dispatch(setCurrentUser(updatedUser));
       }
     } catch (error) {
       console.error("Error toggling save:", error);
