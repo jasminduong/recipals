@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { setCurrentUser } from "./Account/reducer";
 import axios from "axios";
+import { BsInfoCircle } from "react-icons/bs";
 const axiosWithCredentials = axios.create({
   withCredentials: true,
 });
@@ -143,6 +144,19 @@ export default function ReciPalNavigation() {
           Admin
         </ListGroup.Item>
       )}
+
+      {/* Info link */}
+      <ListGroup.Item
+        key="ProjectInfo"
+        as={Link}
+        to="/ReciPals/Info"
+        className={`recipals-nav-link ${
+          pathname.includes("Info") ? "text-bold" : ""
+        }`}
+      >
+        <BsInfoCircle size="35" className="fs-1 text-dark" />
+        Info
+      </ListGroup.Item>
     </ListGroup>
   );
 }
