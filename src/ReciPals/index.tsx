@@ -7,6 +7,7 @@ import Account from "./Account";
 import RecipeEditor from "./Recipes/Editor";
 import RecipeDetails from "./Recipes/Details";
 import Session from "./Account/Session";
+import ProjectInfo from "./Project Info";
 
 // represents the app routing of the main pages, including home, search, recipes, saved, and account
 export default function ReciPals() {
@@ -23,6 +24,7 @@ export default function ReciPals() {
             <Route path="Editor/:rid" element={<RecipeEditor />} />
             <Route path="Saved" element={<SavedRecipes />} />
             <Route path="Account/*" element={<Account />} />
+            <Route path="Info" element={<ProjectInfo />} />
           </Routes>
         </div>
       </div>
