@@ -451,7 +451,7 @@ export default function RecipeEditor() {
                         )}
                       </div>
                       <Form.Control
-                        value={section.title || "Main Ingredients"} 
+                        value={section.title} 
                         placeholder="Section Title"
                         onChange={(e) =>
                           handleUpdateSectionTitle(section._id, e.target.value)
