@@ -58,7 +58,7 @@ export default function RecipeDetails({
       ingredientsSec
         ?.map((section) => {
           const title = section.title;
-          const ingredients = section["ingredients:"]?.join("\n") || "";
+          const ingredients = section["ingredients"]?.join("\n") || "";
           return `${title}:\n${ingredients}`;
         })
         .join("\n\n") || ""
@@ -76,7 +76,7 @@ export default function RecipeDetails({
       return {
         _id: `edited-${index}`,
         title: title,
-        "ingredients:": ingredients,
+        "ingredients": ingredients,
       };
     });
   };
@@ -100,7 +100,7 @@ export default function RecipeDetails({
       dispatch(setRecipes(updatedRecipes));
       setEditingIngredients(false);
     } catch (error) {
-      console.error("Error saving ingredients:", error);
+      console.error("Error saving ingredients", error);
     }
   };
 
@@ -295,7 +295,7 @@ export default function RecipeDetails({
                           className="list-unstyled ps-3"
                           style={{ fontSize: "14px" }}
                         >
-                          {section["ingredients:"]?.map(
+                          {section["ingredients"]?.map(
                             (ingredient: string, idx: number) => (
                               <li key={idx} className="mb-1">
                                 <span className="me-2">•</span>
