@@ -42,7 +42,7 @@ export default function RecipeDetails() {
     (user: any) => user._id === currRecipe?.user_created
   );
 
-  // gets user by user_id for comments 
+  // gets user by user_id for comments
   const getUserById = (userId: string) => {
     return users.find((user: any) => user._id === userId);
   };
@@ -169,7 +169,13 @@ export default function RecipeDetails() {
             <Col xs={12} md={5} lg={4} className="mb-3 mb-md-0">
               <img
                 src={currRecipe.photo}
-                className="img-fluid recipe-photo"
+                className="img-fluid"
+                style={{
+                  width: "230",
+                  height: "230",
+                  objectFit: "cover",
+                  aspectRatio: "1 / 1",
+                }}
                 alt={currRecipe.name}
               />
             </Col>
