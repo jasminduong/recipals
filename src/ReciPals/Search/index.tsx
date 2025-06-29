@@ -235,7 +235,7 @@ export default function Search() {
                           </div>
                           <div className="col-12 col-md-4 text-md-end">
                             <div className="recipe-sub-title text-muted">
-                              <b>Total Time:</b> {recipe.total_time || "0+ min"}
+                              <b>Total Time:</b> {recipe.total_time || "1+ min"}
                             </div>
                           </div>
                         </div>

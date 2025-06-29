@@ -7,7 +7,7 @@ export default function ProjectInfo() {
       <h5>
         <b>Creators:</b>
       </h5>{" "}
-      Jasmin Duong <br /> Daniel Jacob
+      Jasmin Duong<br /> Daniel Jacob
       <br />
       <br></br>
       <h5>
@@ -45,7 +45,7 @@ export default function ProjectInfo() {
       >
         https://www.themealdb.com/
       </a>
-      ) attributed to "recipeBot" to provide immediate content for users to
+      ) attributed to "recipe_bot" to provide immediate content for users to
       explore.
       <br />
       <br />
@@ -57,7 +57,7 @@ export default function ProjectInfo() {
           <b>Home</b>
           <ul>
             <li>Loads recipe post feed (login not required)</li>
-            <li>Loads followers’ posts first (login required)</li>
+            <li>Loads followers’ posts first</li>
           </ul>
         </li>
         <li>
@@ -75,28 +75,28 @@ export default function ProjectInfo() {
           <ul>
             <li>Display and edit profile information</li>
             <li>Display user posts and saved recipes</li>
-            <li>Follow and unfollow users (login required)</li>
+            <li>Follow and unfollow users</li>
           </ul>
         </li>
         <li>
           <b>Search</b>
           <ul>
             <li>
-              Search recipes by name, ingredient, tags (login not required)
+              Search recipes by name, ingredient, tags
             </li>
-            <li>Search users by name and username (login not required)</li>
+            <li>Search users by name and username</li>
           </ul>
         </li>
         <li>
           <b>Recipe and Post</b>
           <ul>
-            <li>Create and edit recipes (login required)</li>
+            <li>Create and edit recipes</li>
             <li>
               View complete recipe details, including name, photo, ingredients,
-              instructions, total time, and serving (login not required)
+              instructions, total time, and serving
             </li>
-            <li>Interact with posts: like and comment (login required)</li>
-            <li>Save recipes (login required)</li>
+            <li>Interact with posts: like and comment</li>
+            <li>Save recipes</li>
           </ul>
         </li>
         <li>
