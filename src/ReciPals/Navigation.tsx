@@ -18,7 +18,7 @@ const axiosWithCredentials = axios.create({
   withCredentials: true,
 });
 
-// represents the sidebar navigation with links to main sections (home, search, create, saved, profile) 
+// represents the sidebar navigation with links to main sections (home, search, create, saved, profile)
 export default function ReciPalNavigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,7 +58,13 @@ export default function ReciPalNavigation() {
       variant="flush"
       className="recipals-navbar bottom-0 top-0 position-fixed d-none d-md-block"
     >
-      <ListGroup.Item className="recipals-appname">ReciPals</ListGroup.Item>
+      <ListGroup.Item
+        className="recipals-appname"
+        as={Link}
+        to="/ReciPals/Home"
+      >
+        ReciPals
+      </ListGroup.Item>
 
       {/* Home link */}
       <ListGroup.Item

@@ -33,6 +33,7 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
                     className="people-table-profile-pic"
                     style={{
                       width: 30,
+                      height: 30,
                       objectFit: "cover",
                       marginRight: "10px",
                     }}

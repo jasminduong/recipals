@@ -215,7 +215,7 @@ export default function RecipeDetails({
           src={recipe.photo}
           fluid
           alt={recipe.name}
-          style={{ width: 70, objectFit: "cover" }}
+          style={{ width: 70, height: 70, objectFit: "cover" }}
         />
       </div>
       {/* tabs */}
