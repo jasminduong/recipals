@@ -144,9 +144,13 @@ export default function Followers({
                   <Image
                     src={follower.profile}
                     roundedCircle
-                    fluid
                     alt={`${follower.username} profile`}
-                    className="follower-photo"
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      objectFit: "cover",
+                      aspectRatio: "1 / 1",
+                    }}
                     onClick={() => {
                       navigate(`/ReciPals/Account/Profile/${follower._id}`);
                       handleClose();
