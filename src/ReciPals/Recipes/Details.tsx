@@ -171,8 +171,8 @@ export default function RecipeDetails() {
                 src={currRecipe.photo}
                 className="img-fluid"
                 style={{
-                  width: "230",
-                  height: "230",
+                  width: "230px",
+                  height: "230px",
                   objectFit: "cover",
                   aspectRatio: "1 / 1",
                 }}
