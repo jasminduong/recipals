@@ -94,7 +94,6 @@ export default function LikesModal({
         return user;
       });
       dispatch(setUsers(updatedUsers));
-
     } else {
       dispatch(
         followUser({
@@ -156,7 +155,12 @@ export default function LikesModal({
                     <Image
                       src={user.profile}
                       roundedCircle
-                      fluid
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        objectFit: "cover",
+                        aspectRatio: "1 / 1",
+                      }}
                       alt={`${user.username} profile`}
                       className="likes-modal-profile-image"
                       onClick={() => handleUserClick(user._id)}
